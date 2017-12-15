@@ -22,7 +22,30 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.domain.course;
+
 /**
- * Course modules.
+ * Identifies course.
+ * @author ajuffer
  */
-package org.bco.fbmm.domain.cm;
+public class CourseId {
+    
+    private final String id_;
+    
+    private CourseId(String id)
+    {
+        id_ = id;
+    }
+    
+    public static CourseId valueOf(String id)
+    {
+        if ( id == null ) {
+            throw new NullPointerException("Course identifier value must be provided.");
+        }
+        if ( id.isEmpty() ) {
+            throw new NullPointerException("Course identifier value must be provided.");            
+        }
+        return new CourseId(id);
+    }
+    
+}

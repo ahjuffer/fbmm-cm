@@ -22,32 +22,35 @@
  * THE SOFTWARE.
  */
 
-package org.bco.fbmm.domain.cm;
+package org.bco.cm.domain.course;
 
 /**
- * Course participant.
+ * Identifies student.
  * @author ajuffer
  */
-public class Student {
+public class StudentId {
     
-    private final StudentId studentId_;
+    private final String id_;
     
-    private Student(StudentId studentId)
+    private StudentId(String id)
     {
-        studentId_ = studentId;
+        id_ = id;
     }
     
     /**
-     * Returns new student instance.
-     * @param studentId Student identifier. Must not be null.
-     * @return Student.
+     * Creates identifier from string value.
+     * @param id Value.
+     * @return Identifier.
      */
-    public static Student create(StudentId studentId)
+    public static StudentId valueOf(String id)
     {
-        if ( studentId == null ) {
-            throw new NullPointerException("Student: StudentId must be provided.");
+        if ( id == null ) {
+            throw new NullPointerException("Student identifier value must be provided.");                    
         }
-        return new Student(studentId);
+        if ( id.isEmpty() ) {
+            throw new IllegalArgumentException("Student identifier value must be provided.");
+        }
+        return new StudentId(id);
     }
     
 }

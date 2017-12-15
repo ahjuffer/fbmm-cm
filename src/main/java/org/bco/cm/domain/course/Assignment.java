@@ -22,35 +22,13 @@
  * THE SOFTWARE.
  */
 
-package org.bco.fbmm.domain.cm;
+package org.bco.cm.domain.course;
 
 /**
- * Identifier for uniquely identifying student.
+ * A set of tasks assigned to a student by the teacher. The student returns a 
+ * report covering the assignment.
  * @author ajuffer
  */
-public class StudentId {
-    
-    private final String id_;
-    
-    private StudentId(String id)
-    {
-        id_ = id;
-    }
-    
-    /**
-     * Creates identifier from string value.
-     * @param id Value.
-     * @return Identifier.
-     */
-    public static StudentId valueOf(String id)
-    {
-        if ( id == null ) {
-            throw new NullPointerException("Student identifier value must be provided.");                    
-        }
-        if ( id.isEmpty() ) {
-            throw new IllegalArgumentException("Student identifier value must be provided.");
-        }
-        return new StudentId(id);
-    }
+public class Assignment {
     
 }
