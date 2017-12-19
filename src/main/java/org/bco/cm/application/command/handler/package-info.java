@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2017 André J. Juffer
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
  */
 
 /**
- * Bounded context for courses. Includes courses, course modules, learning 
- * paths, assignments, quizzes, and so forth. This package holds the Java Main class.
+ * Command handlers
  */
-package org.bco.cm;
+package org.bco.cm.application.command.handler;

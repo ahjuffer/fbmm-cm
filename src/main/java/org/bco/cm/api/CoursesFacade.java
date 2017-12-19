@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2017 Pivotal Software, Inc..
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,23 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.api;
+
+import java.util.List;
+import org.bco.cm.dto.CourseDTO;
+
 /**
- * Bounded context for courses. Includes courses, course modules, learning 
- * paths, assignments, quizzes, and so forth. This package holds the Java Main class.
+ * External access API for courses with REST.
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-package org.bco.cm;
+public interface CoursesFacade {
+    
+    /**
+     * Returns all or ongoing courses.
+     * @param spec Course specification, either "all" or "ongoing".
+     * @return Courses. May be empty. Never null.
+     * @throws IllegalArgumentException if spec is neither "all" nor "ongoing".
+     */
+    List<CourseDTO> getCourses(String spec);
+        
+}

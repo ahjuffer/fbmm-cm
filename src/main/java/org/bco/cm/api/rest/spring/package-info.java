@@ -23,7 +23,6 @@
  */
 
 /**
- * Bounded context for courses. Includes courses, course modules, learning 
- * paths, assignments, quizzes, and so forth. This package holds the Java Main class.
+ * API implementation with REST and Spring.
  */
-package org.bco.cm;
+package org.bco.cm.api.rest.spring;

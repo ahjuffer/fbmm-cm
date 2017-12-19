@@ -22,8 +22,24 @@
  * THE SOFTWARE.
  */
 
-/**
- * Bounded context for courses. Includes courses, course modules, learning 
- * paths, assignments, quizzes, and so forth. This package holds the Java Main class.
- */
 package org.bco.cm;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * Main application.
+ * @author Andr&#233; Juffer, Triacle Biocomputing
+ */
+@SpringBootApplication
+public class Application {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) 
+    {
+        SpringApplication.run(Application.class, args);
+    }
+    
+}

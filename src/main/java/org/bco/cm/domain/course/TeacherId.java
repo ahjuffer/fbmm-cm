@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,35 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.domain.course;
+
 /**
- * Bounded context for courses. Includes courses, course modules, learning 
- * paths, assignments, quizzes, and so forth. This package holds the Java Main class.
+ * Identifies teacher.
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-package org.bco.cm;
+public class TeacherId {
+    
+    private final String id_;
+    
+    private TeacherId(String id)
+    {
+        id_ = id;
+    }
+    
+    /**
+     * Creates identifier from string value.
+     * @param id Identifier value. Must neither be null nor empty.
+     * @return Course identifier.
+     */
+    public static TeacherId valueOf(String id)
+    {
+        if ( id == null ) {
+            throw new NullPointerException("Teacher identifier value must be provided.");
+        }
+        if ( id.isEmpty() ) {
+            throw new NullPointerException("teacher identifier value must be provided.");            
+        }
+        return new TeacherId(id);
+        
+    }
+}

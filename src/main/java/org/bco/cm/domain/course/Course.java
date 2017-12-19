@@ -41,34 +41,65 @@ import java.util.Set;
 public class Course {
     
     private final CourseId courseId_;
+    private final String title_;
     private final List<Module> modules_;
     private final Set<Student> roster_;
     private boolean ongoing_;
     
-    private Course(CourseId courseId)
+    private Course(CourseId courseId, String title)
     {
         courseId_ = courseId;
+        title_ = title;
         modules_ = new ArrayList<>();
         roster_ = new HashSet<>();
         ongoing_ = false;
     }
     
     /**
-     * Starts a new course.
-     * @param courseId
-     * @return Course.
+     * Returns course identifier.
+     * @return Identifier. Never null.
      */
-    public static Course start(CourseId courseId)
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
+    
+    /**
+     * Returns course title.
+     * @return Title. Never null.
+     */
+    public String getTitle()
+    {
+        return title_;
+    }
+    
+    /**
+     * Starts a new course.
+     * @param courseId Course identifier.
+     * @param title Course title.
+     * @return Course.
+     * @throws NullPointerException if any argument is null.
+     * @throws IllegalArgumentException if title is an empty string.
+     */
+    public static Course start(CourseId courseId, String title)
     {
         if ( courseId == null ) {
             throw new NullPointerException("Course identifier must be provided.");
         }
-        return new Course(courseId);
+        if ( title == null ) {
+            throw new NullPointerException("Course title must be provided.");
+        }
+        if ( title.isEmpty() ) {
+            throw new IllegalArgumentException("Course title must be provided.");
+        }
+        return new Course(courseId, title);
     }
     
     /**
-     * Registers student for course.
-     * @param student Student. Mustnot be null.
+     * Registers student for course. if the course is ongoing, the student also 
+     * gain access to the first module.
+     * @param student Student. Must not be null.
+     * @throws IllegalStateException If student was already registered.
      */
     public void enrol(Student student)
     {
@@ -85,13 +116,19 @@ public class Course {
         }        
     }
     
-    void begin()
+    /**
+     * Lets the course begin.
+     */
+    public void begin()
     {
         ongoing_ = true;
         this.giveStudentsAccessToFirstModule();
     }
     
-    void stop()
+    /**
+     * Stops course.
+     */
+    public void stop()
     {
         ongoing_ = false;
     }
@@ -102,7 +139,7 @@ public class Course {
      */
     public boolean isOngoing()
     {
-        return true;
+        return ongoing_ == true;
     }
     
     private Module getFirstModule()

@@ -37,13 +37,27 @@ public class CourseId {
         id_ = id;
     }
     
+    /**
+     * Returns identifier value.
+     * @return Value. Never null.
+     */
+    public String getValue()
+    {
+        return id_;
+    }
+    
+    /**
+     * Creates identifier from string value.
+     * @param id Identifier value. Must neither be null nor empty.
+     * @return Identifier.
+     */
     public static CourseId valueOf(String id)
     {
         if ( id == null ) {
             throw new NullPointerException("Course identifier value must be provided.");
         }
         if ( id.isEmpty() ) {
-            throw new NullPointerException("Course identifier value must be provided.");            
+            throw new IllegalArgumentException("Course identifier value must be provided.");            
         }
         return new CourseId(id);
     }

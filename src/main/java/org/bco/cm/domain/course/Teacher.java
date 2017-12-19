@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,12 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.domain.course;
+
 /**
- * Bounded context for courses. Includes courses, course modules, learning 
- * paths, assignments, quizzes, and so forth. This package holds the Java Main class.
+ * Course instructor.
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-package org.bco.cm;
+public class Teacher {
+    
+}

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.bco.cm.application.command;
+
+import org.bco.cm.domain.course.CourseId;
 
 /**
- * Bounded context for courses. Includes courses, course modules, learning 
- * paths, assignments, quizzes, and so forth. This package holds the Java Main class.
+ * Command to begin an existing course
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-package org.bco.cm;
+public class BeginCourse {
+    
+    private final CourseId courseId_;
+    
+    /**
+     * Constructor
+     * @param courseId Course identifier. Must not be null.
+     */
+    public BeginCourse(CourseId courseId)
+    {
+        courseId_ = courseId;
+    }
+    
+    /**
+     * Returns course identifier.
+     * @return Identifier.
+     */
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
+}

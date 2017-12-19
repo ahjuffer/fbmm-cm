@@ -39,7 +39,7 @@ public class StudentId {
     
     /**
      * Creates identifier from string value.
-     * @param id Value.
+     * @param id Value. Must neither be null nor empty.
      * @return Identifier.
      */
     public static StudentId valueOf(String id)

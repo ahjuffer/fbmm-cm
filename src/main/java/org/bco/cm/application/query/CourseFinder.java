@@ -22,8 +22,22 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.application.query;
+
+import java.util.List;
+import org.bco.cm.dto.CourseDTO;
+
 /**
- * Bounded context for courses. Includes courses, course modules, learning 
- * paths, assignments, quizzes, and so forth. This package holds the Java Main class.
+ *
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-package org.bco.cm;
+public interface CourseFinder {
+    
+    /**
+     * Finds course according to a specification.
+     * @param spec Specification, either "all" or "ongoing".
+     * @return Courses. May be empty.
+     * @throws IllegalArgumentException if spec is neither "all" nor "ongoing".
+     */
+    List<CourseDTO> getCourses(String spec);
+}
