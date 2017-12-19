@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 ajuffer.
+ * Copyright 2017 André H. Juffer, Biocenter Oulu.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import java.util.Objects;
 
 /**
  * Course participant.
- * @author ajuffer
+ * @author André H. Juffer, Biocenter Oulu
  */
 public class Student {
     

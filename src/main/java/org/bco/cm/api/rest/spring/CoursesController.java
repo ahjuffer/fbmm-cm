@@ -29,7 +29,6 @@ import org.bco.cm.api.CoursesFacade;
 import org.bco.cm.application.query.CourseFinder;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST API implementation using Spring.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * @author Andr&#233; Juffer, Biocenter Oulu
  */
 @RestController
 @RequestMapping(value="/courses")

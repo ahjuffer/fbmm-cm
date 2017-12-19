@@ -25,41 +25,19 @@
 package org.bco.cm.domain.course;
 
 /**
- * Identifies course.
- * @author André H. Juffer, Biocenter Oulu
+ * Domain event signaling that a student has completed a course 
+ * module's learning path.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CourseId {
+public class CompletedLearningPath {
     
-    private final String id_;
+    private final StudentId studentId_;
+    private final CourseId courseId_;
     
-    private CourseId(String id)
+    CompletedLearningPath(StudentId studentId, CourseId courseId)
     {
-        id_ = id;
+        studentId_ = studentId;
+        courseId_ = courseId;
     }
-    
-    /**
-     * Returns identifier value.
-     * @return Value. Never null.
-     */
-    public String getValue()
-    {
-        return id_;
-    }
-    
-    /**
-     * Creates identifier from string value.
-     * @param id Identifier value. Must neither be null nor empty.
-     * @return Identifier.
-     */
-    public static CourseId valueOf(String id)
-    {
-        if ( id == null ) {
-            throw new NullPointerException("Course identifier value must be provided.");
-        }
-        if ( id.isEmpty() ) {
-            throw new IllegalArgumentException("Course identifier value must be provided.");            
-        }
-        return new CourseId(id);
-    }
-    
+
 }

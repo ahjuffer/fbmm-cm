@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Pivotal Software, Inc..
+ * Copyright 2017 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,8 @@ import org.bco.cm.application.query.CourseFinder;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.LearningPath;
+import org.bco.cm.domain.course.Module;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -37,28 +39,27 @@ import org.springframework.context.annotation.Bean;
 
 /**
  *
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * @author Andr&#233; Juffer, Biocenter Oulu
  */
 @SpringBootApplication
-
 public class TestApplication implements ApplicationRunner {
     
-    private static final InMemoryCourseRepository inMemory_;
+    private static final InMemoryCourseRepository IN_MEMORY;
     
     static {
-        inMemory_ = new InMemoryCourseRepository();
+        IN_MEMORY = new InMemoryCourseRepository();
     }
     
     @Bean
     CourseFinder courseFinder()
     {
-        return inMemory_;
+        return IN_MEMORY;
     }
     
     @Bean 
     CourseCatalog courseCatalog()
     {
-        return inMemory_;
+        return IN_MEMORY;
     }
     
     /**
@@ -76,6 +77,10 @@ public class TestApplication implements ApplicationRunner {
         Course course1 = Course.start(CourseId.valueOf("12345"), "Some course title");
         catalog.add(course1);
         Course course2 = Course.start(CourseId.valueOf("54321"), "Some other course");
+        LearningPath lp = new LearningPath();
+        Module module = Module.create(lp);
+        course2.addModule(module);
+        course2.begin();
         catalog.add(course2);
     }
 }

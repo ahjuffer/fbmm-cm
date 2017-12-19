@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 ajuffer.
+ * Copyright 2017 André H. Juffer, Biocenter Oulu.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package org.bco.cm.domain.course;
 /**
  * A set of tasks assigned to a student by the teacher. The student returns a 
  * report covering the assignment.
- * @author ajuffer
+ * @author André H. Juffer, Biocenter Oulu
  */
 public class Assignment {
     

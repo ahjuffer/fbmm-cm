@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 ajuffer.
+ * Copyright 2017 André H. Juffer, Biocenter Oulu.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import java.util.Set;
  * taken in a sequential order. A student progresses to the next module 
  * possibly conditioned on intermediate results obtained for assignments 
  * and/or quizzes.
- * @author ajuffer
+ * @author André H. Juffer, Biocenter Oulu
  */
 public class Course {
     
@@ -140,6 +140,16 @@ public class Course {
     public boolean isOngoing()
     {
         return ongoing_ == true;
+    }
+    
+    public void addModule(Module module)
+    {
+        if ( module == null ) {
+            throw new NullPointerException(
+                "Trying to add an undefined module to course."
+            );
+        }
+        modules_.add(module);
     }
     
     private Module getFirstModule()

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer, Biocenter Oulu
+ * Copyright 2017 André H. Juffer
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
-
 /**
- * Identifies course.
- * @author André H. Juffer, Biocenter Oulu
+ * In memory repositories.
  */
-public class CourseId {
-    
-    private final String id_;
-    
-    private CourseId(String id)
-    {
-        id_ = id;
-    }
-    
-    /**
-     * Returns identifier value.
-     * @return Value. Never null.
-     */
-    public String getValue()
-    {
-        return id_;
-    }
-    
-    /**
-     * Creates identifier from string value.
-     * @param id Identifier value. Must neither be null nor empty.
-     * @return Identifier.
-     */
-    public static CourseId valueOf(String id)
-    {
-        if ( id == null ) {
-            throw new NullPointerException("Course identifier value must be provided.");
-        }
-        if ( id.isEmpty() ) {
-            throw new IllegalArgumentException("Course identifier value must be provided.");            
-        }
-        return new CourseId(id);
-    }
-    
-}
+package org.bco.cm.infrastructure.persistence.memory;

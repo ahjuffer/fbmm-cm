@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 ajuffer.
+ * Copyright 2017 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package org.bco.cm.domain.course;
 /**
  * A route, taken by the student through a range of (commonly) e-learning 
  * activities, which allows the student to build knowledge progressively.
- * @author ajuffer
+ * @author André H. Juffer, Biocenter Oulu
  */
 public class LearningPath {
     
