@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Pivotal Software, Inc..
+ * Copyright 2017 André H. Juffer, Biocenter Oulu.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import org.bco.cm.dto.CourseDTO;
 
 /**
  * External access API for courses with REST.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public interface CoursesFacade {
     
