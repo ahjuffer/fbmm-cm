@@ -117,7 +117,10 @@ public class Course {
     }
     
     /**
-     * Lets the course begin.
+     * Begins this course. This means that enrolled students can now start with 
+     * the first module and <a href="#isOngoing--">isOngoing()</a> will return
+     * true. Enrolled students can now start with the first module.
+     * @see #isOngoing() 
      */
     public void begin()
     {
@@ -126,22 +129,30 @@ public class Course {
     }
     
     /**
-     * Stops course.
+     * Ends this course. This means that all activities undertaken by students 
+     * enrolled in this course are halted. This signals the end of the course 
+     * and <a href="#isOngoing--">isOngoing()</a> will return false.
+     * @see #isOngoing()
      */
-    public void stop()
+    public void end()
     {
         ongoing_ = false;
     }
     
     /**
-     * Did the course already start?
+     * Is this course currently ongoing?
      * @return Result.
+     * @see #begin() 
      */
     public boolean isOngoing()
     {
         return ongoing_ == true;
     }
     
+    /**
+     * Adds new module to course.
+     * @param module Module
+     */
     public void addModule(Module module)
     {
         if ( module == null ) {

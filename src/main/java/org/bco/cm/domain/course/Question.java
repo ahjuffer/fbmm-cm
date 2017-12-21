@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer, Biocenter Oulu.
+ * Copyright 2017 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,38 +24,28 @@
 
 package org.bco.cm.domain.course;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
- * Any set of “quick” questions designed to test knowledge.
- * @author André H. Juffer, Biocenter Oulu
+ * A sentence, phrase, or gesture that seeks information through a reply.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class Quiz {
+public class Question {
     
-    Set<Question> questions_;
+    private final String phrase_;
     
-    private Quiz(Set<Question> questions)
+    private Question(String phrase)
     {
-        questions_ = questions;
+        phrase_ = phrase;
     }
     
-    /**
-     * Create a new quiz
-     * @param phrases Phrases for the questions that make up the quiz.
-     * @return Quiz.
-     */
-    public static Quiz create(Collection<String> phrases)
+    public static Question valueOf(String phrase)
     {
-        if ( phrases == null ) {
-            throw new NullPointerException("Questions for a quiz must be provided.");
+        if ( phrase == null ) {
+            throw new NullPointerException("A phrase for a question must be provided.");
         }
-        Set<Question> questions = new HashSet<>();
-        for (String phrase: phrases) {
-            questions.add(Question.valueOf(phrase));
+        if ( phrase.isEmpty() ) {
+            throw new IllegalArgumentException("A phrase for a question must be provided.");
         }
-        return new Quiz(questions);
+        return new Question(phrase);                
     }
-    
+
 }
