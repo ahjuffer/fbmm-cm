@@ -22,40 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.query;
-
-import java.util.List;
-import org.bco.cm.dto.CourseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
- * Finds courses in the course repository.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * API implementation as simple facades.
  */
-public class CourseFinder {
-    
-    private CourseRepository courseRepository_;
-    
-    public CourseFinder()
-    {
-        courseRepository_ = null;
-    }
-    
-    @Autowired
-    public void setCourseRepository(CourseRepository courseRepository)
-    {
-        courseRepository_ = courseRepository;
-    }
-
-    /**
-     * Returns courses according to a specification.
-     * @param spec Specification. Either "all" or "ongoing".
-     * @return Courses.
-     */    
-    public List<CourseDTO> getCourses(String spec)
-    {
-        CourseSpecification courseSpec = CourseSpecification.valueOf(spec);
-        return courseSpec.query(courseRepository_);        
-    }
-
-}
+package org.bco.cm.api.facade;

@@ -25,7 +25,7 @@
 package org.bco.cm.api.rest.spring;
 
 import java.util.List;
-import org.bco.cm.api.CoursesFacade;
+import org.bco.cm.api.Api;
 import org.bco.cm.application.query.CourseFinder;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value="/courses")
-public class CoursesController implements CoursesFacade {
+public class CoursesController implements Api {
     
     private CourseFinder courseFinder_;
     
@@ -49,17 +49,11 @@ public class CoursesController implements CoursesFacade {
     {
         courseFinder_ = courseFinder;
     }
-    
-    /**
-     * @return JSON representation of a course collection.
-     */
+
     @RequestMapping(method=RequestMethod.GET)
     @Override
     public List<CourseDTO> getCourses(@RequestParam(value="spec", defaultValue="all") String spec) 
     {
-        if ( !(spec.equals("all") || spec.equals("ongoing")) ) {
-            throw new IllegalArgumentException(spec + ": Illegal course specification.");
-        }
         return courseFinder_.getCourses(spec);
     }    
 }

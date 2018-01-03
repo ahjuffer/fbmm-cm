@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer, Biocenter Oulu.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,17 +28,15 @@ import java.util.List;
 import org.bco.cm.dto.CourseDTO;
 
 /**
- * External access API for courses with REST.
+ * Main end point.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface CoursesFacade {
-    
+public interface Api {
+
     /**
-     * Returns all or ongoing courses.
-     * @param spec Course specification, either "all" or "ongoing".
-     * @return Courses. May be empty. Never null.
-     * @throws IllegalArgumentException if spec is neither "all" nor "ongoing".
+     * Returns courses according to a specification.
+     * @param spec Course specification. Permissable values are "all" and "ongoing".
+     * @return Courses. May be empty.
      */
     List<CourseDTO> getCourses(String spec);
-        
 }

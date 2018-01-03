@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2017 André H. Juffer
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,36 +26,31 @@ package org.bco.cm.application.query;
 
 import java.util.List;
 import org.bco.cm.dto.CourseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Finds courses in the course repository.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Holds courses. Methods are meant for querying courses. Courses are returned 
+ * as DTOs.
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class CourseFinder {
+public interface CourseRepository {
     
-    private CourseRepository courseRepository_;
-    
-    public CourseFinder()
-    {
-        courseRepository_ = null;
-    }
-    
-    @Autowired
-    public void setCourseRepository(CourseRepository courseRepository)
-    {
-        courseRepository_ = courseRepository;
-    }
-
     /**
-     * Returns courses according to a specification.
-     * @param spec Specification. Either "all" or "ongoing".
-     * @return Courses.
-     */    
-    public List<CourseDTO> getCourses(String spec)
-    {
-        CourseSpecification courseSpec = CourseSpecification.valueOf(spec);
-        return courseSpec.query(courseRepository_);        
-    }
-
+     * Finds course according to a specification.
+     * @param spec Specification, either "all" or "ongoing".
+     * @return Courses. May be empty.
+     * @throws IllegalArgumentException if spec is neither "all" nor "ongoing".
+     */
+    List<CourseDTO> getCourses(CourseSpecification spec);
+    
+    /**
+     * Returns all courses.
+     * @return Courses. May be empty.
+     */
+    List<CourseDTO> getAll();
+    
+    /**
+     * Returns ongoing courses.
+     * @return Courses. May be empty.
+     */
+    List<CourseDTO> getOngoing();
 }

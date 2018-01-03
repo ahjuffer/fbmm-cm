@@ -24,10 +24,11 @@
 
 package org.bco.cm;
 
+import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.application.query.CourseFinder;
+import org.bco.cm.application.query.CourseRepository;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.LearningPath;
 import org.bco.cm.domain.course.Module;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseRepository;
@@ -53,6 +54,18 @@ public class TestApplication implements ApplicationRunner {
     @Bean
     CourseFinder courseFinder()
     {
+        return new CourseFinder();
+    }
+    
+    @Bean
+    CourseFacade courseFacade()
+    {
+        return new CourseFacade();
+    }
+    
+    @Bean
+    CourseRepository courseRepository()
+    {
         return IN_MEMORY;
     }
     
@@ -74,13 +87,13 @@ public class TestApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception 
     {
         CourseCatalog catalog = this.courseCatalog();
-        Course course1 = Course.start(CourseId.valueOf("12345"), "Some course title");
-        catalog.add(course1);
-        Course course2 = Course.start(CourseId.valueOf("54321"), "Some other course");
+        Course cg = Course.start(catalog.generate(), "Chromatography Practical");
+        catalog.add(cg);
+        Course insilico = Course.start(catalog.generate(), "In Silico Methodologies");
         LearningPath lp = new LearningPath();
         Module module = Module.create(lp);
-        course2.addModule(module);
-        course2.begin();
-        catalog.add(course2);
+        insilico.addModule(module);
+        insilico.begin();
+        catalog.add(insilico);
     }
 }

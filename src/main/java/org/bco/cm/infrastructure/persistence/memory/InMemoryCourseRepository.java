@@ -30,19 +30,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.bco.cm.application.query.CourseFinder;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.stereotype.Repository;
+import org.bco.cm.application.query.CourseRepository;
+import org.bco.cm.application.query.CourseSpecification;
 
 /**
  *
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 @Repository
-public class InMemoryCourseRepository implements CourseCatalog, CourseFinder {
+public class InMemoryCourseRepository implements CourseCatalog, CourseRepository {
     
     private final Map<String, Course> map_;
     
@@ -90,7 +91,7 @@ public class InMemoryCourseRepository implements CourseCatalog, CourseFinder {
     }
     
     @Override
-    public List<CourseDTO> getCourses(String spec) 
+    public List<CourseDTO> getCourses(CourseSpecification spec) 
     {
         Collection<Course> courses = map_.values();
         List<CourseDTO> dtos = new ArrayList<>();
@@ -108,6 +109,33 @@ public class InMemoryCourseRepository implements CourseCatalog, CourseFinder {
             }
         }
         return dtos;
+    }
+    
+    @Override
+    public List<CourseDTO> getAll()
+    {
+        Collection<Course> courses = map_.values();
+        List<CourseDTO> dtos = new ArrayList<>();
+        for (Course course : courses) {
+            CourseDTO dto = this.toDTO(course);
+            dtos.add(dto); 
+        }
+        return dtos;
+    }
+    
+    @Override
+    public List<CourseDTO> getOngoing()
+    {
+        Collection<Course> courses = map_.values();
+        List<CourseDTO> dtos = new ArrayList<>();
+        for (Course course : courses) {
+            if ( course.isOngoing() ) {
+                CourseDTO dto = this.toDTO(course);
+                dtos.add(dto); 
+            }
+        }
+        return dtos;
+        
     }
 
     private String key(Course course)
