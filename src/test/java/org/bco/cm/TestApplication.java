@@ -87,9 +87,9 @@ public class TestApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception 
     {
         CourseCatalog catalog = this.courseCatalog();
-        Course cg = Course.start(catalog.generate(), "Chromatography Practical");
+        Course cg = Course.start(catalog.generate(), "Chromatography Practical", "Testing");
         catalog.add(cg);
-        Course insilico = Course.start(catalog.generate(), "In Silico Methodologies");
+        Course insilico = Course.start(catalog.generate(), "In Silico Methodologies", "testing 2");
         LearningPath lp = new LearningPath();
         Module module = Module.create(lp);
         insilico.addModule(module);

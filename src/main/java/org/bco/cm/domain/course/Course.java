@@ -42,14 +42,16 @@ public class Course {
     
     private final CourseId courseId_;
     private final String title_;
+    private final String description_;
     private final List<Module> modules_;
     private final Set<Student> roster_;
     private boolean ongoing_;
     
-    private Course(CourseId courseId, String title)
+    private Course(CourseId courseId, String title, String description)
     {
         courseId_ = courseId;
         title_ = title;
+        description_ = description;
         modules_ = new ArrayList<>();
         roster_ = new HashSet<>();
         ongoing_ = false;
@@ -74,14 +76,24 @@ public class Course {
     }
     
     /**
-     * Starts a new course.
+     * Return course description.
+     * @return Description.
+     */
+    public String getDescription()
+    {
+        return description_;
+    }
+    
+    /**
+     * Starts a new course. Neither one of the parameters must be null or empty.
      * @param courseId Course identifier.
      * @param title Course title.
+     * @param description Course description.
      * @return Course.
-     * @throws NullPointerException if any argument is null.
-     * @throws IllegalArgumentException if title is an empty string.
+     * @throws NullPointerException if a parameter is null.
+     * @throws IllegalArgumentException if title and/or description is an empty string.
      */
-    public static Course start(CourseId courseId, String title)
+    public static Course start(CourseId courseId, String title, String description)
     {
         if ( courseId == null ) {
             throw new NullPointerException("Course identifier must be provided.");
@@ -92,7 +104,13 @@ public class Course {
         if ( title.isEmpty() ) {
             throw new IllegalArgumentException("Course title must be provided.");
         }
-        return new Course(courseId, title);
+        if ( description == null ) {
+            throw new NullPointerException("Course description must be provided.");
+        }
+        if ( description.isEmpty() ) {
+            throw new IllegalArgumentException("Course description must be provided.");
+        }
+        return new Course(courseId, title, description);
     }
     
     /**

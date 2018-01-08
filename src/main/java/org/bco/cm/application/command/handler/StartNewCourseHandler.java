@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André J. Juffer, Triacle Biocomputing
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,17 +24,17 @@
 
 package org.bco.cm.application.command.handler;
 
-import org.bco.cm.application.command.BeginCourse;
+import org.bco.cm.application.command.StartNewCourse;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Handles beginning an existing course.
+ * Handles starting a new course
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class BeginCourseHandler {
+public class StartNewCourseHandler {
     
     private CourseCatalog courseCatalog_;
     
@@ -44,11 +44,13 @@ public class BeginCourseHandler {
         courseCatalog_ = courseCatalog;
     }
     
-    public void handle(BeginCourse command)
+    public void handle(StartNewCourse command)
     {
         CourseId courseId = command.getCourseId();
-        Course course = courseCatalog_.forCourseId(courseId);
-        course.begin();
-        courseCatalog_.update(course);
+        String title = command.getTitle();
+        String description = command.getDescription();        
+        Course course = Course.start(courseId, title, description);
+        courseCatalog_.add(course);
     }
+    
 }
