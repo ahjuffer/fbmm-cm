@@ -25,13 +25,17 @@
 package org.bco.cm.api.rest.spring;
 
 import java.util.List;
-import org.bco.cm.api.Api;
-import org.bco.cm.application.query.CourseFinder;
+import org.bco.cm.api.facade.CourseFacade;
+import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -40,20 +44,31 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value="/courses")
-public class CoursesController implements Api {
-    
-    private CourseFinder courseFinder_;
+public class CoursesController  {
     
     @Autowired
-    public void setCourseFinder(CourseFinder courseFinder)
+    private CourseFacade courseFacade_;
+    
+    /**
+     * Starts new course.
+     * @param spec New course specification.
+     */
+    @PostMapping(consumes = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void startNewCourse(@RequestBody CourseDTO spec)
     {
-        courseFinder_ = courseFinder;
+        CourseId courseId = courseFacade_.generate();
+        courseFacade_.startNewCourse(courseId, spec);
     }
-
-    @RequestMapping(method=RequestMethod.GET)
-    @Override
+    
+    /**
+     * Queries for courses.
+     * @param spec Course specification. Either "all" or "ongoing".
+     * @return Courses. May be empty.
+     */
+    @GetMapping(produces = "application/json;charset=UTF-8")
     public List<CourseDTO> getCourses(@RequestParam(value="spec", defaultValue="all") String spec) 
     {
-        return courseFinder_.getCourses(spec);
+        return courseFacade_.getCourses(spec);
     }    
 }

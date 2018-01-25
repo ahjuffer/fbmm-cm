@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,44 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm;
+package org.bco.cm.dto;
 
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Main application.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@SpringBootApplication
-public class Application {
+public class QuizDTO {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) 
+    private final Set<String> questions_;
+    
+    public QuizDTO()
     {
-        SpringApplication app = new SpringApplication(Application.class);
-	app.setBannerMode(Banner.Mode.OFF);
-	app.run(args);        
+        questions_ = new HashSet<>();
     }
     
+    public void setQuestions(Collection<String> questions)
+    {
+        questions_.clear();
+        questions_.addAll(questions);
+    }
+    
+    public Collection<String> getQuestions()
+    {
+        return Collections.unmodifiableSet(questions_);
+    }
+    
+    @Override
+    public String toString()
+    {
+        String newline = System.getProperty("line.separator");
+        StringBuilder s = new StringBuilder("QuizDTO: {").append(newline);
+        s.append("questions - ").append(questions_).append(newline);
+        s.append("}");
+        return s.toString();
+    }
 }

@@ -27,6 +27,7 @@ package org.bco.cm.domain.course;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.bco.cm.dto.QuizDTO;
 
 /**
  * Any set of “quick” questions designed to test knowledge.
@@ -34,7 +35,7 @@ import java.util.Set;
  */
 public class Quiz {
     
-    Set<Question> questions_;
+    private Set<Question> questions_;
     
     private Quiz(Set<Question> questions)
     {
@@ -52,10 +53,24 @@ public class Quiz {
             throw new NullPointerException("Questions for a quiz must be provided.");
         }
         Set<Question> questions = new HashSet<>();
-        for (String phrase: phrases) {
+        phrases.forEach((phrase) -> {
             questions.add(Question.valueOf(phrase));
-        }
+        });
         return new Quiz(questions);
     }
     
+    /**
+     * Returns data transfer object.
+     * @return DTO.
+     */
+    QuizDTO toDTO()
+    {
+        QuizDTO dto = new QuizDTO();
+        Collection<String> questions = new HashSet<>();
+        questions_.forEach((question) -> {
+            questions.add(question.getPhrase());
+        });
+        dto.setQuestions(questions);
+        return dto;
+    }
 }

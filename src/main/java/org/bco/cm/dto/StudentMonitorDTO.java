@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,29 +22,35 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
-
-import org.bco.cm.application.command.RegisterStudent;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.Student;
-import org.bco.cm.domain.course.StudentId;
+package org.bco.cm.dto;
 
 /**
- * Handles the registration of a student in a course.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class RegisterStudentHandler {
+public class StudentMonitorDTO {
     
-    private CourseCatalog courseCatalog_;
+    private String studentId_;
+    private ModuleDTO current_;
     
-    public void handle(RegisterStudent command)
+    public void setStudentId(String studentId)
     {
-        StudentId studentId = command.getStudentId();
-        Student student = Student.create(studentId);
-        CourseId courseId = command.getCourseId();
-        Course course = courseCatalog_.forCourseId(courseId);
-        course.enrol(student);
+        studentId_ = studentId;
     }
+    
+    public String getStudentId()
+    {
+        return studentId_;
+    }
+    
+    public void setCurrentModule(ModuleDTO current)
+    {
+        current_ = current;
+    }
+    
+    public ModuleDTO getCurrentModule()
+    {
+        return current_;
+    }
+
 }

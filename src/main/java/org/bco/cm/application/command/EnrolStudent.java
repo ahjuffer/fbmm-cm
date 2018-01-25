@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,47 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm;
+package org.bco.cm.application.command;
 
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.StudentId;
 
 /**
- * Main application.
+ * Command to enroll student in course.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-@SpringBootApplication
-public class Application {
-
+public class EnrolStudent {
+    
+    private final StudentId studentId_;
+    private final CourseId courseId_;
+    
     /**
-     * @param args the command line arguments
+     * Constructor.
+     * @param studentId Student identifier,
+     * @param courseId Course identifier.
      */
-    public static void main(String[] args) 
+    public EnrolStudent(StudentId studentId, CourseId courseId)
     {
-        SpringApplication app = new SpringApplication(Application.class);
-	app.setBannerMode(Banner.Mode.OFF);
-	app.run(args);        
+        studentId_ = studentId;
+        courseId_ = courseId;
+    }
+    
+    /**
+     * Returns student identifier.
+     * @return Identifier.
+     */
+    public StudentId getStudentId()
+    {
+        return studentId_;
+    }
+    
+    /**
+     * Returns course identifier.
+     * @return Identifier.
+     */
+    public CourseId getCourseId()
+    {
+        return courseId_;
     }
     
 }

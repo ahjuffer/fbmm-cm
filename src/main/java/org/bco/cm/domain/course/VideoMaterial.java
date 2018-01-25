@@ -22,21 +22,27 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.api;
+package org.bco.cm.domain.course;
 
-import java.util.List;
-import org.bco.cm.dto.CourseDTO;
+import java.net.URL;
 
 /**
- * Main end point.
+ * Explanatory online video as part of the learning path.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface Api {
-
-    /**
-     * Returns courses according to a specification.
-     * @param spec Course specification. Permissable values are "all" and "ongoing".
-     * @return Courses. May be empty.
-     */
-    List<CourseDTO> getCourses(String spec);
+public class VideoMaterial extends OnlineMaterial {
+    
+    static final String MATERIAL_TYPE = "video";
+    
+    VideoMaterial(int materialId, String objective, URL url)
+    {
+        super(materialId, objective, url);
+    }
+    
+    @Override
+    protected String getMaterialType() 
+    {
+        return MATERIAL_TYPE;
+    }
+    
 }

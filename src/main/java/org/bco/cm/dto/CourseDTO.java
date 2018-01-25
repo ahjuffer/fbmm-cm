@@ -24,6 +24,9 @@
 
 package org.bco.cm.dto;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 /**
  * Date transfer object for a course.
  * @author Andr&#233; Juffer, Triacle Biocomputing
@@ -32,13 +35,23 @@ public class CourseDTO {
     
     private String courseId_;
     private String title_;
+    private String description_;
+    private String objective_;
+    private final Collection<ModuleDTO> modules_;
     private boolean ongoing_;
+    private final Collection<StudentMonitorDTO> roster_;
+    private int firstModuleId_;
     
     public CourseDTO()
     {
         courseId_ = null;
         title_ = null;
+        description_ = null;
+        objective_ = null;
+        modules_ = new HashSet<>();
         ongoing_ = false;
+        roster_ = new HashSet<>();
+        firstModuleId_ = -1;
     }
     
     public void setCourseId(String courseId)
@@ -61,6 +74,37 @@ public class CourseDTO {
         return title_;
     }
     
+    public void setDescription(String description)
+    {
+        description_ = description;
+    }
+    
+    public String getDescription()
+    {
+        return description_;
+    }
+    
+    public void setObjective(String objective)
+    {
+        objective_ = objective;
+    }
+    
+    public String getObjective()
+    {
+        return objective_;
+    }
+    
+    public void setModules(Collection<ModuleDTO> modules)
+    {
+        modules_.clear();
+        modules_.addAll(modules);
+    }
+    
+    public Collection<ModuleDTO> getModules()
+    {
+        return modules_;
+    }
+    
     public void setOngoing(boolean ongoing)
     {
         ongoing_ = ongoing;
@@ -71,6 +115,35 @@ public class CourseDTO {
         return ongoing_;
     }
     
+    public void setRoster(Collection<StudentMonitorDTO> roster)
+    {
+        roster_.clear();
+        roster_.addAll(roster);
+    }
+    
+    public Collection<StudentMonitorDTO> getRoster()
+    {
+        return roster_;
+    }
+    
+    /**
+     * Sets module identifier value of the first module in the course.
+     * @param id Identifier.
+     */
+    public void setFirstModuleId(int id)
+    {
+        firstModuleId_ = id;
+    }
+    
+    /**
+     * Returns module identifier value of the first module in the course.
+     * @return Identifier. if set, its value is &gt; 0.
+     */
+    public int getFirstModuleId()
+    {
+        return firstModuleId_;
+    }
+    
     @Override
     public String toString()
     {
@@ -78,7 +151,12 @@ public class CourseDTO {
         StringBuilder s = new StringBuilder("CourseDTO : {").append(newline);
         s.append("courseId - ").append(courseId_).append(newline);
         s.append("title - ").append(title_).append(newline);
+        s.append("description - ").append(description_).append(newline);
+        s.append("objective - ").append(objective_).append(newline);
         s.append("ongoing - ").append(ongoing_).append(newline);
+        s.append("modules - ").append(modules_).append(newline);
+        s.append("roster - ").append(roster_).append(newline);
+        s.append("firstModuleId - ").append(firstModuleId_).append(newline);
         s.append("}");
         return s.toString();
     }

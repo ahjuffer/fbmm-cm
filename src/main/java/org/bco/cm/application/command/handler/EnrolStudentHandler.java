@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,40 +22,44 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.query;
+package org.bco.cm.application.command.handler;
 
-import java.util.List;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.application.command.EnrolStudent;
+import org.bco.cm.domain.course.ClassRegister;
+import org.bco.cm.domain.course.Course;
+import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.Student;
+import org.bco.cm.domain.course.StudentId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Finds courses in the course repository.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Handles the registration of a student in a course.
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class CourseFinder {
+public class EnrolStudentHandler {
     
-    private CourseRepository courseRepository_;
+    private CourseCatalog courseCatalog_;
+    private ClassRegister classRegister_;
     
-    public CourseFinder()
+    @Autowired
+    public void setCourseCatalog(CourseCatalog courseCatalog)
     {
-        courseRepository_ = null;
+        courseCatalog_ = courseCatalog;
     }
     
     @Autowired
-    public void setCourseRepository(CourseRepository courseRepository)
+    void setClassRegister(ClassRegister classRegister)
     {
-        courseRepository_ = courseRepository;
+        classRegister_ = classRegister;
     }
-
-    /**
-     * Returns courses according to a specification.
-     * @param spec Specification. Either "all" or "ongoing".
-     * @return Courses.
-     */    
-    public List<CourseDTO> getCourses(String spec)
+    
+    public void handle(EnrolStudent command)
     {
-        CourseSpecification courseSpec = CourseSpecification.valueOf(spec);
-        return courseRepository_.getCourses(courseSpec);        
+        StudentId studentId = command.getStudentId();        
+        Student student = Student.create(studentId);
+        CourseId courseId = command.getCourseId();
+        Course course = courseCatalog_.forCourseId(courseId);
+        classRegister_.enrol(student, course);
     }
-
 }

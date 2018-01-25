@@ -38,6 +38,15 @@ public class StudentId {
     }
     
     /**
+     * Returns value.
+     * @return Value.
+     */
+    String value()
+    {
+        return id_;
+    }
+    
+    /**
      * Creates identifier from string value.
      * @param id Value. Must neither be null nor empty.
      * @return Identifier.

@@ -25,34 +25,51 @@
 package org.bco.cm.api.facade;
 
 import java.util.List;
-import org.bco.cm.api.Api;
 import org.bco.cm.application.query.CourseFinder;
+import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Implementation as a facade.
+ * Simplified interface.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CourseFacade implements Api {
-    
-    private CourseFinder courseFinder_;
-    
-    public CourseFacade()
-    {
-        courseFinder_ = null;
-    }
+public class CourseFacade {
     
     @Autowired
-    public void setCourseFinder(CourseFinder courseFinder)
+    private CourseFinder courseFinder_;
+    
+    @Autowired 
+    private CourseCatalog courseCatalog_;
+    
+    /**
+     * Generates a new course identifier.
+     * @return Identifier.
+     */
+    public CourseId generate()
     {
-        courseFinder_ = courseFinder;
+        return courseCatalog_.generate();
     }
-
-    @Override
+    
+    /**
+     * Returns specified courses.
+     * @param spec Specification. Either "all" or "ongoing".
+     * @return Courses.
+     */
     public List<CourseDTO> getCourses(String spec) 
     {
         return courseFinder_.getCourses(spec);
+    }
+    
+    /**
+     * Adds new course to course catalog.
+     * @param courseId Course identifier.
+     * @param spec Course specification.
+     */
+    public void startNewCourse(CourseId courseId, CourseDTO spec)
+    {
+        
     }
 
 }

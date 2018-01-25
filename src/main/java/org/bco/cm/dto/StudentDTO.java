@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,12 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm;
-
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package org.bco.cm.dto;
 
 /**
- * Main application.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@SpringBootApplication
-public class Application {
+public class StudentDTO {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) 
-    {
-        SpringApplication app = new SpringApplication(Application.class);
-	app.setBannerMode(Banner.Mode.OFF);
-	app.run(args);        
-    }
-    
 }

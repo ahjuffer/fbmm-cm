@@ -24,13 +24,18 @@
 
 package org.bco.cm;
 
+import java.util.Collection;
+import java.util.HashSet;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.application.query.CourseFinder;
 import org.bco.cm.application.query.CourseRepository;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.LearningPath;
-import org.bco.cm.domain.course.Module;
+import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.LearningPathDTO;
+import org.bco.cm.dto.ModuleDTO;
+import org.bco.cm.dto.OnlineMaterialDTO;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseCatalog;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -44,12 +49,6 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringBootApplication
 public class TestApplication implements ApplicationRunner {
-    
-    private static final InMemoryCourseRepository IN_MEMORY;
-    
-    static {
-        IN_MEMORY = new InMemoryCourseRepository();
-    }
     
     @Bean
     CourseFinder courseFinder()
@@ -66,13 +65,13 @@ public class TestApplication implements ApplicationRunner {
     @Bean
     CourseRepository courseRepository()
     {
-        return IN_MEMORY;
+        return new InMemoryCourseRepository();
     }
     
     @Bean 
     CourseCatalog courseCatalog()
     {
-        return IN_MEMORY;
+        return new InMemoryCourseCatalog();
     }
     
     /**
@@ -87,13 +86,29 @@ public class TestApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception 
     {
         CourseCatalog catalog = this.courseCatalog();
-        Course cg = Course.start(catalog.generate(), "Chromatography Practical", "Testing");
+        
+        CourseDTO dto = new CourseDTO();
+        dto.setDescription("Chromatography Practical November 2018.");
+        dto.setTitle("Chromatography Practical");
+        dto.setObjective("Learning chromatography.");
+        Course cg = Course.start(catalog.generate(), dto);
         catalog.add(cg);
-        Course insilico = Course.start(catalog.generate(), "In Silico Methodologies", "testing 2");
-        LearningPath lp = new LearningPath();
-        Module module = Module.create(lp);
-        insilico.addModule(module);
-        insilico.begin();
+        
+        dto.setTitle("In Silico Methodologies");
+        dto.setDescription("In Silico Methodologies January 2019");
+        dto.setObjective("Learning modeling and simulation tools.");
+        Course insilico = Course.start(catalog.generate(), dto);
+        ModuleDTO spec1 = new ModuleDTO();
+        LearningPathDTO lp = new LearningPathDTO();
+        OnlineMaterialDTO mat = new OnlineMaterialDTO();
+        mat.setMaterialType("reading");
+        mat.setObjective("Understand this and that...");
+        mat.setResource("http://www.example.com");
+        Collection<OnlineMaterialDTO> mats = new HashSet<>();
+        mats.add(mat);
+        lp.setOnlineMaterials(mats);
+        spec1.setLearningPath(lp);
+        insilico.addModule(spec1);
         catalog.add(insilico);
     }
 }

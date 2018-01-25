@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,32 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm;
+package org.bco.cm.domain.course;
 
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.time.Instant;
 
 /**
- * Main application.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Registration of student for a course.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@SpringBootApplication
-public class Application {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) 
+public class Enrolment {
+    
+    private final CourseId courseId_;
+    private final StudentId studentId_;
+    private final Instant when_;
+    
+    private Enrolment()
     {
-        SpringApplication app = new SpringApplication(Application.class);
-	app.setBannerMode(Banner.Mode.OFF);
-	app.run(args);        
+        courseId_ = null;
+        studentId_ = null;
+        when_ = Instant.ofEpochMilli(0);
+    }
+    
+    Enrolment(Course course, Student student)
+    {
+        courseId_ = course.getCourseId();
+        studentId_ = student.getStudentId();
+        when_ = Instant.now();
     }
     
 }

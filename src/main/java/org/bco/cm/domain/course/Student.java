@@ -33,12 +33,21 @@ import java.util.Objects;
 public class Student {
     
     private final StudentId studentId_;
-    private Module current_;
+    private Module currentModule_;
     
     private Student(StudentId studentId)
     {
         studentId_ = studentId;
-        current_ = null;
+        currentModule_ = null;
+    }
+    
+    /**
+     * Returns identifier.
+     * @return Identifier.
+     */
+    StudentId getStudentId()
+    {
+        return studentId_;
     }
     
     /**
@@ -80,7 +89,7 @@ public class Student {
      */
     void toNextModule(Module next)
     {
-        current_ = next;
+        currentModule_ = next;
     }
     
 }

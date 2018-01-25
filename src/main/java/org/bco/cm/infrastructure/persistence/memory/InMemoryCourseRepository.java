@@ -26,95 +26,40 @@ package org.bco.cm.infrastructure.persistence.memory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.dto.CourseDTO;
-import org.springframework.stereotype.Repository;
 import org.bco.cm.application.query.CourseRepository;
 import org.bco.cm.application.query.CourseSpecification;
+import org.bco.cm.domain.course.Course;
+import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.dto.CourseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
- *
+ * 
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 @Repository
-public class InMemoryCourseRepository implements CourseCatalog, CourseRepository {
-    
-    private final Map<String, Course> map_;
-    
-    public InMemoryCourseRepository()
-    {
-        map_ = new HashMap<>();
-    }
-    
-    @Override
-    public void add(Course course)
-    {
-        String key = this.key(course);
-        if ( map_.containsKey(key) ) {
-            throw new IllegalArgumentException(
-                key + ": A course with this course identifier is already " + 
-                "in course catalog."
-            );
-        }
-        map_.put(key, course);
-    }
-    
-    @Override
-    public void update(Course course)
-    {
-        // Should already be in map, so any update to course is already there.
-    }
-    
-    @Override
-    public void remove(Course course)
-    {
-        String key = this.key(course);
-        map_.remove(key);
-    }
+public class InMemoryCourseRepository implements CourseRepository {
 
-    @Override
-    public CourseId generate() {
-        UUID uuid = UUID.randomUUID();
-        return CourseId.valueOf(uuid.toString());
-    }
-
-    @Override
-    public Course forCourseId(CourseId courseId) 
+    private InMemoryCourseCatalog courseCatalog_;
+    
+    @Autowired
+    public void setCourseCatalog(CourseCatalog courseCatalog)
     {
-        return map_.get(courseId.getValue());
+        courseCatalog_ = (InMemoryCourseCatalog)courseCatalog;
     }
     
     @Override
     public List<CourseDTO> getCourses(CourseSpecification spec) 
     {
-        Collection<Course> courses = map_.values();
-        List<CourseDTO> dtos = new ArrayList<>();
-        if ( spec.equals("ongoing") ) {
-            for (Course course : courses) {
-                if ( course.isOngoing() ) {
-                    CourseDTO dto = this.toDTO(course);
-                    dtos.add(dto);
-                }
-            }
-        } else {
-            for (Course course : courses) {
-                CourseDTO dto = this.toDTO(course);
-                dtos.add(dto);
-            }
-        }
-        return dtos;
+        return spec.query(this);
     }
     
     @Override
     public List<CourseDTO> getAll()
     {
-        Collection<Course> courses = map_.values();
+        Collection<Course> courses = courseCatalog_.allCourses();
         List<CourseDTO> dtos = new ArrayList<>();
         for (Course course : courses) {
             CourseDTO dto = this.toDTO(course);
@@ -126,7 +71,7 @@ public class InMemoryCourseRepository implements CourseCatalog, CourseRepository
     @Override
     public List<CourseDTO> getOngoing()
     {
-        Collection<Course> courses = map_.values();
+        Collection<Course> courses = courseCatalog_.allCourses();
         List<CourseDTO> dtos = new ArrayList<>();
         for (Course course : courses) {
             if ( course.isOngoing() ) {
@@ -138,17 +83,9 @@ public class InMemoryCourseRepository implements CourseCatalog, CourseRepository
         
     }
 
-    private String key(Course course)
-    {
-        return course.getCourseId().getValue();
-    }
-
     private CourseDTO toDTO(Course course)
     {
-        CourseDTO dto = new CourseDTO();
-        dto.setCourseId(course.getCourseId().getValue());
-        dto.setOngoing(course.isOngoing());
-        dto.setTitle(course.getTitle());
-        return dto;
+        return course.toDTO();
     }
+    
 }

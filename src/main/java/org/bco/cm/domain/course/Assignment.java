@@ -24,11 +24,18 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.dto.AssignmentDTO;
+
 /**
  * A set of tasks assigned to a student by the teacher. The student returns a 
  * report covering the assignment.
  * @author André H. Juffer, Biocenter Oulu
  */
 public class Assignment {
+    
+    AssignmentDTO toDTO()
+    {
+        return new AssignmentDTO();
+    }
     
 }

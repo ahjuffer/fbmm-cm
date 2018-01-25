@@ -30,13 +30,32 @@ package org.bco.cm.domain.course;
  */
 public class Question {
     
-    private final String phrase_;
+    private String phrase_;
     
-    private Question(String phrase)
+    private Question()
+    {
+        phrase_ = null;
+    }
+    
+    private void setPhrase(String phrase)
     {
         phrase_ = phrase;
     }
     
+    /**
+     * Returns phrase.
+     * @return Phrase.
+     */
+    String getPhrase()
+    {
+        return phrase_;
+    }
+    
+    /**
+     * Formulates new question.
+     * @param phrase Question.
+     * @return New question.
+     */
     public static Question valueOf(String phrase)
     {
         if ( phrase == null ) {
@@ -45,7 +64,9 @@ public class Question {
         if ( phrase.isEmpty() ) {
             throw new IllegalArgumentException("A phrase for a question must be provided.");
         }
-        return new Question(phrase);                
+        Question question = new Question();
+        question.setPhrase(phrase);
+        return question;                
     }
 
 }

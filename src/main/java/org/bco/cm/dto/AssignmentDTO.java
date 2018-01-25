@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,47 +22,12 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command;
-
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.StudentId;
+package org.bco.cm.dto;
 
 /**
- * Command to enrol student in course.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class RegisterStudent {
-    
-    private final StudentId studentId_;
-    private final CourseId courseId_;
-    
-    /**
-     * Constructor.
-     * @param studentId Student identifier,
-     * @param courseId Course identifier.
-     */
-    public RegisterStudent(StudentId studentId, CourseId courseId)
-    {
-        studentId_ = studentId;
-        courseId_ = courseId;
-    }
-    
-    /**
-     * Returns student identifier.
-     * @return Identifier.
-     */
-    public StudentId getStudentId()
-    {
-        return studentId_;
-    }
-    
-    /**
-     * Returns course identifier.
-     * @return Identifier.
-     */
-    public CourseId getCourseId()
-    {
-        return courseId_;
-    }
-    
+public class AssignmentDTO {
+
 }

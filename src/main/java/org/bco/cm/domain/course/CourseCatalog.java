@@ -24,6 +24,8 @@
 
 package org.bco.cm.domain.course;
 
+import java.util.Collection;
+
 /**
  * A catalog of all available courses.
  * @author Andr&#233; Juffer, Triacle Biocomputing

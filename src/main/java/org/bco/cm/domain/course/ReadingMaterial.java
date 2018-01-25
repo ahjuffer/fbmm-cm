@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,27 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm;
+package org.bco.cm.domain.course;
 
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.net.URL;
 
 /**
- * Main application.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Explanatory online material.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@SpringBootApplication
-public class Application {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) 
+public class ReadingMaterial extends OnlineMaterial {
+    
+    static final String MATERIAL_TYPE = "reading";
+        
+    ReadingMaterial(int materialId, String objective, URL url)
     {
-        SpringApplication app = new SpringApplication(Application.class);
-	app.setBannerMode(Banner.Mode.OFF);
-	app.run(args);        
+        super(materialId, objective, url);
     }
     
+    @Override
+    protected String getMaterialType() 
+    {
+        return MATERIAL_TYPE;
+    }
+
 }

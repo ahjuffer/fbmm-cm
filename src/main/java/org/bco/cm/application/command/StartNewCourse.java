@@ -25,6 +25,7 @@
 package org.bco.cm.application.command;
 
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.dto.CourseDTO;
 
 /**
  * Command to start a new course.
@@ -33,16 +34,13 @@ import org.bco.cm.domain.course.CourseId;
 public class StartNewCourse {
     
     private final CourseId courseId_;
-    private final String title_;
-    private final String description_;
+    private final CourseDTO spec_;
     
     public StartNewCourse(CourseId courseId,
-                          String title,
-                          String description)
+                          CourseDTO spec)
     {
         courseId_ = courseId;
-        title_ = title;
-        description_ = description;
+        spec_ = spec;
     }
     
     public CourseId getCourseId()
@@ -50,13 +48,8 @@ public class StartNewCourse {
         return courseId_;
     }
     
-    public String getTitle()
+    public CourseDTO getCourseSpecification()
     {
-        return title_;
-    }
-    
-    public String getDescription()
-    {
-        return description_;
+        return spec_;
     }
 }
