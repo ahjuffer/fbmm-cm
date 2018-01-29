@@ -25,7 +25,8 @@
 package org.bco.cm.api.facade;
 
 import java.util.List;
-import org.bco.cm.application.query.CourseFinder;
+import org.bco.cm.application.query.CourseRepository;
+import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.dto.CourseDTO;
@@ -38,7 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CourseFacade {
     
     @Autowired
-    private CourseFinder courseFinder_;
+    private CourseRepository courseRepository_;
     
     @Autowired 
     private CourseCatalog courseCatalog_;
@@ -47,9 +48,9 @@ public class CourseFacade {
      * Generates a new course identifier.
      * @return Identifier.
      */
-    public CourseId generate()
+    public CourseId generateCourseId()
     {
-        return courseCatalog_.generate();
+        return courseCatalog_.generateCourseId();
     }
     
     /**
@@ -59,7 +60,8 @@ public class CourseFacade {
      */
     public List<CourseDTO> getCourses(String spec) 
     {
-        return courseFinder_.getCourses(spec);
+        CourseSpecification courseSpec = CourseSpecification.valueOf(spec);
+        return courseRepository_.getCourses(courseSpec);
     }
     
     /**

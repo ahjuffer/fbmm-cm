@@ -78,7 +78,7 @@ public class InMemoryCourseCatalog implements CourseCatalog {
     }
 
     @Override
-    public CourseId generate() 
+    public CourseId generateCourseId() 
     {
         UUID uuid = UUID.randomUUID();
         return CourseId.valueOf(uuid.toString());

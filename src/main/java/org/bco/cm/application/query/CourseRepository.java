@@ -28,8 +28,8 @@ import java.util.List;
 import org.bco.cm.dto.CourseDTO;
 
 /**
- * Holds courses. Methods are meant for querying courses. Courses are returned 
- * as DTOs.
+ * Holds courses. Methods are meant for querying for courses, the latter returned 
+ * as DTOs. This is a read-only repository.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 public interface CourseRepository {

@@ -24,8 +24,6 @@
 
 package org.bco.cm.domain.course;
 
-import java.util.Collection;
-
 /**
  * A catalog of all available courses.
  * @author Andr&#233; Juffer, Triacle Biocomputing
@@ -54,7 +52,7 @@ public interface CourseCatalog {
      * Returns a new course identifier.
      * @return Identifier.
      */
-    CourseId generate();
+    CourseId generateCourseId();
     
     /**
      * Queries for specific course.

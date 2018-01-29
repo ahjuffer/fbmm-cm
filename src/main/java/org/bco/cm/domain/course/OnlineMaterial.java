@@ -167,7 +167,7 @@ public abstract class OnlineMaterial {
     
     /**
      * Continues to subsequent material. If there is no subsequent material,
-     * this (online material) is returned.
+     * this online material is returned.
      * @return Online material.
      */
     OnlineMaterial toNext()

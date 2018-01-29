@@ -174,7 +174,7 @@ public class Module {
         if ( this.hasNext() ) {
             return this.getNext();
         } else {
-            return next_;
+            return this;
         }
     }
     
@@ -209,11 +209,11 @@ public class Module {
      */
     static Collection<ModuleDTO> toDTOs(Collection<Module> modules)
     {
-        Collection<ModuleDTO> dtos = new HashSet<>();        
-        for (Module module : modules) {
+        Collection<ModuleDTO> dtos = new HashSet<>();
+        modules.forEach((module) -> {
             ModuleDTO dto = module.toDTO();
             dtos.add(dto);
-        }
+        });
         return dtos;
     }
         

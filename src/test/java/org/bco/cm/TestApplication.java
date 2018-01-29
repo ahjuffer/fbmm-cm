@@ -26,8 +26,6 @@ package org.bco.cm;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.bco.cm.api.facade.CourseFacade;
-import org.bco.cm.application.query.CourseFinder;
 import org.bco.cm.application.query.CourseRepository;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
@@ -42,6 +40,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
 /**
  *
@@ -51,18 +50,7 @@ import org.springframework.context.annotation.Bean;
 public class TestApplication implements ApplicationRunner {
     
     @Bean
-    CourseFinder courseFinder()
-    {
-        return new CourseFinder();
-    }
-    
-    @Bean
-    CourseFacade courseFacade()
-    {
-        return new CourseFacade();
-    }
-    
-    @Bean
+    @Primary
     CourseRepository courseRepository()
     {
         return new InMemoryCourseRepository();
@@ -91,24 +79,35 @@ public class TestApplication implements ApplicationRunner {
         dto.setDescription("Chromatography Practical November 2018.");
         dto.setTitle("Chromatography Practical");
         dto.setObjective("Learning chromatography.");
-        Course cg = Course.start(catalog.generate(), dto);
+        Course cg = Course.start(catalog.generateCourseId(), dto);
         catalog.add(cg);
         
         dto.setTitle("In Silico Methodologies");
         dto.setDescription("In Silico Methodologies January 2019");
         dto.setObjective("Learning modeling and simulation tools.");
-        Course insilico = Course.start(catalog.generate(), dto);
+        Course insilico = Course.start(catalog.generateCourseId(), dto);
         ModuleDTO spec1 = new ModuleDTO();
-        LearningPathDTO lp = new LearningPathDTO();
-        OnlineMaterialDTO mat = new OnlineMaterialDTO();
-        mat.setMaterialType("reading");
-        mat.setObjective("Understand this and that...");
-        mat.setResource("http://www.example.com");
+        LearningPathDTO lp1 = new LearningPathDTO();
+        OnlineMaterialDTO mat1 = new OnlineMaterialDTO();
+        mat1.setMaterialType("reading");
+        mat1.setObjective("Understand this and that...");
+        mat1.setResource("http://www.example.com");
         Collection<OnlineMaterialDTO> mats = new HashSet<>();
-        mats.add(mat);
-        lp.setOnlineMaterials(mats);
-        spec1.setLearningPath(lp);
+        mats.add(mat1);
+        OnlineMaterialDTO mat2 = new OnlineMaterialDTO();
+        mat2.setMaterialType("video");
+        mat2.setObjective("Some objective.");
+        mat2.setResource("http://www.example2.com");
+        mats.add(mat2);
+        lp1.setOnlineMaterials(mats);
+        spec1.setLearningPath(lp1);
         insilico.addModule(spec1);
+        
+        ModuleDTO spec2 = new ModuleDTO();
+        LearningPathDTO lp2 = new LearningPathDTO();
+        spec2.setLearningPath(lp2);
+        insilico.addModule(spec2);
+        
         catalog.add(insilico);
     }
 }

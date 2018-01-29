@@ -57,7 +57,7 @@ public class CoursesController  {
     @ResponseStatus(HttpStatus.CREATED)
     public void startNewCourse(@RequestBody CourseDTO spec)
     {
-        CourseId courseId = courseFacade_.generate();
+        CourseId courseId = courseFacade_.generateCourseId();
         courseFacade_.startNewCourse(courseId, spec);
     }
     

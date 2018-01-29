@@ -61,10 +61,10 @@ public class InMemoryCourseRepository implements CourseRepository {
     {
         Collection<Course> courses = courseCatalog_.allCourses();
         List<CourseDTO> dtos = new ArrayList<>();
-        for (Course course : courses) {
+        courses.forEach((course) -> {
             CourseDTO dto = this.toDTO(course);
-            dtos.add(dto); 
-        }
+            dtos.add(dto);             
+        });
         return dtos;
     }
     
@@ -73,12 +73,12 @@ public class InMemoryCourseRepository implements CourseRepository {
     {
         Collection<Course> courses = courseCatalog_.allCourses();
         List<CourseDTO> dtos = new ArrayList<>();
-        for (Course course : courses) {
+        courses.forEach((course) -> {
             if ( course.isOngoing() ) {
                 CourseDTO dto = this.toDTO(course);
                 dtos.add(dto); 
-            }
-        }
+            }            
+        });
         return dtos;
         
     }
