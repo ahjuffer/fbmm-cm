@@ -31,6 +31,7 @@ package org.bco.cm.dto;
 public class ModuleDTO {
     
     private int moduleId_;
+    private String name_;
     private LearningPathDTO learningPath_;
     private AssignmentDTO assignment_;
     private QuizDTO quiz_;
@@ -39,6 +40,7 @@ public class ModuleDTO {
     public ModuleDTO()
     {
         moduleId_ = -1;
+        name_ = null;
         learningPath_ = null;
         assignment_ = null;
         quiz_ = null;
@@ -62,6 +64,16 @@ public class ModuleDTO {
     public int getModuleId()
     {
         return moduleId_;
+    }
+    
+    public void setName(String name)
+    {
+        name_ = name;
+    }
+    
+    public String getName()
+    {
+        return name_;
     }
     
     public void setLearningPath(LearningPathDTO learningPath)
@@ -118,6 +130,8 @@ public class ModuleDTO {
     {
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("ModuleDTO : {").append(newline);
+        s.append("moduleId - ").append(moduleId_).append(newline);
+        s.append("name - ").append(name_).append(newline);
         if ( learningPath_ != null ) {
             s.append("learningPath - ").append(learningPath_).append(newline);
         }

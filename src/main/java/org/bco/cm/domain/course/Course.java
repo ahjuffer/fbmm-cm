@@ -26,6 +26,7 @@ package org.bco.cm.domain.course;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -292,10 +293,12 @@ public class Course {
                 "Course cannot begin. No modules were added to this course."
             );
         }
-        if ( !this.modulesHaveNonEmptyLearningPath() ) {
+        Module empty = this.findModuleWithEmptyLearninPath();
+        if ( empty != null ) {
             throw new IllegalStateException(
-                "Course cannot begin. At least one module lacks content in learning path. " + 
-                "Please add online material to module's learning path."
+                "Course cannot begin. Module '" + empty.getName() + "' " +
+                "still contains an empty learning path. " + 
+                "Please add online material to learning path."
             );
         }
         ongoing_ = true;
@@ -441,13 +444,24 @@ public class Course {
     }
     
     private boolean modulesHaveNonEmptyLearningPath()
-    {
+    {        
         for (Module module : modules_.values()) {
             if ( module.isLearningPathEmpty() ) {
                 return false;
             }
         }
         return true;
+    }
+    
+    private Module findModuleWithEmptyLearninPath()
+    {
+        Collection<Module> modules = this.modules();
+        for (Module module : modules) {
+            if ( module.isLearningPathEmpty() ) {
+                return module;
+            }
+        }
+        return null;
     }
     
     /**

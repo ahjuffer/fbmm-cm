@@ -40,6 +40,7 @@ import org.bco.cm.dto.QuizDTO;
 public class Module {
     
     private int moduleId_;
+    private String name_;
     private LearningPath learningPath_;
     private final Assignment assignment_;
     private final Quiz quiz_;
@@ -48,6 +49,7 @@ public class Module {
     private Module()
     {
         moduleId_ = -1;
+        name_ = null;
         learningPath_ = null;
         assignment_ = null;
         quiz_ = null;
@@ -71,6 +73,22 @@ public class Module {
     public int getModuleId()
     {
         return moduleId_;
+    }
+    
+    private void setName(String name)
+    {
+        if ( name == null ) {
+            throw new NullPointerException("Missing module name.");
+        }
+        if ( name.isEmpty() ) {
+            throw new IllegalArgumentException("Missing module name.");            
+        }
+        name_ = name;
+    }     
+    
+    String getName()
+    {
+        return name_;
     }
     
     private void setLearningPath(LearningPath learningPath)
@@ -143,6 +161,7 @@ public class Module {
     {
         Module module = new Module();
         module.setModuleId(moduleId);
+        module.setName(spec.getName());
         LearningPath learningPath;
         if ( spec.getLearningPath() != null ) {
             learningPath = LearningPath.valueOf(spec.getLearningPath());
@@ -188,6 +207,7 @@ public class Module {
         LearningPathDTO learningPath = learningPath_.toDTO();
         dto.setLearningPath(learningPath);
         dto.setModuleId(this.getModuleId());
+        dto.setName(name_);
         if ( this.hasAssignment() ) {
             AssignmentDTO assignment = assignment_.toDTO();
             dto.setAssignment(assignment);

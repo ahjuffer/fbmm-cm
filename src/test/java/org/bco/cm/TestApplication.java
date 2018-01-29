@@ -87,27 +87,37 @@ public class TestApplication implements ApplicationRunner {
         dto.setObjective("Learning modeling and simulation tools.");
         Course insilico = Course.start(catalog.generateCourseId(), dto);
         ModuleDTO spec1 = new ModuleDTO();
+        spec1.setName("Module 1 of 'in silico'");
         LearningPathDTO lp1 = new LearningPathDTO();
-        OnlineMaterialDTO mat1 = new OnlineMaterialDTO();
-        mat1.setMaterialType("reading");
-        mat1.setObjective("Understand this and that...");
-        mat1.setResource("http://www.example.com");
-        Collection<OnlineMaterialDTO> mats = new HashSet<>();
-        mats.add(mat1);
-        OnlineMaterialDTO mat2 = new OnlineMaterialDTO();
-        mat2.setMaterialType("video");
-        mat2.setObjective("Some objective.");
-        mat2.setResource("http://www.example2.com");
-        mats.add(mat2);
-        lp1.setOnlineMaterials(mats);
+        OnlineMaterialDTO mat11 = new OnlineMaterialDTO();
+        mat11.setMaterialType("reading");
+        mat11.setObjective("Understand this and that...");
+        mat11.setResource("http://www.example.com");
+        Collection<OnlineMaterialDTO> mats1 = new HashSet<>();
+        mats1.add(mat11);
+        OnlineMaterialDTO mat12 = new OnlineMaterialDTO();
+        mat12.setMaterialType("video");
+        mat12.setObjective("Some objective.");
+        mat12.setResource("http://www.example2.com");
+        mats1.add(mat12);
+        lp1.setOnlineMaterials(mats1);
         spec1.setLearningPath(lp1);
         insilico.addModule(spec1);
         
         ModuleDTO spec2 = new ModuleDTO();
+        spec2.setName("Module 2 of 'in silico'");
         LearningPathDTO lp2 = new LearningPathDTO();
         spec2.setLearningPath(lp2);
+        OnlineMaterialDTO mat21 = new OnlineMaterialDTO();
+        mat21.setMaterialType("reading");
+        mat21.setObjective("Understand whatever ...");
+        mat21.setResource("http://www.example.net");
+        Collection<OnlineMaterialDTO> mats2 = new HashSet<>();
+        mats2.add(mat21);
+        lp2.setOnlineMaterials(mats2);
         insilico.addModule(spec2);
         
         catalog.add(insilico);
+        insilico.begin();
     }
 }
