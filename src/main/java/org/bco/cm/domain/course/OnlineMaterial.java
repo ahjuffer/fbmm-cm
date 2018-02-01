@@ -30,7 +30,8 @@ import org.bco.cm.dto.OnlineMaterialDTO;
 
 /**
  * Material that should be studied by the student to reach a study objective. 
- * Subsequent material to be consumed -after- the current material may be specified.
+ * Other material to be consumed -after- the current material was studied 
+ * may be specified.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public abstract class OnlineMaterial {
@@ -107,8 +108,8 @@ public abstract class OnlineMaterial {
     }
     
     /**
-     * Returns material type.
-     * @return Type.
+     * Returns an online material type specification.
+     * @return Specification.
      */
     protected abstract String getMaterialType();
     

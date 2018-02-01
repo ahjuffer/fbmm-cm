@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer, Biocenter Oulu.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,35 +26,60 @@ package org.bco.cm.api.rest.spring;
 
 import java.util.List;
 import org.bco.cm.api.facade.CourseFacade;
-import org.bco.cm.application.query.CourseSpecification;
+import org.bco.cm.api.facade.TeacherFacade;
+import org.bco.cm.application.query.ReadOnlyTeacherRepository;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST API implementation using Spring.
- * @author Andr&#233; Juffer, Biocenter Oulu
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 @RestController
-@RequestMapping(value="/courses")
-public class CoursesController  {
-    
+@RequestMapping(value="/teachers")
+public class TeachersController {
+
     @Autowired
     private CourseFacade courseFacade_;
     
+    @Autowired
+    private TeacherFacade teacherFacade_;
+    
+    @Autowired
+    private ReadOnlyTeacherRepository readOnlyTeacherRepository_;
+    
     /**
-     * Queries for courses.
-     * @param spec Course specification. Either "all" or "ongoing".
-     * @return Courses. May be empty.
+     * Starts new course.
+     * @param id Identifier of responsible teacher.
+     * @param spec New course specification. Must hold title, description, and 
+     * objective.
      */
-    @GetMapping(produces = "application/json;charset=UTF-8")
-    public List<CourseDTO> getCourses(
-        @RequestParam(value="spec", defaultValue="all") String spec
-    ) 
+    @RequestMapping(value="/{id}/course")
+    @PostMapping(consumes = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void startNewCourse(@PathVariable String id, 
+                               @RequestBody CourseDTO spec)
     {
-        return courseFacade_.getCourses(CourseSpecification.valueOf(spec));
-    }    
+        TeacherId teacherId = new TeacherId(id);
+        CourseId courseId = courseFacade_.generateCourseId();
+        teacherFacade_.startNewCourse(teacherId, courseId, spec);
+    }
+    
+    @GetMapping(produces = "application/json;charset=UTF-8")
+    public List<TeacherDTO> getAllTeachers()
+    {
+        return readOnlyTeacherRepository_.getAllTeachers();
+    }
+    
 }

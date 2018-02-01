@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,32 +25,17 @@
 package org.bco.cm.application.query;
 
 import java.util.List;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.TeacherDTO;
 
 /**
- * Holds courses. Methods are meant for querying for courses, the latter returned 
- * as DTOs. This is a read-only repository.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * A read-only repository of teachers. Teachers are stored as DTOs.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface CourseRepository {
-    
+public interface ReadOnlyTeacherRepository {
+
     /**
-     * Finds course according to a specification.
-     * @param spec Specification, either "all" or "ongoing".
-     * @return Courses. May be empty.
-     * @throws IllegalArgumentException if spec is neither "all" nor "ongoing".
+     * Returns all teachers.
+     * @return Teachers. May be empty.
      */
-    List<CourseDTO> getCourses(CourseSpecification spec);
-    
-    /**
-     * Returns all courses.
-     * @return Courses. May be empty.
-     */
-    List<CourseDTO> getAll();
-    
-    /**
-     * Returns ongoing courses.
-     * @return Courses. May be empty.
-     */
-    List<CourseDTO> getOngoing();
+    List<TeacherDTO> getAllTeachers();
 }

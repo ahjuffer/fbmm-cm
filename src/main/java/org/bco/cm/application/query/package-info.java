@@ -23,6 +23,6 @@
  */
 
 /**
- * Course finding, etc.
+ * Resource finding.
  */
 package org.bco.cm.application.query;

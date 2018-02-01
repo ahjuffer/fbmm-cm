@@ -23,6 +23,6 @@
  */
 
 /**
- * Domain model.
+ * Domain model. Courses, modules, teachers, students, etc.
  */
 package org.bco.cm.domain.course;

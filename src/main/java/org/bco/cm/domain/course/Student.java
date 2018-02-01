@@ -50,6 +50,10 @@ public class Student extends Person<StudentId> {
         return student;
     }
     
+    /**
+     * Returns data transfer object representation.
+     * @return DTO
+     */
     public StudentDTO toDTO()
     {
         StudentDTO dto = new StudentDTO();

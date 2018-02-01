@@ -24,6 +24,7 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.dto.TeacherDTO;
 import org.bco.cm.util.Person;
 
 /**
@@ -42,10 +43,21 @@ public class Teacher extends Person<TeacherId> {
      * @param teacherId Identifier. Must not be null.
      * @return Teacher.
      */
-    public Teacher create(TeacherId teacherId)
+    public static Teacher create(TeacherId teacherId)
     {
         Teacher teacher = new Teacher();
         teacher.setIdentifier(teacherId);
         return teacher;
+    }
+    
+    /**
+     * Returns data transfer object representation.
+     * @return DTO
+     */
+    public TeacherDTO toDTO()
+    {
+        TeacherDTO dto = new TeacherDTO();
+        this.populateDTO(dto);
+        return dto;
     }
 }

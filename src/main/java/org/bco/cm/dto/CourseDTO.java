@@ -41,6 +41,7 @@ public class CourseDTO {
     private boolean ongoing_;
     private final Collection<StudentMonitorDTO> roster_;
     private int firstModuleId_;
+    private String teacherId_;
     
     public CourseDTO()
     {
@@ -52,6 +53,7 @@ public class CourseDTO {
         ongoing_ = false;
         roster_ = new HashSet<>();
         firstModuleId_ = -1;
+        teacherId_ = null;
     }
     
     public void setCourseId(String courseId)
@@ -144,6 +146,16 @@ public class CourseDTO {
         return firstModuleId_;
     }
     
+    public void setTeacherId(String teacherId)
+    {
+        teacherId_ = teacherId;
+    }
+    
+    public String getTeacherId()
+    {
+        return teacherId_;
+    }
+    
     @Override
     public String toString()
     {
@@ -157,6 +169,7 @@ public class CourseDTO {
         s.append("modules - ").append(modules_).append(newline);
         s.append("roster - ").append(roster_).append(newline);
         s.append("firstModuleId - ").append(firstModuleId_).append(newline);
+        s.append("teacherId - ").append(teacherId_).append(newline);
         s.append("}");
         return s.toString();
     }

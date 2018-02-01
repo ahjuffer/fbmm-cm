@@ -27,6 +27,8 @@ package org.bco.cm;
 
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.Teacher;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.LearningPathDTO;
 import org.bco.cm.dto.ModuleDTO;
@@ -44,6 +46,9 @@ public class TestCourse {
      */
     public static void main(String[] args) {
         
+        TeacherId teacherId = new TeacherId("qwerty");
+        Teacher teacher = Teacher.create(teacherId);
+        
         // Create a course.
         CourseDTO spec = new CourseDTO();
         CourseId courseId = new CourseId("123456");
@@ -51,7 +56,7 @@ public class TestCourse {
         spec.setDescription("This is a test description.");
         spec.setTitle("This is a test title.");
         spec.setObjective("This is an objective.");
-        Course course = Course.start(courseId, spec);
+        Course course = Course.start(teacher, courseId, spec);
         Logger.getLogger(TestCourse.class).info("New coursed: " + course.toDTO());
         
         // Course cannot begin if no modules were added.
@@ -67,12 +72,14 @@ public class TestCourse {
         // Leaving out next statement causes an exception.
         lp.addOnlineMaterial(material);
         module.setLearningPath(lp);
+        module.setName("Module name");
         course.addModule(module);
         Logger.getLogger(TestCourse.class).info("Updated course: " + course.toDTO());
         
         // Next statement may cause exception.
         course.begin();
         Logger.getLogger(TestCourse.class).info("Course ongoing? " + course.isOngoing());
+        Logger.getLogger(TestCourse.class).info("Ongoing course: " + course.toDTO());
         
     }
     

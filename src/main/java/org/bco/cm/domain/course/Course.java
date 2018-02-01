@@ -66,6 +66,8 @@ public class Course implements Identifiable {
     private Map<StudentId,StudentMonitor> roster_;
     private Module firstModule_;
     
+    private TeacherId teacherId_;
+    
     private Course()
     {
         courseId_ = null;
@@ -75,6 +77,7 @@ public class Course implements Identifiable {
         ongoing_ = false;
         roster_ = new HashMap<>();  // No student registered.
         firstModule_ = null;
+        teacherId_ = null;
     }
     
     private void setCourseId(CourseId courseId)
@@ -208,20 +211,41 @@ public class Course implements Identifiable {
         return firstModule_;
     }
     
+    private void setTeacherId(TeacherId teacherId)
+    {
+        if ( teacherId == null ) {
+            throw new NullPointerException("Missing teacher for course.");
+        }
+        teacherId_ = teacherId;
+    }
+    
+    private TeacherId getTeacherId()
+    {
+        return teacherId_;
+    }
+    
     /**
      * Starts (creates) a new course.
+     * @param teacher Responsible teacher.
      * @param courseId New course identifier.
      * @param spec New course specification. Must include title, description, and
      * an objective.
      * @return New course.
      */
-    public static Course start(CourseId courseId, CourseDTO spec)
+    public static Course start(Teacher teacher, CourseId courseId, CourseDTO spec)
     {
+        if ( teacher == null ) {
+            throw new NullPointerException("Missing new course teacher.");
+        }
+        if ( spec == null ) {
+            throw new NullPointerException("Missing new course specification.");
+        }
         Course course = new Course();
         course.setCourseId(courseId);
         course.setDescription(spec.getDescription());
         course.setTitle(spec.getTitle());
         course.setObjective(spec.getObjective());
+        course.setTeacherId(teacher.getIdentifier());
         return course;
     }
     
@@ -406,6 +430,8 @@ public class Course implements Identifiable {
         if ( this.hasModules() ) {
             dto.setFirstModuleId(this.getFirstModule().getModuleId());        
         }
+        dto.setOngoing(ongoing_);
+        dto.setTeacherId(teacherId_.stringValue());
         return dto;
     }
     

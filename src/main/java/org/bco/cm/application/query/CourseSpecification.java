@@ -102,13 +102,13 @@ public class CourseSpecification {
      * @param courseRepository Course repository.
      * @return Courses. May be empty.
      */
-    public List<CourseDTO> query(CourseRepository courseRepository)
+    public List<CourseDTO> query(ReadOnlyCourseCatalog courseRepository)
     {
         if ( spec_.equals(ALL.spec_) ) {
-            return courseRepository.getAll();
+            return courseRepository.getAllCourses();
         }
         if ( spec_.equals(ONGOING.spec_) ) {
-            return courseRepository.getOngoing();
+            return courseRepository.getOngoingCourses();
         }
         return new ArrayList<>();
     }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2017 André H. Juffer
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,49 +22,34 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command;
+package org.bco.cm.application.query;
 
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
+import java.util.List;
 import org.bco.cm.dto.CourseDTO;
 
 /**
- * Command to start a new course.
+ * A read-only catalog of all available courses. Courses are stored as DTOs.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class StartNewCourse {
-    
-    private final TeacherId teacherId_;
-    private final CourseId courseId_;
-    private final CourseDTO spec_;
+public interface ReadOnlyCourseCatalog {
     
     /**
-     * Constructor.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId New course identifier.
-     * @param spec New course specification.
+     * Finds course according to a specification.
+     * @param spec Specification, either "all" or "ongoing".
+     * @return Courses. May be empty.
+     * @throws IllegalArgumentException if spec is neither "all" nor "ongoing".
      */
-    public StartNewCourse(TeacherId teacherId,
-                          CourseId courseId,
-                          CourseDTO spec)
-    {
-        teacherId_ = teacherId;
-        courseId_ = courseId;
-        spec_ = spec;
-    }
+    List<CourseDTO> getSpecifiedCourses(CourseSpecification spec);
     
-    public TeacherId getTeacherId()
-    {
-        return teacherId_;
-    }
+    /**
+     * Returns all courses.
+     * @return Courses. May be empty.
+     */
+    List<CourseDTO> getAllCourses();
     
-    public CourseId getCourseId()
-    {
-        return courseId_;
-    }
-    
-    public CourseDTO getCourseSpecification()
-    {
-        return spec_;
-    }
+    /**
+     * Returns ongoing courses.
+     * @return Courses. May be empty.
+     */
+    List<CourseDTO> getOngoingCourses();
 }

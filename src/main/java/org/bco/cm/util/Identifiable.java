@@ -26,7 +26,7 @@
 package org.bco.cm.util;
 
 /**
- * Marks an object as being identifiable.
+ * Marks an entity as being identifiable.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public interface Identifiable {

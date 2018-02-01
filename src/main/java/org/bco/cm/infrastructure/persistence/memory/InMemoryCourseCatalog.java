@@ -24,9 +24,6 @@
 
 package org.bco.cm.infrastructure.persistence.memory;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
@@ -48,11 +45,6 @@ public class InMemoryCourseCatalog
         return new CourseId(uuid.toString());
     }
     
-    Collection<Course> allCourses()
-    {
-        return this.all();
-    }
-
     @Override
     public Course forCourseId(CourseId courseId) 
     {

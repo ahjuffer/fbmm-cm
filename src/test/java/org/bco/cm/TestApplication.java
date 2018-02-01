@@ -24,25 +24,29 @@ package org.bco.cm;
  * THE SOFTWARE.
  */
 
-
-
 import java.util.Collection;
 import java.util.HashSet;
-import org.bco.cm.application.query.CourseRepository;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.domain.course.Teacher;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.course.TeacherRepository;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.LearningPathDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.OnlineMaterialDTO;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseCatalog;
-import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseRepository;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyCourseCatalog;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryTeacherRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.bco.cm.application.query.ReadOnlyCourseCatalog;
+import org.bco.cm.application.query.ReadOnlyTeacherRepository;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyTeacherRepository;
 
 /**
  *
@@ -53,12 +57,27 @@ public class TestApplication implements ApplicationRunner {
     
     @Bean
     @Primary
-    CourseRepository courseRepository()
+    TeacherRepository teacherRepository()
     {
-        return new InMemoryCourseRepository();
+        return new InMemoryTeacherRepository();
+    }
+    
+    @Bean
+    @Primary
+    ReadOnlyTeacherRepository readOnlyTeacherRepository()
+    {
+        return new InMemoryReadOnlyTeacherRepository();
+    }
+    
+    @Bean
+    @Primary
+    ReadOnlyCourseCatalog readOnlyCourseCatalog()
+    {
+        return new InMemoryReadOnlyCourseCatalog();
     }
     
     @Bean 
+    @Primary
     CourseCatalog courseCatalog()
     {
         return new InMemoryCourseCatalog();
@@ -75,19 +94,24 @@ public class TestApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception 
     {
+        TeacherRepository teacherRepository = this.teacherRepository();
+        TeacherId teacherId = teacherRepository.generateId();
+        Teacher teacher = Teacher.create(teacherId);
+        teacherRepository.add(teacher);
+        
         CourseCatalog catalog = this.courseCatalog();
         
         CourseDTO dto = new CourseDTO();
         dto.setDescription("Chromatography Practical November 2018.");
         dto.setTitle("Chromatography Practical");
         dto.setObjective("Learning chromatography.");
-        Course cg = Course.start(catalog.generateId(), dto);
+        Course cg = Course.start(teacher, catalog.generateId(), dto);
         catalog.add(cg);
         
         dto.setTitle("In Silico Methodologies");
         dto.setDescription("In Silico Methodologies January 2019");
         dto.setObjective("Learning modeling and simulation tools.");
-        Course insilico = Course.start(catalog.generateId(), dto);
+        Course insilico = Course.start(teacher, catalog.generateId(), dto);
         ModuleDTO spec1 = new ModuleDTO();
         spec1.setName("Module 1 of 'in silico'");
         LearningPathDTO lp1 = new LearningPathDTO();
@@ -112,7 +136,7 @@ public class TestApplication implements ApplicationRunner {
         spec2.setLearningPath(lp2);
         OnlineMaterialDTO mat21 = new OnlineMaterialDTO();
         mat21.setMaterialType("reading");
-        mat21.setObjective("Understand whatever ...");
+        mat21.setObjective("Understand something ...");
         mat21.setResource("http://www.example.net");
         Collection<OnlineMaterialDTO> mats2 = new HashSet<>();
         mats2.add(mat21);

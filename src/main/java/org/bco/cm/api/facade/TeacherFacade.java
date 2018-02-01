@@ -22,48 +22,43 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.api.rest.spring;
+package org.bco.cm.api.facade;
 
-import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.course.TeacherRepository;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
+ * Simplified interface for teachers.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@RestController
-@RequestMapping(value="/teacher")
-public class TeacherController {
-
+public class TeacherFacade {
+    
     @Autowired
-    private CourseFacade courseFacade_;
+    private TeacherRepository teacherRepository_;
     
     /**
-     * Starts new course.
-     * @param id Identifier of responsible teacher.
+     * Generates a new teacher identifier.
+     * @return Identifier.
+     */
+    public TeacherId generateTeacherId()
+    {
+        return teacherRepository_.generateId();
+    }
+
+    /**
+     * Adds new course to course catalog.
+     * @param teacherId Identifier of responsible teacher.
+     * @param courseId New course identifier.
      * @param spec New course specification. Must hold title, description, and 
      * objective.
      */
-    @RequestMapping(method=POST, value="/{id}/course")
-    @PostMapping(consumes = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void startNewCourse(@PathVariable String id, 
-                               @RequestBody CourseDTO spec)
+    public void startNewCourse(TeacherId teacherId, CourseId courseId, CourseDTO spec)
     {
-        TeacherId teacherId = new TeacherId(id);
-        CourseId courseId = courseFacade_.generateCourseId();
-        courseFacade_.startNewCourse(teacherId, courseId, spec);
+        System.out.println("TeacherId - " + teacherId);
+        System.out.println("spec - " + spec);
     }
-    
+
 }

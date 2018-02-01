@@ -25,6 +25,7 @@
 package org.bco.cm;
 
 import org.bco.cm.api.facade.CourseFacade;
+import org.bco.cm.api.facade.TeacherFacade;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,6 +40,12 @@ public class CmConfiguration {
     CourseFacade courseFacade()
     {
         return new CourseFacade();
-    }        
+    }
+    
+    @Bean
+    TeacherFacade teacherFacade()
+    {
+        return new TeacherFacade();
+    }
 
 }

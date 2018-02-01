@@ -27,20 +27,20 @@ package org.bco.cm.infrastructure.persistence.memory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.bco.cm.application.query.CourseRepository;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 
 /**
  * 
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 @Repository
-public class InMemoryCourseRepository implements CourseRepository {
+public class InMemoryReadOnlyCourseCatalog implements ReadOnlyCourseCatalog {
 
     private InMemoryCourseCatalog courseCatalog_;
     
@@ -51,15 +51,15 @@ public class InMemoryCourseRepository implements CourseRepository {
     }
     
     @Override
-    public List<CourseDTO> getCourses(CourseSpecification spec) 
+    public List<CourseDTO> getSpecifiedCourses(CourseSpecification spec) 
     {
         return spec.query(this);
     }
     
     @Override
-    public List<CourseDTO> getAll()
+    public List<CourseDTO> getAllCourses()
     {
-        Collection<Course> courses = courseCatalog_.allCourses();
+        Collection<Course> courses = courseCatalog_.all();
         List<CourseDTO> dtos = new ArrayList<>();
         courses.forEach((course) -> {
             CourseDTO dto = this.toDTO(course);
@@ -69,9 +69,9 @@ public class InMemoryCourseRepository implements CourseRepository {
     }
     
     @Override
-    public List<CourseDTO> getOngoing()
+    public List<CourseDTO> getOngoingCourses()
     {
-        Collection<Course> courses = courseCatalog_.allCourses();
+        Collection<Course> courses = courseCatalog_.all();
         List<CourseDTO> dtos = new ArrayList<>();
         courses.forEach((course) -> {
             if ( course.isOngoing() ) {

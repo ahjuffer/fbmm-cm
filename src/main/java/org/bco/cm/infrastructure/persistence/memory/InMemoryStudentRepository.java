@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,49 +22,33 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command;
+package org.bco.cm.infrastructure.persistence.memory;
 
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
+import java.util.UUID;
+import org.bco.cm.domain.course.Student;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.StudentRepository;
 
 /**
- * Command to start a new course.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StartNewCourse {
-    
-    private final TeacherId teacherId_;
-    private final CourseId courseId_;
-    private final CourseDTO spec_;
-    
-    /**
-     * Constructor.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId New course identifier.
-     * @param spec New course specification.
-     */
-    public StartNewCourse(TeacherId teacherId,
-                          CourseId courseId,
-                          CourseDTO spec)
+public class InMemoryStudentRepository 
+    extends InMemoryMapRepository<Student>
+    implements StudentRepository
+{
+
+    @Override
+    public Student forStudentId(StudentId studentId) 
     {
-        teacherId_ = teacherId;
-        courseId_ = courseId;
-        spec_ = spec;
+        return this.forIdentifierAsString(studentId.stringValue());
     }
-    
-    public TeacherId getTeacherId()
+
+    @Override
+    public StudentId generateId() 
     {
-        return teacherId_;
+        UUID uuid = UUID.randomUUID();
+        return new StudentId(uuid.toString());
     }
-    
-    public CourseId getCourseId()
-    {
-        return courseId_;
-    }
-    
-    public CourseDTO getCourseSpecification()
-    {
-        return spec_;
-    }
+
 }

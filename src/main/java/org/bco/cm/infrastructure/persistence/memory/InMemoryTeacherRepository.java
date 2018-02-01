@@ -24,8 +24,6 @@
 
 package org.bco.cm.infrastructure.persistence.memory;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.TeacherId;
@@ -41,13 +39,6 @@ public class InMemoryTeacherRepository
     extends InMemoryMapRepository<Teacher> 
     implements TeacherRepository {
     
-    private final Map<String, Teacher> map_;
-    
-    public InMemoryTeacherRepository()
-    {
-        map_ = new HashMap<>();
-    }
-
     @Override
     public Teacher forTeacherId(TeacherId teacherId) 
     {

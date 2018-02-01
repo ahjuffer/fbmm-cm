@@ -27,7 +27,7 @@ package org.bco.cm.domain.course;
 import java.net.URL;
 
 /**
- * Explanatory online material.
+ * Explanatory online reading material as part of the learning path.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class ReadingMaterial extends OnlineMaterial {

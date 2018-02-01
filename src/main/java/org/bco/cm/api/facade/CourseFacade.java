@@ -25,22 +25,22 @@
 package org.bco.cm.api.facade;
 
 import java.util.List;
-import org.bco.cm.application.query.CourseRepository;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 
 /**
- * Simplified interface.
+ * Simplified interface for courses.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class CourseFacade {
     
     @Autowired    
-    private CourseRepository courseRepository_;
+    private ReadOnlyCourseCatalog readOnlyCourseRepository_;
     
     @Autowired 
     private CourseCatalog courseCatalog_;
@@ -61,20 +61,7 @@ public class CourseFacade {
      */
     public List<CourseDTO> getCourses(CourseSpecification spec) 
     {
-        return courseRepository_.getCourses(spec);
+        return readOnlyCourseRepository_.getSpecifiedCourses(spec);
     }
     
-    /**
-     * Adds new course to course catalog.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId New course identifier.
-     * @param spec New course specification. Must hold title, description, and 
-     * objective.
-     */
-    public void startNewCourse(TeacherId teacherId, CourseId courseId, CourseDTO spec)
-    {
-        System.out.println("TeacherId - " + teacherId);
-        System.out.println("spec - " + spec);
-    }
-
 }

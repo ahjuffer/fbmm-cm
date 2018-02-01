@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,49 +22,41 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command;
+package org.bco.cm.infrastructure.persistence.memory;
 
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import org.bco.cm.application.query.ReadOnlyTeacherRepository;
+import org.bco.cm.domain.course.Teacher;
+import org.bco.cm.domain.course.TeacherRepository;
+import org.bco.cm.dto.TeacherDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Command to start a new course.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StartNewCourse {
+public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherRepository {
     
-    private final TeacherId teacherId_;
-    private final CourseId courseId_;
-    private final CourseDTO spec_;
+    private InMemoryTeacherRepository teacherRepository_;
     
-    /**
-     * Constructor.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId New course identifier.
-     * @param spec New course specification.
-     */
-    public StartNewCourse(TeacherId teacherId,
-                          CourseId courseId,
-                          CourseDTO spec)
+    @Autowired
+    public void setTeacherRepository(TeacherRepository teacherRepository)
     {
-        teacherId_ = teacherId;
-        courseId_ = courseId;
-        spec_ = spec;
+        teacherRepository_ = (InMemoryTeacherRepository)teacherRepository;
     }
-    
-    public TeacherId getTeacherId()
+
+    @Override
+    public List<TeacherDTO> getAllTeachers() 
     {
-        return teacherId_;
+        Collection<Teacher> teachers = teacherRepository_.all();
+        List<TeacherDTO> dtos = new ArrayList<>();
+        teachers.forEach(((teacher) -> {
+            TeacherDTO dto = teacher.toDTO();
+            dtos.add(dto);
+        }));
+        return dtos;
     }
-    
-    public CourseId getCourseId()
-    {
-        return courseId_;
-    }
-    
-    public CourseDTO getCourseSpecification()
-    {
-        return spec_;
-    }
+
 }

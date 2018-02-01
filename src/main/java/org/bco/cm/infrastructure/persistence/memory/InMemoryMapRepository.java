@@ -30,7 +30,8 @@ import java.util.Map;
 import org.bco.cm.util.Identifiable;
 
 /**
- * Stores entities in a map using an entity' identifier as key.
+ * Stores entities in a map using the entities' identifiers as keys. This repository
+ * may be used as a stub.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  * @param <T> Domain entity type.
  */
@@ -43,6 +44,10 @@ public class InMemoryMapRepository<T extends Identifiable> {
         map_ = new HashMap<>();
     }
     
+    /**
+     * Adds entity.
+     * @param t Entity.
+     */
     public void add(T t)
     {
         String key = this.key(t);
@@ -54,18 +59,26 @@ public class InMemoryMapRepository<T extends Identifiable> {
         map_.put(key, t);
     }
     
+    /**
+     * Updates entity.
+     * @param t Entity.
+     */
     public void update(T t) 
     {
-        // Course should already be in map_, so any update made to the course 
-        // is already accounted for.
+        // Entity should already be in map_, so any update made to the entity 
+        // should already be accounted for.
         String key = this.key(t);
         if ( !map_.containsKey(key) ) {
             throw new IllegalStateException(
-                "Trying to update an entity in repository that is not in the repository."
+                "Trying to update an entity that is not in the repository."
             );
         }
     }
     
+    /**
+     * Removes entity.
+     * @param t Entity.
+     */
     public void remove(T t) 
     {
         String key = this.key(t);
