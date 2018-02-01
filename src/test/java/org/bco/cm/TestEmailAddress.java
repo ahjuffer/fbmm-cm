@@ -1,7 +1,9 @@
+package org.bco.cm;
+
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +24,22 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
 
-import org.bco.cm.util.Id;
+import org.bco.cm.util.EmailAddress;
 
 /**
- * Identifies teacher.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author ajuffer
  */
-public class TeacherId extends Id<String> {
-    
-    public TeacherId(String value)
-    {
-        super(value);
+public class TestEmailAddress {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        String value = "something@example.com";        
+        EmailAddress emailAddress = EmailAddress.valueOf(value);
+        System.out.println("Email address - " + emailAddress.stringValue());
     }
+    
 }

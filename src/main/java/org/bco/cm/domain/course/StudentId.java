@@ -24,42 +24,17 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.util.Id;
+
 /**
  * Identifies student.
  * @author André H. Juffer, Biocenter Oulu
  */
-public class StudentId {
+public class StudentId extends Id<String> {
     
-    private final String id_;
-    
-    private StudentId(String id)
+    public StudentId(String value)
     {
-        id_ = id;
-    }
-    
-    /**
-     * Returns value.
-     * @return Value.
-     */
-    String value()
-    {
-        return id_;
-    }
-    
-    /**
-     * Creates identifier from string value.
-     * @param id Value. Must neither be null nor empty.
-     * @return Identifier.
-     */
-    public static StudentId valueOf(String id)
-    {
-        if ( id == null ) {
-            throw new NullPointerException("Student identifier value must be provided.");                    
-        }
-        if ( id.isEmpty() ) {
-            throw new IllegalArgumentException("Student identifier value must be provided.");
-        }
-        return new StudentId(id);
-    }
+        super(value);
+    }    
     
 }

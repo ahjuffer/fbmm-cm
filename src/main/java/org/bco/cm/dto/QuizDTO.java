@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * DTO for Quiz.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class QuizDTO {

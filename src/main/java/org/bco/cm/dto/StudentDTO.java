@@ -25,9 +25,18 @@
 package org.bco.cm.dto;
 
 /**
- *
+ * DTO for student.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StudentDTO {
+public class StudentDTO extends PersonDTO {
 
+    @Override
+    public String toString()
+    {
+        String newline = System.getProperty("line.separator");
+        StringBuilder s = new StringBuilder("StudentDTO : {").append(newline);
+        this.appendToString(s);
+        s.append("}");
+        return s.toString();        
+    }
 }

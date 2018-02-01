@@ -1,3 +1,5 @@
+package org.bco.cm;
+
 /*
  * The MIT License
  *
@@ -21,7 +23,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.bco.cm;
+
 
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseId;
@@ -44,7 +46,7 @@ public class TestCourse {
         
         // Create a course.
         CourseDTO spec = new CourseDTO();
-        CourseId courseId = CourseId.valueOf("123456");
+        CourseId courseId = new CourseId("123456");
         // Leaving out any of the next three statements causes an exception.
         spec.setDescription("This is a test description.");
         spec.setTitle("This is a test title.");

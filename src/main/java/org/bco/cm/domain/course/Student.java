@@ -24,72 +24,37 @@
 
 package org.bco.cm.domain.course;
 
-import java.util.Objects;
+import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.util.Person;
 
 /**
  * Course participant.
  * @author André H. Juffer, Biocenter Oulu
  */
-public class Student {
+public class Student extends Person<StudentId> {
     
-    private final StudentId studentId_;
-    private Module currentModule_;
-    
-    private Student(StudentId studentId)
+    private Student()
     {
-        studentId_ = studentId;
-        currentModule_ = null;
-    }
-    
-    /**
-     * Returns identifier.
-     * @return Identifier.
-     */
-    StudentId getStudentId()
-    {
-        return studentId_;
+        super();
     }
     
     /**
      * Returns new student instance.
-     * @param studentId Student identifier. Must not be null.
+     * @param studentId Identifier. Must not be null.
      * @return Student.
      */
     public static Student create(StudentId studentId)
     {
-        if ( studentId == null ) {
-            throw new NullPointerException("Student: StudentId must be provided.");
-        }
-        return new Student(studentId);
+        Student student = new Student();
+        student.setIdentifier(studentId);
+        return student;
     }
     
-    @Override
-    public boolean equals(Object other)
+    public StudentDTO toDTO()
     {
-        if ( other == null ) {
-            return false;
-        }
-        if ( !(other instanceof Student) ) {
-            return false;
-        }
-        Student student = (Student)other;
-        return studentId_.equals(student.studentId_);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.studentId_);
-        return hash;
-    }
-    
-    /**
-     * Allows student to enter next module.
-     * @param module Next module.
-     */
-    void toNextModule(Module next)
-    {
-        currentModule_ = next;
+        StudentDTO dto = new StudentDTO();
+        this.populateDTO(dto);
+        return dto;
     }
     
 }

@@ -22,59 +22,48 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.api.facade;
+package org.bco.cm.api.rest.spring;
 
-import java.util.List;
-import org.bco.cm.application.query.CourseRepository;
-import org.bco.cm.application.query.CourseSpecification;
-import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Simplified interface.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CourseFacade {
-    
-    @Autowired    
-    private CourseRepository courseRepository_;
-    
-    @Autowired 
-    private CourseCatalog courseCatalog_;
-    
-    /**
-     * Generates a new course identifier.
-     * @return Identifier.
-     */
-    public CourseId generateCourseId()
-    {
-        return courseCatalog_.generateId();
-    }
+@RestController
+@RequestMapping(value="/teacher")
+public class TeacherController {
+
+    @Autowired
+    private CourseFacade courseFacade_;
     
     /**
-     * Returns specified courses.
-     * @param spec Course specification.
-     * @return Courses.
-     */
-    public List<CourseDTO> getCourses(CourseSpecification spec) 
-    {
-        return courseRepository_.getCourses(spec);
-    }
-    
-    /**
-     * Adds new course to course catalog.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId New course identifier.
+     * Starts new course.
+     * @param id Identifier of responsible teacher.
      * @param spec New course specification. Must hold title, description, and 
      * objective.
      */
-    public void startNewCourse(TeacherId teacherId, CourseId courseId, CourseDTO spec)
+    @RequestMapping(method=POST, value="/{id}/course")
+    @PostMapping(consumes = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void startNewCourse(@PathVariable String id, 
+                               @RequestBody CourseDTO spec)
     {
-        System.out.println("TeacherId - " + teacherId);
-        System.out.println("spec - " + spec);
+        TeacherId teacherId = new TeacherId(id);
+        CourseId courseId = courseFacade_.generateCourseId();
+        courseFacade_.startNewCourse(teacherId, courseId, spec);
     }
-
+    
 }

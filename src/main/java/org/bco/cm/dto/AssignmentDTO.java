@@ -25,7 +25,7 @@
 package org.bco.cm.dto;
 
 /**
- *
+ * DTO for Assignment.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class AssignmentDTO {

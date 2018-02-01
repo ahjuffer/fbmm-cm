@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,43 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.infrastructure.persistence.memory;
 
-import org.bco.cm.util.Id;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import org.bco.cm.domain.course.Teacher;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.course.TeacherRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * Identifies teacher.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class TeacherId extends Id<String> {
+@Repository
+public class InMemoryTeacherRepository 
+    extends InMemoryMapRepository<Teacher> 
+    implements TeacherRepository {
     
-    public TeacherId(String value)
+    private final Map<String, Teacher> map_;
+    
+    public InMemoryTeacherRepository()
     {
-        super(value);
+        map_ = new HashMap<>();
     }
+
+    @Override
+    public Teacher forTeacherId(TeacherId teacherId) 
+    {
+        return this.forIdentifierAsString(teacherId.stringValue());
+    }
+
+    @Override
+    public TeacherId generateId() 
+    {
+        UUID uuid = UUID.randomUUID();
+        return new TeacherId(uuid.toString());
+    }
+
 }

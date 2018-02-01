@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,39 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
-
-import org.bco.cm.util.Id;
+package org.bco.cm.util;
 
 /**
- * Identifies teacher.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Holds entities of type T
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * @param <T> Entity type the repository manages
+ * @param <ID> Domain identifier type.
  */
-public class TeacherId extends Id<String> {
+public interface Repository<T,ID> {
     
-    public TeacherId(String value)
-    {
-        super(value);
-    }
+    /**
+     * Adds new entity
+     * @param t Entity.
+     */
+    void add(T t);
+    
+    /**
+     * Updates existing entity.
+     * @param t Entity.
+     */
+    void update(T t);
+    
+    /**
+     * Removes existing entity.
+     * @param t Entity.
+     */
+    void remove(T t);
+    
+    /**
+     * Returns a new identifier.
+     * @return Identifier.
+     */
+    ID generateId();
+    
+
 }

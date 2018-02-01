@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- *
+ * DTO for LearningPath.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class LearningPathDTO {

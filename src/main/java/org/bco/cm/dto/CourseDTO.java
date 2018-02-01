@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * Date transfer object for a course.
+ * DTO for Course.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 public class CourseDTO {

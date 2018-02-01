@@ -25,9 +25,7 @@
 package org.bco.cm.domain.course;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import org.bco.cm.dto.StudentMonitorDTO;
 
 /**
@@ -48,13 +46,13 @@ public class StudentMonitor {
     
     StudentMonitor(Student student)
     {
-        studentId_ = student.getStudentId();
+        studentId_ = student.getIdentifier();
         current_ = null;
     }
     
     StudentMonitor(Student student, Module module)
     {
-        studentId_ = student.getStudentId();
+        studentId_ = student.getIdentifier();
         current_ = module;
     }
     
@@ -90,7 +88,7 @@ public class StudentMonitor {
     {
         StudentMonitorDTO dto = new StudentMonitorDTO();
         dto.setCurrentModule(current_.toDTO());
-        dto.setStudentId(studentId_.value());
+        dto.setStudentId(studentId_.stringValue());
         return dto;
     }
     

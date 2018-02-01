@@ -35,6 +35,7 @@ import java.util.Random;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.OnlineMaterialDTO;
+import org.bco.cm.util.Identifiable;
 
 /**
  * An unit of teaching that typically lasts one academic term. It is led by one 
@@ -46,7 +47,7 @@ import org.bco.cm.dto.OnlineMaterialDTO;
  * and/or quizzes.
  * @author André H. Juffer, Biocenter Oulu
  */
-public class Course {
+public class Course implements Identifiable {
     
     // For generating module identifiers that are unique to a given course.
     private final static Random RANDOM;
@@ -243,7 +244,7 @@ public class Course {
     public void enrolled(Student student)
     {
         StudentMonitor monitor = new StudentMonitor(student);        
-        roster_.put(student.getStudentId(), monitor);
+        roster_.put(student.getIdentifier(), monitor);
         
         // Give access to first module.
         if ( this.isOngoing() ) {
@@ -263,7 +264,7 @@ public class Course {
         if ( !this.isOngoing() ) {
             throw new IllegalStateException("Course is currently not ongoing.");
         }
-        StudentMonitor monitor = roster_.get(student.getStudentId());
+        StudentMonitor monitor = roster_.get(student.getIdentifier());
         monitor.toNextModule();
     }
     
@@ -273,7 +274,7 @@ public class Course {
      */
     public void canceled(Student student)
     {
-        roster_.remove(student.getStudentId());
+        roster_.remove(student.getIdentifier());
     }
     
     /**
@@ -396,7 +397,7 @@ public class Course {
     public CourseDTO toDTO()
     {
         CourseDTO dto = new CourseDTO();
-        dto.setCourseId(courseId_.getValue());
+        dto.setCourseId(courseId_.stringValue());
         dto.setDescription(description_);
         dto.setTitle(title_);
         dto.setObjective(objective_);
@@ -490,6 +491,12 @@ public class Course {
             id = RANDOM.nextInt(bound);
         }
         return id;
+    }
+
+    @Override
+    public String getIdentifierAsString() 
+    {
+        return courseId_.stringValue();
     }
 
 }

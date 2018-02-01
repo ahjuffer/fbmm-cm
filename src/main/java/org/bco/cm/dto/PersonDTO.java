@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,34 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
-
-import org.bco.cm.util.Id;
+package org.bco.cm.dto;
 
 /**
- * Identifies teacher.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * DTO for Person.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class TeacherId extends Id<String> {
-    
-    public TeacherId(String value)
+public class PersonDTO 
+{
+    private String identifier_;
+
+    public void setIdentifier(String identifier)
     {
-        super(value);
+        identifier_ = identifier;
+    }
+    
+    public String getIdentifier()
+    {
+        return identifier_;
+    }
+    
+    /**
+     * Append properties for the <code>toString</code> implementation of 
+     * derived class.
+     * @param s String
+     */
+    protected final void appendToString(StringBuilder s)
+    {
+        String newline = System.getProperty("line.separator");
+        s.append("identifier - ").append(identifier_).append(newline);
     }
 }

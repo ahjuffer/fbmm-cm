@@ -1,3 +1,5 @@
+package org.bco.cm;
+
 /*
  * The MIT License
  *
@@ -22,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm;
+
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -79,13 +81,13 @@ public class TestApplication implements ApplicationRunner {
         dto.setDescription("Chromatography Practical November 2018.");
         dto.setTitle("Chromatography Practical");
         dto.setObjective("Learning chromatography.");
-        Course cg = Course.start(catalog.generateCourseId(), dto);
+        Course cg = Course.start(catalog.generateId(), dto);
         catalog.add(cg);
         
         dto.setTitle("In Silico Methodologies");
         dto.setDescription("In Silico Methodologies January 2019");
         dto.setObjective("Learning modeling and simulation tools.");
-        Course insilico = Course.start(catalog.generateCourseId(), dto);
+        Course insilico = Course.start(catalog.generateId(), dto);
         ModuleDTO spec1 = new ModuleDTO();
         spec1.setName("Module 1 of 'in silico'");
         LearningPathDTO lp1 = new LearningPathDTO();
@@ -118,6 +120,7 @@ public class TestApplication implements ApplicationRunner {
         insilico.addModule(spec2);
         
         catalog.add(insilico);
+        
         insilico.begin();
     }
 }

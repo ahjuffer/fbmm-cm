@@ -46,7 +46,7 @@ public class Enrolment {
     Enrolment(Course course, Student student)
     {
         courseId_ = course.getCourseId();
-        studentId_ = student.getStudentId();
+        studentId_ = student.getIdentifier();
         when_ = Instant.now();
     }
     

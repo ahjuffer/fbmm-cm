@@ -36,68 +36,27 @@ import org.bco.cm.domain.course.CourseId;
  * Stores courses in memory.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryCourseCatalog implements CourseCatalog {
+public class InMemoryCourseCatalog 
+    extends InMemoryMapRepository<Course> 
+    implements CourseCatalog {
     
-    private final Map<String, Course> map_;
-    
-    public InMemoryCourseCatalog()
-    {
-        map_ = new HashMap<>();
-    }
 
     @Override
-    public void add(Course course) 
-    {
-        String key = this.key(course);
-        if ( map_.containsKey(key) ) {
-            throw new IllegalArgumentException(
-                key + ": A course with this course identifier is already " + 
-                "in course catalog."
-            );
-        }
-        map_.put(key, course);
-    }
-
-    @Override
-    public void update(Course course) 
-    {
-        // Course should already be in map_, so any update made to the course 
-        // is already accounted for.
-        if ( !map_.containsKey(course.getCourseId().getValue()) ) {
-            throw new IllegalStateException(
-                "Trying to update a course that is not in the course catalog."
-            );
-        }
-    }
-
-    @Override
-    public void remove(Course course) 
-    {
-        String key = this.key(course);
-        map_.remove(key);
-    }
-
-    @Override
-    public CourseId generateCourseId() 
+    public CourseId generateId() 
     {
         UUID uuid = UUID.randomUUID();
-        return CourseId.valueOf(uuid.toString());
+        return new CourseId(uuid.toString());
     }
     
     Collection<Course> allCourses()
     {
-        return map_.values();
+        return this.all();
     }
 
     @Override
     public Course forCourseId(CourseId courseId) 
     {
-        return map_.get(courseId.getValue());
-    }
-
-    private String key(Course course)
-    {
-        return course.getCourseId().getValue();
+        return this.forIdentifierAsString(courseId.stringValue());
     }
 
 }

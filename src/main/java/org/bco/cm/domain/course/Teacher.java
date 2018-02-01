@@ -24,10 +24,28 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.util.Person;
+
 /**
  * Course instructor.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class Teacher {
+public class Teacher extends Person<TeacherId> {
     
+    private Teacher()
+    {
+        super();
+    }
+    
+    /**
+     * Returns new teacher instance.
+     * @param teacherId Identifier. Must not be null.
+     * @return Teacher.
+     */
+    public Teacher create(TeacherId teacherId)
+    {
+        Teacher teacher = new Teacher();
+        teacher.setIdentifier(teacherId);
+        return teacher;
+    }
 }

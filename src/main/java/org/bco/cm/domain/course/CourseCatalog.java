@@ -24,35 +24,13 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.util.Repository;
+
 /**
  * A catalog of all available courses.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public interface CourseCatalog {
-    
-    /**
-     * Adds new course to the catalog.
-     * @param course Course.
-     */
-    void add(Course course);
-    
-    /**
-     * Updates existing course in catalog.
-     * @param course Course.
-     */
-    void update(Course course);
-    
-    /**
-     * Removes existing course from catalog.
-     * @param course Course.
-     */
-    void remove(Course course);
-    
-    /**
-     * Returns a new course identifier.
-     * @return Identifier.
-     */
-    CourseId generateCourseId();
+public interface CourseCatalog extends Repository<Course, CourseId> {
     
     /**
      * Queries for specific course.

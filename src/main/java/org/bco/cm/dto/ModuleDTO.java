@@ -25,7 +25,7 @@
 package org.bco.cm.dto;
 
 /**
- * Data transfer object for a module.
+ * DTO for Module.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class ModuleDTO {

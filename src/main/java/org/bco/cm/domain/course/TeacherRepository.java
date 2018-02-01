@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,19 @@
 
 package org.bco.cm.domain.course;
 
-import org.bco.cm.util.Id;
+import org.bco.cm.util.Repository;
 
 /**
- * Identifies teacher.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Holds teachers.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class TeacherId extends Id<String> {
+public interface TeacherRepository extends Repository<Teacher, TeacherId> {
     
-    public TeacherId(String value)
-    {
-        super(value);
-    }
+    /**
+     * Returns teacher with given identifier.
+     * @param teacherId Identifier.
+     * @return Teacher, or null if nonexistent.
+     */
+    Teacher forTeacherId(TeacherId teacherId);
+
 }
