@@ -26,12 +26,11 @@ package org.bco.cm.api.facade;
 
 import java.util.List;
 import org.bco.cm.application.query.CourseSpecification;
+import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 
 /**
  * Simplified interface for courses.
@@ -40,10 +39,11 @@ import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 public class CourseFacade {
     
     @Autowired    
-    private ReadOnlyCourseCatalog readOnlyCourseRepository_;
+    private ReadOnlyCourseCatalog readOnlyCourseCatalog_;
     
     @Autowired 
     private CourseCatalog courseCatalog_;
+    
     
     /**
      * Generates a new course identifier.
@@ -61,7 +61,11 @@ public class CourseFacade {
      */
     public List<CourseDTO> getCourses(CourseSpecification spec) 
     {
-        return readOnlyCourseRepository_.getSpecifiedCourses(spec);
+        return readOnlyCourseCatalog_.getSpecifiedCourses(spec);
     }
     
+    public CourseDTO getCourse(CourseId courseId)
+    {
+        return readOnlyCourseCatalog_.getCourse(courseId);
+    }
 }

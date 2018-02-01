@@ -34,6 +34,7 @@ import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
+import org.bco.cm.domain.course.CourseId;
 
 /**
  * 
@@ -86,6 +87,16 @@ public class InMemoryReadOnlyCourseCatalog implements ReadOnlyCourseCatalog {
     private CourseDTO toDTO(Course course)
     {
         return course.toDTO();
+    }
+
+    @Override
+    public CourseDTO getCourse(CourseId courseId) 
+    {
+        Course course = courseCatalog_.forCourseId(courseId);
+        if ( course == null ) {
+            throw new NullPointerException(courseId.stringValue() + ": No such course.");
+        }
+        return this.toDTO(course);
     }
     
 }

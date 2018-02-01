@@ -25,6 +25,7 @@
 package org.bco.cm.application.query;
 
 import java.util.List;
+import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.dto.CourseDTO;
 
 /**
@@ -32,6 +33,13 @@ import org.bco.cm.dto.CourseDTO;
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 public interface ReadOnlyCourseCatalog {
+    
+    /**
+     * Returns course with given identifier.
+     * @param courseId Course identifier.
+     * @return Course.
+     */
+    CourseDTO getCourse(CourseId courseId);
     
     /**
      * Finds course according to a specification.
