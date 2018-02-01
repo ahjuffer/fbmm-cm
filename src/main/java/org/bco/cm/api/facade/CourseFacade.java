@@ -59,7 +59,7 @@ public class CourseFacade {
      * @param spec Course specification.
      * @return Courses.
      */
-    public List<CourseDTO> getCourses(CourseSpecification spec) 
+    public List<CourseDTO> getSpecifiedCourses(CourseSpecification spec) 
     {
         return readOnlyCourseCatalog_.getSpecifiedCourses(spec);
     }

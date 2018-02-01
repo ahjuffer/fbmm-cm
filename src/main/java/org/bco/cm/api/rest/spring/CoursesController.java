@@ -51,10 +51,10 @@ public class CoursesController  {
      * @return Courses. May be empty.
      */
     @GetMapping(produces = "application/json;charset=UTF-8")
-    public List<CourseDTO> getCourses(
+    public List<CourseDTO> getSpecifiedCourses(
         @RequestParam(value="spec", defaultValue="all") String spec
     ) 
     {
-        return courseFacade_.getCourses(CourseSpecification.valueOf(spec));
+        return courseFacade_.getSpecifiedCourses(CourseSpecification.valueOf(spec));
     }    
 }
