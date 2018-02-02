@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,38 +24,33 @@
 
 package org.bco.cm.application.command.handler;
 
+import com.tribc.cqrs.domain.command.CommandBus;
+import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.application.command.StartNewCourse;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 /**
- * Handles starting a new course
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Simple command bus for matching commands to command handlers.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StartNewCourseHandler extends CmCommandHandler<StartNewCourse> {
+public class CmCommandBus extends CommandBus {    
     
     @Autowired
-    private TeacherRepository teacherRepository_;   
-    
-    @Autowired
-    private CourseCatalog courseCatalog_;
-    
-    @Override
-    public void handle(StartNewCourse command)
+    public void setEnrolStudentHandler(EnrolStudentHandler handler)
     {
-        TeacherId teacherId = command.getTeacherId();
-        Teacher teacher = teacherRepository_.forTeacherId(teacherId);
-        if ( teacher == null ) {
-            throw new NullPointerException(teacherId.stringValue() + ": No such teacher.");
-        }
-        Course course = Course.start(teacher,
-                                     command.getCourseId(), 
-                                     command.getCourseSpecification());
-        courseCatalog_.add(course);
+        this.setHandler(EnrolStudent.class, handler);
     }
     
+    @Autowired
+    public void setStartNewCourseHandler(StartNewCourseHandler handler)
+    {
+        this.setHandler(StartNewCourse.class, handler);
+    }
+    
+    private void setHandler(Class clazz, CmCommandHandler handler)
+    {
+        this.match(clazz, handler);
+    }
+
 }

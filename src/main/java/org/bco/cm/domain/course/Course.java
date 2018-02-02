@@ -80,7 +80,7 @@ public class Course implements Identifiable {
         teacherId_ = null;
     }
     
-    private void setCourseId(CourseId courseId)
+    private void setIdentifier(CourseId courseId)
     {
         if ( courseId == null ) {
             throw new NullPointerException("Missing course identifier.");
@@ -92,11 +92,17 @@ public class Course implements Identifiable {
      * Returns course identifier.
      * @return Identifier. Never null.
      */
-    public CourseId getCourseId()
+    public CourseId getIdentifier()
     {
         return courseId_;
     }
     
+    @Override
+    public String getIdentifierAsString() 
+    {
+        return courseId_.stringValue();
+    }
+
     private void setTitle(String title)
     {
         if ( title == null ) {
@@ -241,7 +247,7 @@ public class Course implements Identifiable {
             throw new NullPointerException("Missing new course specification.");
         }
         Course course = new Course();
-        course.setCourseId(courseId);
+        course.setIdentifier(courseId);
         course.setDescription(spec.getDescription());
         course.setTitle(spec.getTitle());
         course.setObjective(spec.getObjective());
@@ -517,12 +523,6 @@ public class Course implements Identifiable {
             id = RANDOM.nextInt(bound);
         }
         return id;
-    }
-
-    @Override
-    public String getIdentifierAsString() 
-    {
-        return courseId_.stringValue();
     }
 
 }

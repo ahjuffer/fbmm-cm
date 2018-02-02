@@ -24,7 +24,9 @@
 
 package org.bco.cm.api.facade;
 
+import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
+import org.bco.cm.application.command.StartNewCourse;
 import org.bco.cm.application.query.ReadOnlyTeacherRepository;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
@@ -45,6 +47,9 @@ public class TeacherFacade {
     @Autowired
     private ReadOnlyTeacherRepository readOnlyTeacherRepository_;
     
+    @Autowired
+    private CommandBus commandBus_;
+    
     /**
      * Generates a new teacher identifier.
      * @return Identifier.
@@ -63,8 +68,8 @@ public class TeacherFacade {
      */
     public void startNewCourse(TeacherId teacherId, CourseId courseId, CourseDTO spec)
     {
-        System.out.println("TeacherId - " + teacherId);
-        System.out.println("spec - " + spec);
+        StartNewCourse command = new StartNewCourse(teacherId, courseId, spec);
+        commandBus_.handle(command);
     }
     
     /**

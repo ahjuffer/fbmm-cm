@@ -24,6 +24,7 @@
 
 package org.bco.cm.application.command;
 
+import com.tribc.cqrs.domain.command.AbstractCommand;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDTO;
@@ -32,7 +33,7 @@ import org.bco.cm.dto.CourseDTO;
  * Command to start a new course.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class StartNewCourse {
+public class StartNewCourse extends AbstractCommand {
     
     private final TeacherId teacherId_;
     private final CourseId courseId_;
@@ -48,6 +49,7 @@ public class StartNewCourse {
                           CourseId courseId,
                           CourseDTO spec)
     {
+        super(StartNewCourse.class);
         teacherId_ = teacherId;
         courseId_ = courseId;
         spec_ = spec;

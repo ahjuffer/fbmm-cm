@@ -22,23 +22,42 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.infrastructure.persistence.memory;
 
-package org.bco.cm.domain.course;
-
-import org.bco.cm.util.Repository;
+import java.util.Collection;
+import java.util.UUID;
+import org.bco.cm.domain.course.Course;
+import org.bco.cm.domain.course.Enrolment;
+import org.bco.cm.domain.course.EnrolmentNumber;
+import org.bco.cm.domain.course.EnrolmentRepository;
+import org.bco.cm.domain.course.Student;
 
 /**
- * Holds course enrolments.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface EnrolmentRepository extends Repository<Enrolment,EnrolmentNumber> {
-    
-    /**
-     * Returns enrolment of student in course.
-     * @param course Course.
-     * @param student Student.
-     * @return Enrolment, or null if nonexistent.
-     */
-    Enrolment forCourse(Course course, Student student);
+public class InMemoryEnrolmentRepository 
+    extends InMemoryMapRepository<Enrolment> 
+    implements EnrolmentRepository {
+
+    @Override
+    public Enrolment forCourse(Course course, Student student) 
+    {
+        Collection<Enrolment> enrolments = this.all();
+        for (Enrolment enrolment : enrolments) {
+            if ( enrolment.getCourseId().equals(course.getIdentifier()) &&
+                 enrolment.getStudentId().equals(student.getIdentifier()) ) {
+                return enrolment;
+            }
+        }
+        return null;
+    }    
+
+    @Override
+    public EnrolmentNumber generateId() 
+    {
+        UUID uuid = UUID.randomUUID();
+        return new EnrolmentNumber(uuid.toString());
+    }
 
 }

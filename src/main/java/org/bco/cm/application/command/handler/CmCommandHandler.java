@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,38 +24,43 @@
 
 package org.bco.cm.application.command.handler;
 
-import org.bco.cm.application.command.StartNewCourse;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRepository;
+import com.tribc.cqrs.domain.command.AbstractCommand;
+import com.tribc.ddd.domain.event.EventBus;
+import com.tribc.ddd.domain.event.Eventful;
+import com.tribc.ddd.domain.handling.AbstractHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Handles starting a new course
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Command handler with an event bus.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * @param <C> Command type.
  */
-public class StartNewCourseHandler extends CmCommandHandler<StartNewCourse> {
+public abstract class CmCommandHandler<C extends AbstractCommand> 
+    extends AbstractHandler<C> {
     
     @Autowired
-    private TeacherRepository teacherRepository_;   
+    private EventBus eventBus_;
     
-    @Autowired
-    private CourseCatalog courseCatalog_;
-    
-    @Override
-    public void handle(StartNewCourse command)
+    protected CmCommandHandler()
     {
-        TeacherId teacherId = command.getTeacherId();
-        Teacher teacher = teacherRepository_.forTeacherId(teacherId);
-        if ( teacher == null ) {
-            throw new NullPointerException(teacherId.stringValue() + ": No such teacher.");
-        }
-        Course course = Course.start(teacher,
-                                     command.getCourseId(), 
-                                     command.getCourseSpecification());
-        courseCatalog_.add(course);
+        super();        
     }
     
+    @Override
+    public abstract void handle(C command);
+
+    /**
+     * Handle raised domain events asynchronously.
+     * @param eventful Object that may have raised domain events.
+     */
+    protected void handleEventsAsync(Eventful eventful)
+    {
+        System.out.println(
+            "Object of type " + eventful.getClass().getName() + " raised " + 
+            eventful.getEvents().size() + " event(s)."
+        );
+        eventBus_.handleAsync(eventful);
+        eventful.clearEvents();
+    }
+
 }

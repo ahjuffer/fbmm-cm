@@ -29,6 +29,8 @@ import org.bco.cm.domain.course.ClassRegister;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.Enrolment;
+import org.bco.cm.domain.course.EnrolmentNumber;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,29 +39,23 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Handles the registration of a student in a course.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class EnrolStudentHandler {
+public class EnrolStudentHandler extends CmCommandHandler<EnrolStudent> {
     
+    @Autowired
     private CourseCatalog courseCatalog_;
+    
+    @Autowired
     private ClassRegister classRegister_;
     
-    @Autowired
-    public void setCourseCatalog(CourseCatalog courseCatalog)
-    {
-        courseCatalog_ = courseCatalog;
-    }
-    
-    @Autowired
-    void setClassRegister(ClassRegister classRegister)
-    {
-        classRegister_ = classRegister;
-    }
-    
+    @Override
     public void handle(EnrolStudent command)
     {
+        EnrolmentNumber eid = command.getEnrolmentNumber();
         StudentId studentId = command.getStudentId();        
         Student student = Student.create(studentId);
         CourseId courseId = command.getCourseId();
         Course course = courseCatalog_.forCourseId(courseId);
-        classRegister_.enrol(student, course);
+        Enrolment enrolment = classRegister_.enrol(eid, student, course);
+        this.handleEventsAsync(enrolment);
     }
 }

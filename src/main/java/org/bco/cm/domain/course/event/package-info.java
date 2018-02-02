@@ -22,23 +22,7 @@
  * THE SOFTWARE.
  */
 
-
-package org.bco.cm.domain.course;
-
-import org.bco.cm.util.Repository;
-
 /**
- * Holds course enrolments.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Course domain events
  */
-public interface EnrolmentRepository extends Repository<Enrolment,EnrolmentNumber> {
-    
-    /**
-     * Returns enrolment of student in course.
-     * @param course Course.
-     * @param student Student.
-     * @return Enrolment, or null if nonexistent.
-     */
-    Enrolment forCourse(Course course, Student student);
-
-}
+package org.bco.cm.domain.course.event;

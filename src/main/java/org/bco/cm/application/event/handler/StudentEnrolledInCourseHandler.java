@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,40 +22,40 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
+package org.bco.cm.application.event.handler;
 
-import org.bco.cm.application.command.StartNewCourse;
+import com.tribc.ddd.domain.event.EventHandler;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRepository;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.Student;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.StudentRepository;
+import org.bco.cm.domain.course.event.StudentEnrolledInCourse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Handles starting a new course
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Handles student enrolled in course event.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StartNewCourseHandler extends CmCommandHandler<StartNewCourse> {
-    
-    @Autowired
-    private TeacherRepository teacherRepository_;   
+public class StudentEnrolledInCourseHandler 
+    extends EventHandler<StudentEnrolledInCourse> {
     
     @Autowired
     private CourseCatalog courseCatalog_;
     
+    @Autowired
+    private StudentRepository studentRepository_;
+
     @Override
-    public void handle(StartNewCourse command)
+    public void handle(StudentEnrolledInCourse event) 
     {
-        TeacherId teacherId = command.getTeacherId();
-        Teacher teacher = teacherRepository_.forTeacherId(teacherId);
-        if ( teacher == null ) {
-            throw new NullPointerException(teacherId.stringValue() + ": No such teacher.");
-        }
-        Course course = Course.start(teacher,
-                                     command.getCourseId(), 
-                                     command.getCourseSpecification());
-        courseCatalog_.add(course);
+        CourseId courseId = event.getCourseId();
+        Course course = courseCatalog_.forCourseId(courseId);
+        StudentId studentId = event.getStudentId();
+        Student student = studentRepository_.forStudentId(studentId);
+        course.enrolled(student);
+        courseCatalog_.update(course);
     }
-    
+
 }

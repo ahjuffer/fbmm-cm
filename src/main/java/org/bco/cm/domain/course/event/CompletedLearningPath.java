@@ -22,19 +22,25 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.domain.course.event;
+
+import com.tribc.ddd.domain.event.AbstractEvent;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.StudentId;
 
 /**
- * Domain event signaling that a student completed a course module.
+ * Domain event signaling that a student has completed a course 
+ * module's learning path.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CompletedModule {
+public class CompletedLearningPath extends AbstractEvent {
     
     private final StudentId studentId_;
     private final CourseId courseId_;
     
-    CompletedModule(StudentId studentId, CourseId courseId)
+    public CompletedLearningPath(StudentId studentId, CourseId courseId)
     {
+        super(CompletedLearningPath.class);
         studentId_ = studentId;
         courseId_ = courseId;
     }

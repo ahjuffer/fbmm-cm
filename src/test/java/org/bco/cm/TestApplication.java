@@ -46,7 +46,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.application.query.ReadOnlyTeacherRepository;
+import org.bco.cm.domain.course.EnrolmentRepository;
+import org.bco.cm.domain.course.StudentRepository;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryEnrolmentRepository;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyTeacherRepository;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryStudentRepository;
 
 /**
  *
@@ -54,6 +58,13 @@ import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyTeacherRepos
  */
 @SpringBootApplication
 public class TestApplication implements ApplicationRunner {
+    
+    @Bean
+    @Primary
+    StudentRepository studentRepository()
+    {
+        return new InMemoryStudentRepository();
+    }
     
     @Bean
     @Primary
@@ -83,6 +94,13 @@ public class TestApplication implements ApplicationRunner {
         return new InMemoryCourseCatalog();
     }
     
+    @Bean
+    @Primary    
+    EnrolmentRepository enrolmentRepository()
+    {
+        return new InMemoryEnrolmentRepository();
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -95,7 +113,7 @@ public class TestApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception 
     {
         TeacherRepository teacherRepository = this.teacherRepository();
-        TeacherId teacherId = teacherRepository.generateId();
+        TeacherId teacherId = new TeacherId("12345");
         Teacher teacher = Teacher.create(teacherId);
         teacherRepository.add(teacher);
         

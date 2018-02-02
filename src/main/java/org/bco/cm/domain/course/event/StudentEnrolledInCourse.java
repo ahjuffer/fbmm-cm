@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,26 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command;
+package org.bco.cm.domain.course.event;
 
-import com.tribc.cqrs.domain.command.AbstractCommand;
+import com.tribc.ddd.domain.event.AbstractEvent;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.EnrolmentNumber;
 import org.bco.cm.domain.course.StudentId;
 
 /**
- * Command to enroll student in course.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Student enrolled in course.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class EnrolStudent extends AbstractCommand {
-    
-    private final EnrolmentNumber eid_;
+public class StudentEnrolledInCourse extends AbstractEvent {
+
     private final StudentId studentId_;
     private final CourseId courseId_;
     
-    /**
-     * Constructor.
-     * @param eid Enrolment number.
-     * @param studentId Student identifier.
-     * @param courseId Course identifier.
-     */
-    public EnrolStudent(EnrolmentNumber eid, StudentId studentId, CourseId courseId)
+    public StudentEnrolledInCourse(StudentId studentId, CourseId courseId)
     {
-        super(EnrolStudent.class);
-        eid_ = eid;
+        super(StudentEnrolledInCourse.class);
         studentId_ = studentId;
         courseId_ = courseId;
-    }
-    
-    /**
-     * Returns enrolment number.
-     * @return Enrolment number.
-     */
-    public EnrolmentNumber getEnrolmentNumber()
-    {
-        return eid_;
     }
     
     /**
@@ -79,5 +61,4 @@ public class EnrolStudent extends AbstractCommand {
     {
         return courseId_;
     }
-    
 }

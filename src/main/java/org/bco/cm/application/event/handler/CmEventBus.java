@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,40 +22,28 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
+package org.bco.cm.application.event.handler;
 
-import org.bco.cm.application.command.StartNewCourse;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRepository;
+import com.tribc.ddd.domain.event.EventBus;
+import com.tribc.ddd.domain.event.EventHandler;
+import org.bco.cm.domain.course.event.StudentEnrolledInCourse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Handles starting a new course
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Simple event bus for matching events to event handlers.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StartNewCourseHandler extends CmCommandHandler<StartNewCourse> {
+public class CmEventBus extends EventBus {
     
     @Autowired
-    private TeacherRepository teacherRepository_;   
-    
-    @Autowired
-    private CourseCatalog courseCatalog_;
-    
-    @Override
-    public void handle(StartNewCourse command)
+    public void setStudentEnrolledInCourseHandler(StudentEnrolledInCourseHandler handler)
     {
-        TeacherId teacherId = command.getTeacherId();
-        Teacher teacher = teacherRepository_.forTeacherId(teacherId);
-        if ( teacher == null ) {
-            throw new NullPointerException(teacherId.stringValue() + ": No such teacher.");
-        }
-        Course course = Course.start(teacher,
-                                     command.getCourseId(), 
-                                     command.getCourseSpecification());
-        courseCatalog_.add(course);
+        this.setHandler(StudentEnrolledInCourse.class, handler);
     }
     
+    private void setHandler(Class clazz, EventHandler handler)
+    {
+        this.match(clazz, handler);
+    }
+
 }

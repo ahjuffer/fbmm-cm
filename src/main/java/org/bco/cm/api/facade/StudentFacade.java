@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer, Biocenter Oulu
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,35 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.api.facade;
+
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Domain event signaling that a student has completed a course 
- * module's learning path.
+ * Simple interface for students.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CompletedLearningPath {
+public class StudentFacade {
     
-    private final StudentId studentId_;
-    private final CourseId courseId_;
+    @Autowired
+    private StudentRepository studentRepository_;
     
-    CompletedLearningPath(StudentId studentId, CourseId courseId)
+    public StudentId generateStudentId()
     {
-        studentId_ = studentId;
-        courseId_ = courseId;
+        return studentRepository_.generateId();
+    }
+    
+    /**
+     * Enrols student in course.
+     * @param studentId Student identifier.
+     * @param courseId Course identifier.
+     */
+    public void enrolStudentInCourse(StudentId studentId, CourseId courseId)
+    {
+        
     }
 
 }

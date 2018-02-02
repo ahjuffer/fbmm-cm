@@ -24,30 +24,139 @@
 
 package org.bco.cm.domain.course;
 
+import com.tribc.ddd.domain.event.Event;
+import com.tribc.ddd.domain.event.Eventful;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import org.bco.cm.domain.course.event.StudentEnrolledInCourse;
+import org.bco.cm.util.Identifiable;
 
 /**
- * Registration of student for a course.
+ * A record of registration of student for a course.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class Enrolment {
+public class Enrolment implements Identifiable, Eventful {
     
-    private final CourseId courseId_;
-    private final StudentId studentId_;
-    private final Instant when_;
+    private EnrolmentNumber eid_;
+    private CourseId courseId_;
+    private StudentId studentId_;
+    private Instant when_;
+    
+    private final Collection<Event> events_;
     
     private Enrolment()
     {
+        eid_ = null;
         courseId_ = null;
         studentId_ = null;
         when_ = Instant.ofEpochMilli(0);
+        events_ = new HashSet<>();
     }
     
-    Enrolment(Course course, Student student)
+    private void setEnrolmentNumber(EnrolmentNumber eid)
     {
-        courseId_ = course.getCourseId();
-        studentId_ = student.getIdentifier();
-        when_ = Instant.now();
+        if ( eid == null ) {
+            throw new NullPointerException("Missing enrolment number.");
+        }
+        eid_ = eid;
+    }
+    
+    private void setWhen(Instant when)
+    {
+        if ( when == null ) {
+            throw new NullPointerException("Missing date of enrolment.");
+        }
+        when_ = when;
+    }
+    
+    private void setCourseId(CourseId courseId)
+    {
+        if ( courseId == null ) {
+            throw new NullPointerException(
+                "Missing course identifier."
+            );
+        }
+        courseId_ = courseId;
+    }
+    
+    /**
+     * Returns course identifier.
+     * @return Identifier. Never null.
+     */
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
+    
+    private void setStudentId(StudentId studentId)
+    {
+        if ( studentId == null ) {
+            throw new NullPointerException(
+                "Missing student identifier."
+            );            
+        }
+        studentId_ = studentId;
+    }
+    
+    /**
+     * Returns student identifier.
+     * @return Identifier. Never null.
+     */
+    public StudentId getStudentId()
+    {
+        return studentId_;
+    }
+    
+    /**
+     * Returns new course enrolment.
+     * @param eid Enrolment number.
+     * @param course Course.
+     * @param student Student.
+     * @return New enrolment.
+     */
+    public static Enrolment register(EnrolmentNumber eid, Course course, Student student)
+    {
+        if ( course == null ) {
+            throw new NullPointerException(
+                "Missing course."
+            );
+        }
+        if ( student == null ) {
+            throw new NullPointerException(
+                "Missing student."
+            );            
+        }
+        Enrolment enrolment = new Enrolment();
+        enrolment.setEnrolmentNumber(eid);
+        enrolment.setWhen(Instant.now());
+        enrolment.setCourseId(course.getIdentifier());
+        enrolment.setStudentId(student.getIdentifier());
+        return enrolment;
+    }
+
+    @Override
+    public String getIdentifierAsString() 
+    {
+        return eid_.stringValue();
+    }
+
+    @Override
+    public Collection<Event> getEvents() 
+    {
+        return Collections.unmodifiableCollection(events_);
+    }
+
+    @Override
+    public void clearEvents() 
+    {
+        events_.clear();
+    }
+    
+    void raiseStudentEnrolledInCourseEvent()
+    {
+        events_.add(new StudentEnrolledInCourse(studentId_, courseId_));
     }
     
 }

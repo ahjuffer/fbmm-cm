@@ -25,34 +25,35 @@
 package org.bco.cm.domain.course;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
- * Course registrations.
+ * Domain service for course registrations.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+@Service
 public class ClassRegister {
     
-    private EnrolmentRepository enrolmentRepository_;
-    
     @Autowired
-    public void setEnrolmentRepository(EnrolmentRepository enrolmentRepository)
-    {
-        enrolmentRepository_ = enrolmentRepository;
-    }
+    private EnrolmentRepository enrolmentRepository_;
     
     /**
      * Enrols student in course.
+     * @param eid Enrolment number.
      * @param student Student.
      * @param course Course.
+     * @return Enrolment.
      * @throws IllegalStateException if student is already enrolled in course.
      */
-    public void enrol(Student student, Course course)
+    public Enrolment enrol(EnrolmentNumber eid, Student student, Course course)
     {
         if ( !this.isEnrolled(student, course) ) {
             throw new IllegalStateException("Student already enrolled in course.");
         }
-        Enrolment enrolment = new Enrolment(course, student);
+        Enrolment enrolment = Enrolment.register(eid, course, student);
         enrolmentRepository_.add(enrolment);
+        enrolment.raiseStudentEnrolledInCourseEvent();
+        return enrolment;
     }
     
     /**

@@ -24,13 +24,21 @@
 
 package org.bco.cm;
 
+import com.tribc.cqrs.domain.command.CommandBus;
+import com.tribc.ddd.domain.event.EventBus;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.TeacherFacade;
+import org.bco.cm.application.command.handler.CmCommandBus;
+import org.bco.cm.application.command.handler.EnrolStudentHandler;
+import org.bco.cm.application.command.handler.StartNewCourseHandler;
+import org.bco.cm.application.event.handler.CmEventBus;
+import org.bco.cm.application.event.handler.StudentEnrolledInCourseHandler;
+import org.bco.cm.domain.course.ClassRegister;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuration.
+ * Bean configuration.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 @Configuration
@@ -46,6 +54,40 @@ public class CmConfiguration {
     TeacherFacade teacherFacade()
     {
         return new TeacherFacade();
+    }
+    
+    @Bean EnrolStudentHandler enrolStudentHandler()
+    {
+        return new EnrolStudentHandler();
+    }
+    
+    @Bean StartNewCourseHandler startNewCourseHandler()
+    {
+        return new StartNewCourseHandler();
+    }
+    
+    @Bean
+    CommandBus commandBus()
+    {
+        return new CmCommandBus();
+    }
+    
+    @Bean
+    StudentEnrolledInCourseHandler studentEnrolledInCourseHandler()
+    {
+        return new StudentEnrolledInCourseHandler();
+    }
+    
+    @Bean 
+    EventBus eventBus()
+    {
+        return new CmEventBus();
+    }
+    
+    @Bean
+    ClassRegister classRegister()
+    {
+        return new ClassRegister();
     }
 
 }
