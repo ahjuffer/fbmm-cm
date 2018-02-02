@@ -56,5 +56,5 @@ public class CoursesController  {
     ) 
     {
         return courseFacade_.getSpecifiedCourses(CourseSpecification.valueOf(spec));
-    }    
+    }
 }

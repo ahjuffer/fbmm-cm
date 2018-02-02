@@ -24,6 +24,9 @@
 
 package org.bco.cm.domain.course;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.bco.cm.dto.StudentDTO;
 import org.bco.cm.util.Person;
 
@@ -59,6 +62,20 @@ public class Student extends Person<StudentId> {
         StudentDTO dto = new StudentDTO();
         this.populateDTO(dto);
         return dto;
+    }
+    
+    /**
+     * Returns DTO collection.
+     * @param students Students.
+     * @return DTOs.
+     */
+    public static List<StudentDTO> toDTOs(Collection<Student> students)
+    {
+        List<StudentDTO> dtos = new ArrayList<>();
+        students.forEach((student) -> {
+            dtos.add(student.toDTO());
+        });
+        return dtos;
     }
     
 }

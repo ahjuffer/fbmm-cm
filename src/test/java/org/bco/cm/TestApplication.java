@@ -26,8 +26,13 @@ package org.bco.cm;
 
 import java.util.Collection;
 import java.util.HashSet;
+import org.bco.cm.application.query.ReadOnlyCourseCatalog;
+import org.bco.cm.application.query.ReadOnlyStudentRepository;
+import org.bco.cm.application.query.ReadOnlyTeacherRepository;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.domain.course.EnrolmentRepository;
+import org.bco.cm.domain.course.StudentRepository;
 import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.domain.course.TeacherRepository;
@@ -36,7 +41,11 @@ import org.bco.cm.dto.LearningPathDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.OnlineMaterialDTO;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseCatalog;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryEnrolmentRepository;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyCourseCatalog;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyStudentRepository;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyTeacherRepository;
+import org.bco.cm.infrastructure.persistence.memory.InMemoryStudentRepository;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryTeacherRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -44,13 +53,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.bco.cm.application.query.ReadOnlyCourseCatalog;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
-import org.bco.cm.domain.course.EnrolmentRepository;
-import org.bco.cm.domain.course.StudentRepository;
-import org.bco.cm.infrastructure.persistence.memory.InMemoryEnrolmentRepository;
-import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyTeacherRepository;
-import org.bco.cm.infrastructure.persistence.memory.InMemoryStudentRepository;
 
 /**
  *
@@ -64,6 +66,13 @@ public class TestApplication implements ApplicationRunner {
     StudentRepository studentRepository()
     {
         return new InMemoryStudentRepository();
+    }
+    
+    @Bean
+    @Primary
+    ReadOnlyStudentRepository readOnlyStudentRepository()
+    {
+        return new InMemoryReadOnlyStudentRepository();
     }
     
     @Bean

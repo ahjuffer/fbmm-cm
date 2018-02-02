@@ -27,7 +27,9 @@ package org.bco.cm;
 import com.tribc.cqrs.domain.command.CommandBus;
 import com.tribc.ddd.domain.event.EventBus;
 import org.bco.cm.api.facade.CourseFacade;
+import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
+import org.bco.cm.application.command.handler.AddNewStudentHandler;
 import org.bco.cm.application.command.handler.CmCommandBus;
 import org.bco.cm.application.command.handler.EnrolStudentHandler;
 import org.bco.cm.application.command.handler.StartNewCourseHandler;
@@ -56,12 +58,26 @@ public class CmConfiguration {
         return new TeacherFacade();
     }
     
-    @Bean EnrolStudentHandler enrolStudentHandler()
+    @Bean
+    StudentFacade studentFacade()
+    {
+        return new StudentFacade();
+    }
+    
+    @Bean
+    AddNewStudentHandler addNewStudentHandler()
+    {
+        return new AddNewStudentHandler();
+    }
+    
+    @Bean 
+    EnrolStudentHandler enrolStudentHandler()
     {
         return new EnrolStudentHandler();
     }
     
-    @Bean StartNewCourseHandler startNewCourseHandler()
+    @Bean
+    StartNewCourseHandler startNewCourseHandler()
     {
         return new StartNewCourseHandler();
     }

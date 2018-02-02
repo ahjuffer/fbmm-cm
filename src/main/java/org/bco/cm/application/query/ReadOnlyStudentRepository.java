@@ -22,42 +22,30 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
 
-import com.tribc.cqrs.domain.command.CommandBus;
-import org.bco.cm.application.command.AddNewStudent;
-import org.bco.cm.application.command.EnrolStudent;
-import org.bco.cm.application.command.StartNewCourse;
-import org.springframework.beans.factory.annotation.Autowired;
+package org.bco.cm.application.query;
 
+import java.util.List;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.dto.StudentDTO;
 
 /**
- * Simple command bus for matching commands to command handlers.
+ * A read-only repository for students. Students are stored DTOs.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CmCommandBus extends CommandBus {    
+public interface ReadOnlyStudentRepository {
     
-    @Autowired
-    public void setAddNewStudentHandler(AddNewStudentHandler handler)
-    {
-        this.setHandler(AddNewStudent.class, handler);
-    }
+    /**
+     * Returns all students.
+     * @return Students. May be empty.
+     */
+    List<StudentDTO> getAllStudents();
     
-    @Autowired
-    public void setEnrolStudentHandler(EnrolStudentHandler handler)
-    {
-        this.setHandler(EnrolStudent.class, handler);
-    }
-    
-    @Autowired
-    public void setStartNewCourseHandler(StartNewCourseHandler handler)
-    {
-        this.setHandler(StartNewCourse.class, handler);
-    }
-    
-    private void setHandler(Class clazz, CmCommandHandler handler)
-    {
-        this.match(clazz, handler);
-    }
+    /**
+     * Returns student with given identifier.
+     * @param studentId Identifier.
+     * @return Student.
+     */
+    StudentDTO getStudent(StudentId studentId);
 
 }

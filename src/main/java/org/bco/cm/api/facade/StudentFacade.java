@@ -24,9 +24,16 @@
 
 package org.bco.cm.api.facade;
 
+import com.tribc.cqrs.domain.command.CommandBus;
+import java.util.List;
+import org.bco.cm.application.command.AddNewStudent;
+import org.bco.cm.application.command.EnrolStudent;
+import org.bco.cm.application.query.ReadOnlyStudentRepository;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.EnrolmentNumber;
 import org.bco.cm.domain.course.StudentId;
 import org.bco.cm.domain.course.StudentRepository;
+import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -38,19 +45,57 @@ public class StudentFacade {
     @Autowired
     private StudentRepository studentRepository_;
     
+    @Autowired
+    private ReadOnlyStudentRepository readOnlyStudentRepository_;
+    
+    @Autowired
+    private CommandBus commandBus_;
+    
     public StudentId generateStudentId()
     {
         return studentRepository_.generateId();
     }
     
     /**
+     * Adds new student to the student repository.
+     * @param studentId Student identifier.
+     * @param spec New student specification.
+     */
+    public void register(StudentId studentId, StudentDTO spec)
+    {
+        AddNewStudent command = new AddNewStudent(studentId, spec);
+        commandBus_.handle(command);
+    }
+    
+    /**
+     * Returns student with given identifier.
+     * @param studentId Identifier.
+     * @return Student.
+     */
+    public StudentDTO getStudent(StudentId studentId)
+    {
+        return readOnlyStudentRepository_.getStudent(studentId);
+    }
+    
+    /**
+     * Returns all students.
+     * @return Students. May be empty.
+     */
+    public List<StudentDTO> getAllStudents()
+    {
+        return readOnlyStudentRepository_.getAllStudents();
+    }
+    
+    /**
      * Enrols student in course.
+     * @param eid Enrolment number.
      * @param studentId Student identifier.
      * @param courseId Course identifier.
      */
-    public void enrolStudentInCourse(StudentId studentId, CourseId courseId)
+    public void enrolInCourse(EnrolmentNumber eid, StudentId studentId, CourseId courseId)
     {
-        
+        EnrolStudent command = new EnrolStudent(eid, studentId, courseId);
+        commandBus_.handle(command);
     }
 
 }

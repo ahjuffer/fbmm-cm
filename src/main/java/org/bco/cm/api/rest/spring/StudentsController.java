@@ -25,17 +25,12 @@
 package org.bco.cm.api.rest.spring;
 
 import java.util.List;
-import org.bco.cm.api.facade.CourseFacade;
-import org.bco.cm.api.facade.TeacherFacade;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
-import org.bco.cm.dto.TeacherDTO;
+import org.bco.cm.api.facade.StudentFacade;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,47 +38,39 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST interface for teachers.
+ * REST interface for students.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 @RestController
-@RequestMapping(value="/teachers")
-public class TeachersController {
-
-    @Autowired
-    private CourseFacade courseFacade_;
+@RequestMapping(value="/students")
+public class StudentsController {
     
     @Autowired
-    private TeacherFacade teacherFacade_; 
+    private StudentFacade studentFacade_;
     
     /**
-     * Starts new course.
-     * @param id Identifier of responsible teacher.
-     * @param spec New course specification. Must hold title, description, and 
-     * objective.
-     * @return New course.
+     * Adds new student resource.
+     * @param spec New student specification.
+     * @return New student.
      */
-    @RequestMapping(value="/{id}/course")
     @PostMapping(consumes = "application/json;charset=UTF-8", 
                  produces = "application/json;charset=UTF-8")
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseDTO startNewCourse(@PathVariable String id, 
-                                    @RequestBody CourseDTO spec)
+    public StudentDTO register(@RequestBody StudentDTO spec)
     {
-        TeacherId teacherId = new TeacherId(id);
-        CourseId courseId = courseFacade_.generateCourseId();
-        teacherFacade_.startNewCourse(teacherId, courseId, spec);
-        return courseFacade_.getCourse(courseId);
+        StudentId studentId = studentFacade_.generateStudentId();
+        studentFacade_.register(studentId, spec);
+        return studentFacade_.getStudent(studentId);
     }
     
     /**
-     * Returns all teacher resources..
-     * @return Teachers.
+     * Returns all student resources.
+     * @return Students.
      */
     @GetMapping(produces = "application/json;charset=UTF-8")
-    public List<TeacherDTO> getAllTeachers()
+    public List<StudentDTO> getAllStudents()
     {
-        return teacherFacade_.getAllTeachers();
+        return studentFacade_.getAllStudents();
     }
-    
+
 }

@@ -22,42 +22,49 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
+package org.bco.cm.application.command;
 
-import com.tribc.cqrs.domain.command.CommandBus;
-import org.bco.cm.application.command.AddNewStudent;
-import org.bco.cm.application.command.EnrolStudent;
-import org.bco.cm.application.command.StartNewCourse;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.tribc.cqrs.domain.command.AbstractCommand;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.dto.StudentDTO;
 
 /**
- * Simple command bus for matching commands to command handlers.
+ * Command for adding a new student to student repository.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CmCommandBus extends CommandBus {    
+public class AddNewStudent extends AbstractCommand {
     
-    @Autowired
-    public void setAddNewStudentHandler(AddNewStudentHandler handler)
+    private final StudentId studentId_;
+    private final StudentDTO spec_;
+    
+    /**
+     * Constructor.
+     * @param studentId New student identifier-
+     * @param spec New student specification.
+     */
+    public AddNewStudent(StudentId studentId, StudentDTO spec)
     {
-        this.setHandler(AddNewStudent.class, handler);
+        super(AddNewStudent.class);
+        studentId_ = studentId;
+        spec_ = spec;
     }
     
-    @Autowired
-    public void setEnrolStudentHandler(EnrolStudentHandler handler)
+    /**
+     * Returns new student identifier.
+     * @return Identifier.
+     */
+    public StudentId getStudentId()
     {
-        this.setHandler(EnrolStudent.class, handler);
+        return studentId_;
     }
     
-    @Autowired
-    public void setStartNewCourseHandler(StartNewCourseHandler handler)
+    /**
+     * Returns new student specification.
+     * @return Specification.
+     */
+    public StudentDTO getSpec()
     {
-        this.setHandler(StartNewCourse.class, handler);
-    }
-    
-    private void setHandler(Class clazz, CmCommandHandler handler)
-    {
-        this.match(clazz, handler);
+        return spec_;
     }
 
 }

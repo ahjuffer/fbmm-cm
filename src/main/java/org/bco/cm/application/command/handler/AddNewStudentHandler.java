@@ -24,40 +24,29 @@
 
 package org.bco.cm.application.command.handler;
 
-import com.tribc.cqrs.domain.command.CommandBus;
 import org.bco.cm.application.command.AddNewStudent;
-import org.bco.cm.application.command.EnrolStudent;
-import org.bco.cm.application.command.StartNewCourse;
+import org.bco.cm.domain.course.Student;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.StudentRepository;
+import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 /**
- * Simple command bus for matching commands to command handlers.
+ * Handles addition of a new student to student repository.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CmCommandBus extends CommandBus {    
+public class AddNewStudentHandler extends CmCommandHandler<AddNewStudent> {
     
     @Autowired
-    public void setAddNewStudentHandler(AddNewStudentHandler handler)
+    StudentRepository studentRepository_;
+
+    @Override
+    public void handle(AddNewStudent command) 
     {
-        this.setHandler(AddNewStudent.class, handler);
-    }
-    
-    @Autowired
-    public void setEnrolStudentHandler(EnrolStudentHandler handler)
-    {
-        this.setHandler(EnrolStudent.class, handler);
-    }
-    
-    @Autowired
-    public void setStartNewCourseHandler(StartNewCourseHandler handler)
-    {
-        this.setHandler(StartNewCourse.class, handler);
-    }
-    
-    private void setHandler(Class clazz, CmCommandHandler handler)
-    {
-        this.match(clazz, handler);
+        StudentId studentId = command.getStudentId();
+        StudentDTO spec = command.getSpec();
+        Student student = Student.create(studentId);
+        studentRepository_.add(student);
     }
 
 }

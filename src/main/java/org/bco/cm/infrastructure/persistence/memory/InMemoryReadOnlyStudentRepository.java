@@ -22,42 +22,47 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
+package org.bco.cm.infrastructure.persistence.memory;
 
-import com.tribc.cqrs.domain.command.CommandBus;
-import org.bco.cm.application.command.AddNewStudent;
-import org.bco.cm.application.command.EnrolStudent;
-import org.bco.cm.application.command.StartNewCourse;
+import java.util.Collection;
+import java.util.List;
+import org.bco.cm.application.query.ReadOnlyStudentRepository;
+import org.bco.cm.domain.course.Student;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.StudentRepository;
+import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 /**
- * Simple command bus for matching commands to command handlers.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CmCommandBus extends CommandBus {    
+public class InMemoryReadOnlyStudentRepository implements ReadOnlyStudentRepository {
+    
+    private InMemoryStudentRepository studentRepository_;
     
     @Autowired
-    public void setAddNewStudentHandler(AddNewStudentHandler handler)
+    public void setStudentRepository(StudentRepository studentRepository)
     {
-        this.setHandler(AddNewStudent.class, handler);
+        studentRepository_ = (InMemoryStudentRepository)studentRepository;
     }
-    
-    @Autowired
-    public void setEnrolStudentHandler(EnrolStudentHandler handler)
+
+    @Override
+    public List<StudentDTO> getAllStudents() 
     {
-        this.setHandler(EnrolStudent.class, handler);
+        Collection<Student> students = studentRepository_.all();
+        return Student.toDTOs(students);
     }
-    
-    @Autowired
-    public void setStartNewCourseHandler(StartNewCourseHandler handler)
+
+    @Override
+    public StudentDTO getStudent(StudentId studentId) 
     {
-        this.setHandler(StartNewCourse.class, handler);
-    }
-    
-    private void setHandler(Class clazz, CmCommandHandler handler)
-    {
-        this.match(clazz, handler);
+        for (Student student : studentRepository_.all()) {
+            if ( student.getIdentifier().equals(studentId) ) {
+                return student.toDTO();
+            }
+        }
+        throw new NullPointerException(studentId.stringValue() + ": No such student.");
     }
 
 }
