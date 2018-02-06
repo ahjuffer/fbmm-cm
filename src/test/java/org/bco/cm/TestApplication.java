@@ -26,6 +26,9 @@ package org.bco.cm;
 
 import java.util.Collection;
 import java.util.HashSet;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.application.query.ReadOnlyStudentRepository;
 import org.bco.cm.application.query.ReadOnlyTeacherRepository;
@@ -60,6 +63,8 @@ import org.springframework.context.annotation.Primary;
  */
 @SpringBootApplication
 public class TestApplication implements ApplicationRunner {
+    
+    private static final Logger LOGGER = LogManager.getLogger("crapp");
     
     @Bean
     @Primary
@@ -113,9 +118,11 @@ public class TestApplication implements ApplicationRunner {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        
-        SpringApplication.run(TestApplication.class, args); 
+    public static void main(String[] args) 
+    {
+        LOGGER.setLevel(Level.TRACE);        
+        SpringApplication.run(TestApplication.class, args);
+        LOGGER.info("Started TestApplication");
     }
 
     @Override

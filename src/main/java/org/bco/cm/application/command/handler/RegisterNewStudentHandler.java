@@ -22,40 +22,40 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.event.handler;
+package org.bco.cm.application.command.handler;
 
-import com.tribc.ddd.domain.event.EventHandler;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.application.command.RegisterNewStudent;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
 import org.bco.cm.domain.course.StudentRepository;
-import org.bco.cm.domain.course.event.StudentEnrolledInCourse;
+import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Handles student enrolled in course event. Adds student to course roster.
+ * Handles addition of a new student to student repository.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StudentEnrolledInCourseHandler 
-    extends EventHandler<StudentEnrolledInCourse> {
+public class RegisterNewStudentHandler extends CmCommandHandler<RegisterNewStudent> {
     
     @Autowired
-    private CourseCatalog courseCatalog_;
-    
-    @Autowired
-    private StudentRepository studentRepository_;
+    StudentRepository studentRepository_;
 
     @Override
-    public void handle(StudentEnrolledInCourse event) 
+    public void handle(RegisterNewStudent command) 
     {
-        CourseId courseId = event.getCourseId();
-        Course course = courseCatalog_.forCourseId(courseId);
-        StudentId studentId = event.getStudentId();
-        Student student = studentRepository_.forStudentId(studentId);
-        course.enrolled(student);
-        courseCatalog_.update(course);                
+        StudentId studentId = command.getStudentId();
+        StudentDTO spec = command.getSpec();
+        
+        if ( studentRepository_.hasStudent(studentId) ) {
+            throw new IllegalStateException(
+                studentId.stringValue() + 
+                ": Student with this identifier already registered."
+            );
+        }
+        Student student = Student.register(studentId, spec);
+        studentRepository_.add(student);
+        
+        this.handleEventsAsync(student);
     }
 
 }

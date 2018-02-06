@@ -28,6 +28,8 @@ import com.tribc.cqrs.domain.command.AbstractCommand;
 import com.tribc.ddd.domain.event.EventBus;
 import com.tribc.ddd.domain.event.Eventful;
 import com.tribc.ddd.domain.handling.AbstractHandler;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -37,6 +39,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class CmCommandHandler<C extends AbstractCommand> 
     extends AbstractHandler<C> {
+    
+    static final Logger LOGGER = LogManager.getLogger("crapp");
     
     @Autowired
     private EventBus eventBus_;
@@ -55,12 +59,24 @@ public abstract class CmCommandHandler<C extends AbstractCommand>
      */
     protected void handleEventsAsync(Eventful eventful)
     {
-        System.out.println(
-            "Object of type " + eventful.getClass().getName() + " raised " + 
-            eventful.getEvents().size() + " event(s)."
+        LOGGER.info(
+            "Object of type " + eventful.getClass().getName() + " holds " + 
+            eventful.getEvents().size() + " domain event(s)."
         );
         eventBus_.handleAsync(eventful);
-        eventful.clearEvents();
+    }
+    
+    /**
+     * Handles events in the same thread.
+     * @param eventful Object that may have raised domain events.
+     */
+    protected void handleEvents(Eventful eventful)
+    {
+        LOGGER.info(
+            "Object of type " + eventful.getClass().getName() + " holds " + 
+            eventful.getEvents().size() + " domain event(s)."
+        );
+        eventBus_.handle(eventful);
     }
 
 }

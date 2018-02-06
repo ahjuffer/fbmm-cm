@@ -22,40 +22,49 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.event.handler;
+package org.bco.cm.application.command;
 
-import com.tribc.ddd.domain.event.EventHandler;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.Student;
+import com.tribc.cqrs.domain.command.AbstractCommand;
 import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRepository;
-import org.bco.cm.domain.course.event.StudentEnrolledInCourse;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.bco.cm.dto.StudentDTO;
 
 /**
- * Handles student enrolled in course event. Adds student to course roster.
+ * Command for adding a new student to student repository.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StudentEnrolledInCourseHandler 
-    extends EventHandler<StudentEnrolledInCourse> {
+public class RegisterNewStudent extends AbstractCommand {
     
-    @Autowired
-    private CourseCatalog courseCatalog_;
+    private final StudentId studentId_;
+    private final StudentDTO spec_;
     
-    @Autowired
-    private StudentRepository studentRepository_;
-
-    @Override
-    public void handle(StudentEnrolledInCourse event) 
+    /**
+     * Constructor.
+     * @param studentId New student identifier-
+     * @param spec New student specification.
+     */
+    public RegisterNewStudent(StudentId studentId, StudentDTO spec)
     {
-        CourseId courseId = event.getCourseId();
-        Course course = courseCatalog_.forCourseId(courseId);
-        StudentId studentId = event.getStudentId();
-        Student student = studentRepository_.forStudentId(studentId);
-        course.enrolled(student);
-        courseCatalog_.update(course);                
+        super(RegisterNewStudent.class);
+        studentId_ = studentId;
+        spec_ = spec;
+    }
+    
+    /**
+     * Returns new student identifier.
+     * @return Identifier.
+     */
+    public StudentId getStudentId()
+    {
+        return studentId_;
+    }
+    
+    /**
+     * Returns new student specification.
+     * @return Specification.
+     */
+    public StudentDTO getSpec()
+    {
+        return spec_;
     }
 
 }

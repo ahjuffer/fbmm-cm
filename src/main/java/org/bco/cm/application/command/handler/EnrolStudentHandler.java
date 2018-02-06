@@ -33,6 +33,7 @@ import org.bco.cm.domain.course.Enrolment;
 import org.bco.cm.domain.course.EnrolmentNumber;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -47,15 +48,23 @@ public class EnrolStudentHandler extends CmCommandHandler<EnrolStudent> {
     @Autowired
     private ClassRegister classRegister_;
     
+    @Autowired
+    private StudentRepository studentRepository_;
+    
     @Override
     public void handle(EnrolStudent command)
     {
         EnrolmentNumber eid = command.getEnrolmentNumber();
-        StudentId studentId = command.getStudentId();        
-        Student student = Student.create(studentId);
+        StudentId studentId = command.getStudentId();
+        
+        Student student = studentRepository_.forStudentId(studentId);
+        if ( student == null ) {
+            throw new NullPointerException(studentId + ": no such student.");
+        }
         CourseId courseId = command.getCourseId();
         Course course = courseCatalog_.forCourseId(courseId);
-        Enrolment enrolment = classRegister_.enrol(eid, student, course);
+        Enrolment enrolment = classRegister_.enrol(eid, student, course);        
+
         this.handleEventsAsync(enrolment);
     }
 }

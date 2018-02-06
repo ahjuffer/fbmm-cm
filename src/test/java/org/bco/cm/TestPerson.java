@@ -27,6 +27,7 @@ package org.bco.cm;
 
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.dto.StudentDTO;
 
 /**
  *
@@ -40,7 +41,10 @@ public class TestPerson {
     public static void main(String[] args) 
     {
         StudentId studentId = new StudentId("12345");
-        Student student = Student.create(studentId);
+        StudentDTO spec = new StudentDTO();
+        spec.setFirstName("Foo");
+        spec.setSurname("Bar");
+        Student student = Student.register(studentId, spec);
         System.out.println("Student - " + student.toDTO());
     }
     

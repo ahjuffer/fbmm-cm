@@ -38,5 +38,12 @@ public interface StudentRepository extends Repository<Student, StudentId> {
      * @return Student, or null if nonexistent.
      */
     Student forStudentId(StudentId studentId);
+    
+    /**
+     * Is there already a student with the given student identifier?
+     * @param studentId Student identifier.
+     * @return Result.
+     */
+    boolean hasStudent(StudentId studentId);
 
 }

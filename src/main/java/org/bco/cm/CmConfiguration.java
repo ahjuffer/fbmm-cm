@@ -29,11 +29,12 @@ import com.tribc.ddd.domain.event.EventBus;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
-import org.bco.cm.application.command.handler.AddNewStudentHandler;
+import org.bco.cm.application.command.handler.RegisterNewStudentHandler;
 import org.bco.cm.application.command.handler.CmCommandBus;
 import org.bco.cm.application.command.handler.EnrolStudentHandler;
 import org.bco.cm.application.command.handler.StartNewCourseHandler;
 import org.bco.cm.application.event.handler.CmEventBus;
+import org.bco.cm.application.event.handler.NewStudentRegisteredHandler;
 import org.bco.cm.application.event.handler.StudentEnrolledInCourseHandler;
 import org.bco.cm.domain.course.ClassRegister;
 import org.springframework.context.annotation.Bean;
@@ -65,9 +66,9 @@ public class CmConfiguration {
     }
     
     @Bean
-    AddNewStudentHandler addNewStudentHandler()
+    RegisterNewStudentHandler registerNewStudentHandler()
     {
-        return new AddNewStudentHandler();
+        return new RegisterNewStudentHandler();
     }
     
     @Bean 
@@ -86,6 +87,12 @@ public class CmConfiguration {
     CommandBus commandBus()
     {
         return new CmCommandBus();
+    }
+    
+    @Bean
+    NewStudentRegisteredHandler newStudentRegisteredHandler()
+    {
+        return new NewStudentRegisteredHandler();
     }
     
     @Bean

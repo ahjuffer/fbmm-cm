@@ -26,7 +26,7 @@ package org.bco.cm.api.facade;
 
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
-import org.bco.cm.application.command.AddNewStudent;
+import org.bco.cm.application.command.RegisterNewStudent;
 import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.application.query.ReadOnlyStudentRepository;
 import org.bco.cm.domain.course.CourseId;
@@ -59,11 +59,11 @@ public class StudentFacade {
     /**
      * Adds new student to the student repository.
      * @param studentId Student identifier.
-     * @param spec New student specification.
+     * @param spec New student specification. Should include names.
      */
     public void register(StudentId studentId, StudentDTO spec)
     {
-        AddNewStudent command = new AddNewStudent(studentId, spec);
+        RegisterNewStudent command = new RegisterNewStudent(studentId, spec);
         commandBus_.handle(command);
     }
     

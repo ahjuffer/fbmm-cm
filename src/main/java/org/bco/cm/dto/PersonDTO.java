@@ -31,6 +31,8 @@ package org.bco.cm.dto;
 public class PersonDTO 
 {
     private String identifier_;
+    private String firstName_;
+    private String surname_;
 
     public void setIdentifier(String identifier)
     {
@@ -42,6 +44,35 @@ public class PersonDTO
         return identifier_;
     }
     
+    public void setFirstName(String firstName)
+    {
+        firstName_ = firstName;
+    }
+    
+    public String getFirstName()
+    {
+        return firstName_;
+    }
+    
+    public void setSurname(String surname)
+    {
+        surname_ = surname;       
+    }
+    
+    public String getSurname()
+    {
+        return surname_;
+    }
+    
+    /**
+     * Returns full name, as "surname, firstName".
+     * @return 
+     */
+    public String getFullName()
+    {
+        return surname_ + ", " + firstName_;
+    }
+    
     /**
      * Append properties for the <code>toString</code> implementation of 
      * derived class.
@@ -51,5 +82,7 @@ public class PersonDTO
     {
         String newline = System.getProperty("line.separator");
         s.append("identifier - ").append(identifier_).append(newline);
+        s.append("firstName - ").append(firstName_).append(newline);
+        s.append("surname - ").append(surname_).append(newline);
     }
 }

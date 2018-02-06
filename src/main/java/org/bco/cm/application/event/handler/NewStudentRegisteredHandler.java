@@ -22,31 +22,36 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
+package org.bco.cm.application.event.handler;
 
-import org.bco.cm.application.command.AddNewStudent;
+import com.tribc.ddd.domain.event.EventHandler;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
 import org.bco.cm.domain.course.StudentRepository;
-import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.domain.course.event.NewStudentRegistered;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Handles addition of a new student to student repository.
+ * Creates new account for student.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class AddNewStudentHandler extends CmCommandHandler<AddNewStudent> {
+public class NewStudentRegisteredHandler 
+    extends EventHandler<NewStudentRegistered>
+{
+    static final Logger LOGGER = LogManager.getLogger("crapp");
     
     @Autowired
-    StudentRepository studentRepository_;
+    private StudentRepository studentRepository_;
 
     @Override
-    public void handle(AddNewStudent command) 
+    public void handle(NewStudentRegistered event) 
     {
-        StudentId studentId = command.getStudentId();
-        StudentDTO spec = command.getSpec();
-        Student student = Student.create(studentId);
-        studentRepository_.add(student);
+        StudentId studentId = event.getStudentId();
+        Student student = studentRepository_.forStudentId(studentId);
+        
+        LOGGER.info("Creating an account for student: " + student.toDTO().getFullName());
     }
 
 }

@@ -51,4 +51,10 @@ public class InMemoryStudentRepository
         return new StudentId(uuid.toString());
     }
 
+    @Override
+    public boolean hasStudent(StudentId studentId) 
+    {
+        return this.forStudentId(studentId) != null;
+    }
+
 }

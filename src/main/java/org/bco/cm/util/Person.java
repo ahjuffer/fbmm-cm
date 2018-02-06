@@ -35,6 +35,8 @@ import org.bco.cm.dto.PersonDTO;
 public class Person<ID extends Id<String>> implements Identifiable {
     
     private ID identifier_;
+    private String firstName_;
+    private String surname_;
     
     protected Person()
     {
@@ -64,6 +66,54 @@ public class Person<ID extends Id<String>> implements Identifiable {
     public String getIdentifierAsString()
     {
         return identifier_.stringValue();
+    }
+    
+    /**
+     * Sets first name.
+     * @param firstName First name. Must not be null and empty. 
+     */
+    protected void setFirstName(String firstName)
+    {
+        if ( firstName == null ) {
+            throw new NullPointerException("Missing first name.");
+        }
+        if ( firstName.isEmpty() ) {
+            throw new IllegalArgumentException("Missing first name.");
+        }
+        firstName_ = firstName;
+    }
+    
+    /**
+     * Returns first name.
+     * @return First name. Never null or empty.
+     */
+    public String getFirstName()
+    {
+        return firstName_;
+    }
+    
+    /**
+     * Sets surname.
+     * @param surname Surname. Must not be null and empty. 
+     */
+    protected void setSurname(String surname)
+    {
+        if ( surname == null ) {
+            throw new NullPointerException("Missing surname.");
+        }
+        if ( surname.isEmpty() ) {
+            throw new IllegalArgumentException("Missing surname.");
+        }
+        surname_ = surname;        
+    }
+    
+    /**
+     * Returns surname.
+     * @return Surname. Never null or empty.
+     */
+    public String getSurname()
+    {
+        return surname_;
     }
     
     @Override
@@ -100,6 +150,8 @@ public class Person<ID extends Id<String>> implements Identifiable {
         if ( identifier_ != null ) {
             dto.setIdentifier(identifier_.toString());
         }
+        dto.setFirstName(firstName_);
+        dto.setSurname(surname_);
     }
 
 }

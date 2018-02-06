@@ -24,9 +24,14 @@
 
 package org.bco.cm.domain.course;
 
+import com.tribc.ddd.domain.event.Event;
+import com.tribc.ddd.domain.event.Eventful;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import org.bco.cm.domain.course.event.NewStudentRegistered;
 import org.bco.cm.dto.StudentDTO;
 import org.bco.cm.util.Person;
 
@@ -34,22 +39,35 @@ import org.bco.cm.util.Person;
  * Course participant.
  * @author André H. Juffer, Biocenter Oulu
  */
-public class Student extends Person<StudentId> {
+public class Student extends Person<StudentId> implements Eventful {
+    
+    private final Collection<Event> events_;
     
     private Student()
     {
         super();
+        events_ = new HashSet<>();
     }
     
     /**
-     * Returns new student instance.
-     * @param studentId Identifier. Must not be null.
-     * @return Student.
+     * Registers new student. Two things happen:
+     * <ol>
+     *   <li> A new student instance is created.</li>
+     *   <li> A corresponding domain event is raised.</lI>
+     * </ol>
+     * @param studentId New student identifier. Must not be null.
+     * @param spec New student specification. Must not be null. Must hold first name and 
+     * surname.
+     * @return Newly created student.
+     * @see #raiseRegistered() 
      */
-    public static Student create(StudentId studentId)
+    public static Student register(StudentId studentId, StudentDTO spec)
     {
         Student student = new Student();
         student.setIdentifier(studentId);
+        student.setFirstName(spec.getFirstName());
+        student.setSurname(spec.getSurname());
+        student.raiseRegistered();
         return student;
     }
     
@@ -78,4 +96,24 @@ public class Student extends Person<StudentId> {
         return dtos;
     }
     
+    @Override
+    public Collection<Event> getEvents() 
+    {
+        return Collections.unmodifiableCollection(events_);
+    }
+
+    @Override
+    public void clearEvents() 
+    {
+        events_.clear();
+    }
+    
+    /**
+     * Raise event to signal that this student did register with the client 
+     * application.
+     */
+    public void raiseRegistered()
+    {
+        events_.add(new NewStudentRegistered(this.getIdentifier()));
+    }
 }

@@ -45,7 +45,7 @@ public class Enrolment implements Identifiable, Eventful {
     private Instant when_;
     
     private final Collection<Event> events_;
-    
+
     private Enrolment()
     {
         eid_ = null;
@@ -141,7 +141,7 @@ public class Enrolment implements Identifiable, Eventful {
     {
         return eid_.stringValue();
     }
-
+    
     @Override
     public Collection<Event> getEvents() 
     {
@@ -154,7 +154,10 @@ public class Enrolment implements Identifiable, Eventful {
         events_.clear();
     }
     
-    void raiseStudentEnrolledInCourseEvent()
+    /**
+     * Informs that a student has enrolled in course.
+     */
+    public void raiseStudentEnrolledInCourseEvent()
     {
         events_.add(new StudentEnrolledInCourse(studentId_, courseId_));
     }

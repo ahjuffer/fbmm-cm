@@ -22,49 +22,28 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command;
+package org.bco.cm.domain.course.event;
 
-import com.tribc.cqrs.domain.command.AbstractCommand;
+import com.tribc.ddd.domain.event.AbstractEvent;
 import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.dto.StudentDTO;
 
 /**
- * Command for adding a new student to student repository.
+ * Student registered with application.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class AddNewStudent extends AbstractCommand {
+public class NewStudentRegistered extends AbstractEvent {
     
     private final StudentId studentId_;
-    private final StudentDTO spec_;
     
-    /**
-     * Constructor.
-     * @param studentId New student identifier-
-     * @param spec New student specification.
-     */
-    public AddNewStudent(StudentId studentId, StudentDTO spec)
+    public NewStudentRegistered(StudentId studentId)
     {
-        super(AddNewStudent.class);
+        super(NewStudentRegistered.class);
         studentId_ = studentId;
-        spec_ = spec;
     }
     
-    /**
-     * Returns new student identifier.
-     * @return Identifier.
-     */
     public StudentId getStudentId()
     {
         return studentId_;
-    }
-    
-    /**
-     * Returns new student specification.
-     * @return Specification.
-     */
-    public StudentDTO getSpec()
-    {
-        return spec_;
     }
 
 }
