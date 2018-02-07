@@ -50,7 +50,7 @@ public class StudentsController {
     
     /**
      * Adds new student resource.
-     * @param spec New student specification.
+     * @param spec New student specification. Must hold first name and surname.
      * @return New student.
      */
     @PostMapping(consumes = "application/json;charset=UTF-8", 

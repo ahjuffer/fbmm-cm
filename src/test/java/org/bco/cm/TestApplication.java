@@ -122,7 +122,6 @@ public class TestApplication implements ApplicationRunner {
     {
         LOGGER.setLevel(Level.TRACE);        
         SpringApplication.run(TestApplication.class, args);
-        LOGGER.info("Started TestApplication");
     }
 
     @Override

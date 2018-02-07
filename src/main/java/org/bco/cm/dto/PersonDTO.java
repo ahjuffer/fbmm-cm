@@ -66,7 +66,7 @@ public class PersonDTO
     
     /**
      * Returns full name, as "surname, firstName".
-     * @return 
+     * @return Full name.
      */
     public String getFullName()
     {
