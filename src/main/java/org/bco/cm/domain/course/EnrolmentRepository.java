@@ -40,5 +40,11 @@ public interface EnrolmentRepository extends Repository<Enrolment,EnrolmentNumbe
      * @return Enrolment, or null if nonexistent.
      */
     Enrolment forCourse(Course course, Student student);
+    
+    /**
+     * Returns an enrolment number.
+     * @return Identifier.
+     */
+    EnrolmentNumber generateId();
 
 }

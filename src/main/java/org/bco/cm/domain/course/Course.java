@@ -24,11 +24,14 @@
 
 package org.bco.cm.domain.course;
 
+import com.tribc.ddd.domain.event.Event;
+import com.tribc.ddd.domain.event.Eventful;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -47,7 +50,7 @@ import org.bco.cm.util.Identifiable;
  * and/or quizzes.
  * @author André H. Juffer, Biocenter Oulu
  */
-public class Course implements Identifiable {
+public class Course implements Eventful, Identifiable {
     
     // For generating module identifiers that are unique to a given course.
     private final static Random RANDOM;
@@ -68,6 +71,8 @@ public class Course implements Identifiable {
     
     private TeacherId teacherId_;
     
+    private final Collection<Event> events_;
+    
     private Course()
     {
         courseId_ = null;
@@ -78,6 +83,7 @@ public class Course implements Identifiable {
         roster_ = new HashMap<>();  // No student registered.
         firstModule_ = null;
         teacherId_ = null;
+        events_ = new HashSet<>();
     }
     
     private void setIdentifier(CourseId courseId)
@@ -267,29 +273,33 @@ public class Course implements Identifiable {
     }
     
     /**
-     * Student enrolled in this course. If the course is ongoing, the student
-     * gains access to the first module.
-     * @param student Student. Must not be null.
+     * Notification of course enrolment. If the course is 
+     * ongoing, the student gains access to the first module.
+     * @param student Student.
+     * @throws IllegalStateException if no more seats are available in the course.
      */
     public void enrolled(Student student)
     {
+        if ( !this.hasSeatsAvailable() ) {
+            throw new IllegalStateException("No more seats available in course.");
+        }
         StudentMonitor monitor = new StudentMonitor(student);        
         roster_.put(student.getIdentifier(), monitor);
         
         // Give access to first module.
         if ( this.isOngoing() ) {
             Module first = this.firstModule();
-            monitor.toNextModule(first);
+            monitor.toFirstModule(first);
         }        
     }
     
     /**
-     * Student passed all module assessments. Student is allowed to transfer to
+     * Notification of module completion. Student is allowed to transfer to 
      * the next module.
      * @param student Student.
      * @throws IllegalStateException if this course is not ongoing.
      */
-    public void passedModule(Student student)
+    public void completedModule(Student student)
     {
         if ( !this.isOngoing() ) {
             throw new IllegalStateException("Course is currently not ongoing.");
@@ -299,10 +309,10 @@ public class Course implements Identifiable {
     }
     
     /**
-     * Student cancels enrolment in course.
+     * Notification of canceling of enrolment.
      * @param student Student.
      */
-    public void canceled(Student student)
+    public void enrolmentCanceled(Student student)
     {
         roster_.remove(student.getIdentifier());
     }
@@ -441,6 +451,15 @@ public class Course implements Identifiable {
         return dto;
     }
     
+    /**
+     * Are there still seats available.
+     * @return Result.
+     */
+    public boolean hasSeatsAvailable()
+    {
+        return true;
+    }
+    
     private boolean hasModules()
     {
         return !modules_.isEmpty();
@@ -472,25 +491,20 @@ public class Course implements Identifiable {
     {
         Module first = this.firstModule();
         roster_.values().forEach((monitor) -> {
-            monitor.toNextModule(first);
+            monitor.toFirstModule(first);
         });
     }
     
     private boolean modulesHaveNonEmptyLearningPath()
     {        
-        for (Module module : modules_.values()) {
-            if ( module.isLearningPathEmpty() ) {
-                return false;
-            }
-        }
-        return true;
+        return modules_.values().stream().noneMatch((module) -> ( module.hasLearningPath() ));
     }
     
     private Module findModuleWithEmptyLearninPath()
     {
         Collection<Module> modules = this.modules();
         for (Module module : modules) {
-            if ( module.isLearningPathEmpty() ) {
+            if ( module.hasLearningPath() ) {
                 return module;
             }
         }
@@ -523,6 +537,18 @@ public class Course implements Identifiable {
             id = RANDOM.nextInt(bound);
         }
         return id;
+    }
+
+    @Override
+    public Collection<Event> getEvents() 
+    {
+        return Collections.unmodifiableCollection(events_);
+    }
+
+    @Override
+    public void clearEvents() 
+    {
+        events_.clear();
     }
 
 }

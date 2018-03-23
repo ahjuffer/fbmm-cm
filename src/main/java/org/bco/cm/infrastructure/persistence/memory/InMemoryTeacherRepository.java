@@ -27,8 +27,8 @@ package org.bco.cm.infrastructure.persistence.memory;
 import java.util.UUID;
 import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRepository;
 import org.springframework.stereotype.Repository;
+import org.bco.cm.domain.course.TeacherRegistry;
 
 /**
  *
@@ -37,7 +37,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class InMemoryTeacherRepository 
     extends InMemoryMapRepository<Teacher> 
-    implements TeacherRepository {
+    implements TeacherRegistry {
     
     @Override
     public Teacher forTeacherId(TeacherId teacherId) 
@@ -50,6 +50,18 @@ public class InMemoryTeacherRepository
     {
         UUID uuid = UUID.randomUUID();
         return new TeacherId(uuid.toString());
+    }
+
+    @Override
+    public Teacher forEntityId(TeacherId identifier) 
+    {
+        return this.forIdentifierAsString(identifier.stringValue());
+    }
+
+    @Override
+    public boolean contains(TeacherId identifier) 
+    {
+        return this.forEntityId(identifier) != null;
     }
 
 }

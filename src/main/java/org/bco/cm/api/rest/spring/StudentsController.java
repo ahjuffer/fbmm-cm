@@ -50,7 +50,8 @@ public class StudentsController {
     
     /**
      * Adds new student resource.
-     * @param spec New student specification. Must hold first name and surname.
+     * @param spec New student specification. Must hold first name, surname,
+     * student identifier, and email address.
      * @return New student.
      */
     @PostMapping(consumes = "application/json;charset=UTF-8", 
@@ -58,7 +59,7 @@ public class StudentsController {
     @ResponseStatus(HttpStatus.CREATED)
     public StudentDTO register(@RequestBody StudentDTO spec)
     {
-        StudentId studentId = studentFacade_.generateStudentId();
+        StudentId studentId = new StudentId(spec.getStudentId());
         studentFacade_.register(studentId, spec);
         return studentFacade_.getStudent(studentId);
     }

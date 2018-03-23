@@ -30,10 +30,10 @@ import org.bco.cm.application.command.StartNewCourse;
 import org.bco.cm.application.query.ReadOnlyTeacherRepository;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRepository;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.bco.cm.domain.course.TeacherRegistry;
 
 /**
  * Simplified interface for teachers.
@@ -42,7 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TeacherFacade {
     
     @Autowired
-    private TeacherRepository teacherRepository_;
+    private TeacherRegistry teacherRepository_;
     
     @Autowired
     private ReadOnlyTeacherRepository readOnlyTeacherRepository_;

@@ -30,7 +30,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import org.bco.cm.domain.course.event.StudentEnrolledInCourse;
+import org.bco.cm.domain.course.event.EnrolmentCreated;
 import org.bco.cm.util.Identifiable;
 
 /**
@@ -110,7 +110,7 @@ public class Enrolment implements Identifiable, Eventful {
     }
     
     /**
-     * Returns new course enrolment.
+     * Returns new course enrolment. Raises a StudentEnrolledInCourse event.
      * @param eid Enrolment number.
      * @param course Course.
      * @param student Student.
@@ -133,6 +133,7 @@ public class Enrolment implements Identifiable, Eventful {
         enrolment.setWhen(Instant.now());
         enrolment.setCourseId(course.getIdentifier());
         enrolment.setStudentId(student.getIdentifier());
+        enrolment.raiseStudentEnrolledInCourseEvent();
         return enrolment;
     }
 
@@ -155,11 +156,11 @@ public class Enrolment implements Identifiable, Eventful {
     }
     
     /**
-     * Informs that a student has enrolled in course.
+     * Raises event to informs that a student has enrolled in course.
      */
-    public void raiseStudentEnrolledInCourseEvent()
+    private void raiseStudentEnrolledInCourseEvent()
     {
-        events_.add(new StudentEnrolledInCourse(studentId_, courseId_));
+        events_.add(new EnrolmentCreated(studentId_, courseId_));
     }
     
 }

@@ -25,19 +25,19 @@
 package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.EnrolStudent;
-import org.bco.cm.domain.course.ClassRegister;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.Enrolment;
 import org.bco.cm.domain.course.EnrolmentNumber;
+import org.bco.cm.domain.course.EnrolmentRepository;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.bco.cm.domain.course.StudentRegistry;
 
 /**
- * Handles the registration of a student in a course.
+ * Creates a record of enrolment in a course.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 public class EnrolStudentHandler extends CmCommandHandler<EnrolStudent> {
@@ -46,25 +46,36 @@ public class EnrolStudentHandler extends CmCommandHandler<EnrolStudent> {
     private CourseCatalog courseCatalog_;
     
     @Autowired
-    private ClassRegister classRegister_;
+    private StudentRegistry studentRepository_;
     
     @Autowired
-    private StudentRepository studentRepository_;
+    private EnrolmentRepository enrolmentRepository_;
     
+    /**
+     * @param command Command.
+     * @throws IllegalStateException if student was already enrolled in course.
+     */
     @Override
     public void handle(EnrolStudent command)
     {
         EnrolmentNumber eid = command.getEnrolmentNumber();
         StudentId studentId = command.getStudentId();
-        
-        Student student = studentRepository_.forStudentId(studentId);
-        if ( student == null ) {
-            throw new NullPointerException(studentId + ": no such student.");
-        }
         CourseId courseId = command.getCourseId();
+           
+        Student student = studentRepository_.forStudentId(studentId);
         Course course = courseCatalog_.forCourseId(courseId);
-        Enrolment enrolment = classRegister_.enrol(eid, student, course);        
+        if ( this.isEnrolled(student, course) ) {
+            throw new IllegalStateException("Student already enrolled in course.");
+        }       
+        Enrolment enrolment = Enrolment.register(eid, course, student);
+        enrolmentRepository_.add(enrolment);
 
-        this.handleEventsAsync(enrolment);
+        // Handle in same thread.
+        this.handleEvents(enrolment);
+    }
+    
+    private boolean isEnrolled(Student student, Course course)
+    {
+        return enrolmentRepository_.forCourse(course, student) != null;
     }
 }

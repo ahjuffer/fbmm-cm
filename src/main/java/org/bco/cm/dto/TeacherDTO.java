@@ -35,7 +35,7 @@ public class TeacherDTO extends PersonDTO {
     {
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("TeacherDTO : {").append(newline);
-        this.appendToString(s);
+        this.appendTo(s);
         s.append("}");
         return s.toString();               
     }

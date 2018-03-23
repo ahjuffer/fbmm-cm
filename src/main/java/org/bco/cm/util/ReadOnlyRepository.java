@@ -22,40 +22,24 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.event.handler;
 
-import com.tribc.ddd.domain.event.EventHandler;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.Student;
-import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRepository;
-import org.bco.cm.domain.course.event.StudentEnrolledInCourse;
-import org.springframework.beans.factory.annotation.Autowired;
+package org.bco.cm.util;
 
 /**
- * Handles student enrolled in course event. Adds student to course roster.
+ * Holds entities of type T. One can read from the repository. Updating existing
+ * or adding new entities is not possible.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * @param <T> Entity type.
+ * @param <ID> Entity identifier type.
  */
-public class StudentEnrolledInCourseHandler 
-    extends EventHandler<StudentEnrolledInCourse> {
+public interface ReadOnlyRepository<T,ID> {
     
-    @Autowired
-    private CourseCatalog courseCatalog_;
-    
-    @Autowired
-    private StudentRepository studentRepository_;
-
-    @Override
-    public void handle(StudentEnrolledInCourse event) 
-    {
-        CourseId courseId = event.getCourseId();
-        Course course = courseCatalog_.forCourseId(courseId);
-        StudentId studentId = event.getStudentId();
-        Student student = studentRepository_.forStudentId(studentId);
-        course.enrolled(student);
-        courseCatalog_.update(course);                
-    }
+    /**
+     * Queries for entity with given identifier.
+     * @param identifier Entity identifier.
+     * @return Entity.
+     * @throws NullPointerException if nonexistent.
+     */
+    T forEntityId(ID identifier);
 
 }

@@ -1,4 +1,4 @@
-/*
+/* 
  * The MIT License
  *
  * Copyright 2018 André H. Juffer, Biocenter Oulu
@@ -21,42 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package org.bco.cm.infrastructure.persistence.memory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.dto.TeacherDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.course.TeacherRegistry;
-
 /**
- *
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Author:  ajuffer
+ * Created: Mar 14, 2018
  */
-public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherRepository {
-    
-    private TeacherRegistry teacherRepository_;
-    
-    @Autowired
-    public void setTeacherRepository(TeacherRegistry teacherRepository)
-    {
-        teacherRepository_ = teacherRepository;
-    }
 
-    @Override
-    public List<TeacherDTO> getAllTeachers() 
-    {
-        Collection<Teacher> teachers = teacherRepository_.forAll();
-        List<TeacherDTO> dtos = new ArrayList<>();
-        teachers.forEach(((teacher) -> {
-            TeacherDTO dto = teacher.toDTO();
-            dtos.add(dto);
-        }));
-        return dtos;
-    }
+create table students
+(
+    id              UUID not null primary key,
+    student_id      varchar(200),
+    first_name      varchar(200),
+    surname         varchar(200)
+);
 
-}

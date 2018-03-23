@@ -60,21 +60,27 @@ public class StudentMonitor {
     {
         return studentId_;
     }
-    
+
     /**
-     * Transfers student to given module.
-     * @param module Module.
+     * Transfers student to the first module.
+     * @param first First (or start) module.
      */
-    void toNextModule(Module module)
+    void toFirstModule(Module first)
     {
-        current_ = module;
+        current_ = first;
     }
     
     /**
      * Transfers student from current to next module, if there is one.
+     * @throws NullPointerException if current is null.
      */
     void toNextModule()
     {
+        if ( current_ == null ) {
+            throw new NullPointerException(
+                "Next module is not assigned in current module."
+            );
+        }
         if ( current_.hasNext() ) {
             current_ = current_.toNext();
         }

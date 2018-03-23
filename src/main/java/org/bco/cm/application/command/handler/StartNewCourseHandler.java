@@ -29,8 +29,8 @@ import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.bco.cm.domain.course.TeacherRegistry;
 
 /**
  * Handles starting a new course
@@ -39,7 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class StartNewCourseHandler extends CmCommandHandler<StartNewCourse> {
     
     @Autowired
-    private TeacherRepository teacherRepository_;   
+    private TeacherRegistry teacherRepository_;   
     
     @Autowired
     private CourseCatalog courseCatalog_;
@@ -56,6 +56,9 @@ public class StartNewCourseHandler extends CmCommandHandler<StartNewCourse> {
                                      command.getCourseId(), 
                                      command.getCourseSpecification());
         courseCatalog_.add(course);
+        
+        // Handle in same thread.
+        this.handleEvents(course);
     }
     
 }

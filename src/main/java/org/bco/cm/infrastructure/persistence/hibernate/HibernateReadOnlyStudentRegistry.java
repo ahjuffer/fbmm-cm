@@ -22,30 +22,55 @@
  * THE SOFTWARE.
  */
 
-
-package org.bco.cm.application.query;
+package org.bco.cm.infrastructure.persistence.hibernate;
 
 import java.util.List;
+import org.bco.cm.application.query.ReadOnlyStudentRegistry;
 import org.bco.cm.domain.course.StudentId;
 import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.util.ReadOnlyHibernateRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * A read-only repository for students. Students are stored DTOs.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface ReadOnlyStudentRepository {
+@Repository
+public class HibernateReadOnlyStudentRegistry 
+    extends ReadOnlyHibernateRepository<StudentDTO, StudentId> 
+    implements ReadOnlyStudentRegistry 
+{
+    private static final String FROM = 
+        "select student from " + StudentDTO.class.getName() + " student ";
     
-    /**
-     * Returns all students.
-     * @return Students. May be empty.
-     */
-    List<StudentDTO> getAllStudents();
+    public HibernateReadOnlyStudentRegistry()
+    {
+        super();
+    }
     
-    /**
-     * Returns student with given identifier.
-     * @param studentId Identifier.
-     * @return Student.
-     */
-    StudentDTO getStudent(StudentId studentId);
+    @Override
+    public List<StudentDTO> getAllStudents() 
+    {
+        return this.forMany(FROM);
+    }
+
+    @Override
+    public StudentDTO getStudent(StudentId studentId) 
+    {
+        String id = studentId.stringValue();
+        String hql = FROM +
+            "where student.studentId = '" + id + "'";
+        StudentDTO student = this.forSingle(hql);
+        if ( student == null ) {
+            throw new NullPointerException(id + ": No such student.");
+        }
+        return student;
+    }
+
+    @Override
+    public StudentDTO forEntityId(StudentId identifier) 
+    {
+        return this.getStudent(identifier);
+    }
 
 }

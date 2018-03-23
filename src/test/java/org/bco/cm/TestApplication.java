@@ -24,65 +24,51 @@ package org.bco.cm;
  * THE SOFTWARE.
  */
 
-import java.util.Collection;
-import java.util.HashSet;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
-import org.bco.cm.application.query.ReadOnlyStudentRepository;
 import org.bco.cm.application.query.ReadOnlyTeacherRepository;
-import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.EnrolmentRepository;
-import org.bco.cm.domain.course.StudentRepository;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRepository;
-import org.bco.cm.dto.CourseDTO;
-import org.bco.cm.dto.LearningPathDTO;
-import org.bco.cm.dto.ModuleDTO;
-import org.bco.cm.dto.OnlineMaterialDTO;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.StudentRegistry;
+import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.dto.StudentDTO;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseCatalog;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryEnrolmentRepository;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyCourseCatalog;
-import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyStudentRepository;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyTeacherRepository;
-import org.bco.cm.infrastructure.persistence.memory.InMemoryStudentRepository;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryTeacherRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-
 /**
  *
  * @author Andr&#233; Juffer, Biocenter Oulu
  */
+
 @SpringBootApplication
+/*@EnableAutoConfiguration(exclude = {
+        DataSourceAutoConfiguration.class,
+        DataSourceTransactionManagerAutoConfiguration.class,
+        HibernateJpaAutoConfiguration.class })
+*/
 public class TestApplication implements ApplicationRunner {
     
-    private static final Logger LOGGER = LogManager.getLogger("crapp");
+    private static final Logger LOGGER = LogManager.getLogger("com.bco.cm");
+    
+    @Autowired
+    private StudentFacade studentFacade_;
     
     @Bean
     @Primary
-    StudentRepository studentRepository()
-    {
-        return new InMemoryStudentRepository();
-    }
-    
-    @Bean
-    @Primary
-    ReadOnlyStudentRepository readOnlyStudentRepository()
-    {
-        return new InMemoryReadOnlyStudentRepository();
-    }
-    
-    @Bean
-    @Primary
-    TeacherRepository teacherRepository()
+    TeacherRegistry teacherRegistry()
     {
         return new InMemoryTeacherRepository();
     }
@@ -120,14 +106,30 @@ public class TestApplication implements ApplicationRunner {
      */
     public static void main(String[] args) 
     {
-        LOGGER.setLevel(Level.TRACE);        
-        SpringApplication.run(TestApplication.class, args);
+        SpringApplication app = new SpringApplication(TestApplication.class);
+        app.run();
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception 
     {
-        TeacherRepository teacherRepository = this.teacherRepository();
+        
+        StudentId studentId = StudentId.generate();
+        LOGGER.info("StudentId - " + studentId.stringValue());
+        StudentDTO spec = new StudentDTO();
+        spec.setFirstName("André");
+        spec.setSurname("Juffer");
+        studentFacade_.register(studentId, spec);
+        
+        StudentDTO registered = studentFacade_.getStudent(studentId);
+        LOGGER.info("Registered - " + registered);
+        
+        List<StudentDTO> students = studentFacade_.getAllStudents();
+        LOGGER.info("All students: " + students);
+        
+        
+        /*
+        TeacherRegistry teacherRepository = this.teacherRegistry();
         TeacherId teacherId = new TeacherId("12345");
         Teacher teacher = Teacher.create(teacherId);
         teacherRepository.add(teacher);
@@ -178,6 +180,7 @@ public class TestApplication implements ApplicationRunner {
         
         catalog.add(insilico);
         
-        insilico.begin();
+        //insilico.begin();
+        */
     }
 }

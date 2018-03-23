@@ -25,7 +25,7 @@
 package org.bco.cm.domain.course.event;
 
 import com.tribc.ddd.domain.event.AbstractEvent;
-import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.Student;
 
 /**
  * Student registered with application.
@@ -33,17 +33,17 @@ import org.bco.cm.domain.course.StudentId;
  */
 public class NewStudentRegistered extends AbstractEvent {
     
-    private final StudentId studentId_;
+    private final Student student_;
     
-    public NewStudentRegistered(StudentId studentId)
+    public NewStudentRegistered(Student student)
     {
         super(NewStudentRegistered.class);
-        studentId_ = studentId;
+        student_ = student;
     }
     
-    public StudentId getStudentId()
+    public Student getStudent()
     {
-        return studentId_;
+        return student_;
     }
 
 }

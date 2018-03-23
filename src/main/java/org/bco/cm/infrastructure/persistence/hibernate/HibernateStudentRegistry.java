@@ -22,41 +22,53 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.infrastructure.persistence.hibernate;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.dto.TeacherDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.domain.course.Student;
+import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.StudentRegistry;
+import org.bco.cm.util.HibernateRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherRepository {
-    
-    private TeacherRegistry teacherRepository_;
-    
-    @Autowired
-    public void setTeacherRepository(TeacherRegistry teacherRepository)
+@Repository
+public class HibernateStudentRegistry 
+    extends HibernateRepository<Student,StudentId>
+    implements StudentRegistry 
+{    
+    private static final String FROM = 
+        "select student from " + Student.class.getName() + " student ";
+
+    @Override
+    public Student forStudentId(StudentId studentId) 
     {
-        teacherRepository_ = teacherRepository;
+        String id = studentId.stringValue();
+        String hql = 
+            FROM + 
+            "where student.studentId.id = '" + id + "'";
+        //return this.forSingle(hql);
+        return null;
+    }
+
+    /**
+     * Returns an UUID valued identifier.
+     * @return Student identifier.
+     */
+
+    @Override
+    public Student forEntityId(StudentId identifier) 
+    {
+        return this.forStudentId(identifier);
     }
 
     @Override
-    public List<TeacherDTO> getAllTeachers() 
+    public List<Student> forAll() 
     {
-        Collection<Teacher> teachers = teacherRepository_.forAll();
-        List<TeacherDTO> dtos = new ArrayList<>();
-        teachers.forEach(((teacher) -> {
-            TeacherDTO dto = teacher.toDTO();
-            dtos.add(dto);
-        }));
-        return dtos;
+        return this.forMany(FROM);
     }
 
 }

@@ -116,12 +116,15 @@ public class Module {
     }
     
     /**
-     * Were online material added to this module's learning path.
+     * Does this module already include a learning path?
      * @return Result.
      */
-    boolean isLearningPathEmpty()
+    boolean hasLearningPath()
     {
-        return learningPath_.isEmpty();
+        if ( learningPath_ != null ) {
+            return learningPath_.isEmpty() == false;
+        }
+        return false;
     }
     
     /**

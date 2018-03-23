@@ -29,16 +29,20 @@ import com.tribc.ddd.domain.event.EventBus;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
-import org.bco.cm.application.command.handler.RegisterNewStudentHandler;
 import org.bco.cm.application.command.handler.CmCommandBus;
 import org.bco.cm.application.command.handler.EnrolStudentHandler;
+import org.bco.cm.application.command.handler.RegisterNewStudentHandler;
 import org.bco.cm.application.command.handler.StartNewCourseHandler;
 import org.bco.cm.application.event.handler.CmEventBus;
+import org.bco.cm.application.event.handler.EnrolmentCreatedHandler;
 import org.bco.cm.application.event.handler.NewStudentRegisteredHandler;
-import org.bco.cm.application.event.handler.StudentEnrolledInCourseHandler;
-import org.bco.cm.domain.course.ClassRegister;
+import org.bco.cm.application.query.ReadOnlyStudentRegistry;
+import org.bco.cm.domain.course.StudentRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyStudentRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateStudentRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  * Bean configuration.
@@ -46,6 +50,22 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CmConfiguration {
+    
+    /*
+    @Bean
+    @Primary
+    StudentRegistry studentRegistry()
+    {
+        return new HibernateStudentRegistry();
+    }
+    */
+    
+    @Bean
+    @Primary
+    ReadOnlyStudentRegistry readOnlyStudentRegistry()
+    {
+        return new HibernateReadOnlyStudentRegistry();
+    }
     
     @Bean
     CourseFacade courseFacade()
@@ -96,21 +116,15 @@ public class CmConfiguration {
     }
     
     @Bean
-    StudentEnrolledInCourseHandler studentEnrolledInCourseHandler()
+    EnrolmentCreatedHandler enrolmentCreatedHandler()
     {
-        return new StudentEnrolledInCourseHandler();
+        return new EnrolmentCreatedHandler();
     }
     
     @Bean 
     EventBus eventBus()
     {
         return new CmEventBus();
-    }
-    
-    @Bean
-    ClassRegister classRegister()
-    {
-        return new ClassRegister();
     }
 
 }

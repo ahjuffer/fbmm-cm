@@ -24,21 +24,36 @@
 
 package org.bco.cm.dto;
 
+import java.io.Serializable;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
+
 /**
  * DTO for Person.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class PersonDTO 
+@MappedSuperclass
+public class PersonDTO implements Serializable
 {
     private String identifier_;
     private String firstName_;
     private String surname_;
 
+    protected PersonDTO()
+    {
+        identifier_ = null;
+        firstName_ = null;
+        surname_ = null;
+    }
+    
     public void setIdentifier(String identifier)
     {
         identifier_ = identifier;
     }
     
+    @Transient
     public String getIdentifier()
     {
         return identifier_;
@@ -49,6 +64,7 @@ public class PersonDTO
         firstName_ = firstName;
     }
     
+    @Column(name = "first_name")
     public String getFirstName()
     {
         return firstName_;
@@ -58,7 +74,8 @@ public class PersonDTO
     {
         surname_ = surname;       
     }
-    
+
+    @Column(name = "surname")
     public String getSurname()
     {
         return surname_;
@@ -68,6 +85,7 @@ public class PersonDTO
      * Returns full name, as "surname, firstName".
      * @return Full name.
      */
+    @Transient
     public String getFullName()
     {
         return surname_ + ", " + firstName_;
@@ -78,11 +96,36 @@ public class PersonDTO
      * derived class.
      * @param s String
      */
-    protected final void appendToString(StringBuilder s)
+    protected final void appendTo(StringBuilder s)
     {
         String newline = System.getProperty("line.separator");
         s.append("identifier - ").append(identifier_).append(newline);
         s.append("firstName - ").append(firstName_).append(newline);
         s.append("surname - ").append(surname_).append(newline);
+    }
+    
+    @Override
+    public boolean equals(Object other)
+    {
+        if ( other == null ) {
+            return false;
+        }
+        if ( this == other ) {
+            return true;
+        }
+        if ( this.getClass() != other.getClass() ) {
+            return false;
+        }
+        PersonDTO person = (PersonDTO)other;
+        return identifier_.equals(person.getIdentifier());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.identifier_);
+        hash = 53 * hash + Objects.hashCode(this.firstName_);
+        hash = 53 * hash + Objects.hashCode(this.surname_);
+        return hash;
     }
 }

@@ -26,10 +26,10 @@ package org.bco.cm.infrastructure.persistence.memory;
 
 import java.util.Collection;
 import java.util.List;
-import org.bco.cm.application.query.ReadOnlyStudentRepository;
+import org.bco.cm.application.query.ReadOnlyStudentRegistry;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRepository;
+import org.bco.cm.domain.course.StudentRegistry;
 import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,32 +37,38 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryReadOnlyStudentRepository implements ReadOnlyStudentRepository {
+public class InMemoryReadOnlyStudentRepository implements ReadOnlyStudentRegistry {
     
-    private InMemoryStudentRepository studentRepository_;
+    private StudentRegistry studentRepository_;
     
     @Autowired
-    public void setStudentRepository(StudentRepository studentRepository)
+    public void setStudentRepository(StudentRegistry studentRepository)
     {
-        studentRepository_ = (InMemoryStudentRepository)studentRepository;
+        studentRepository_ = studentRepository;
     }
 
     @Override
     public List<StudentDTO> getAllStudents() 
     {
-        Collection<Student> students = studentRepository_.all();
+        Collection<Student> students = studentRepository_.forAll();
         return Student.toDTOs(students);
     }
 
     @Override
     public StudentDTO getStudent(StudentId studentId) 
     {
-        for (Student student : studentRepository_.all()) {
+        for (Student student : studentRepository_.forAll()) {
             if ( student.getIdentifier().equals(studentId) ) {
                 return student.toDTO();
             }
         }
         throw new NullPointerException(studentId.stringValue() + ": No such student.");
+    }
+
+    @Override
+    public StudentDTO forEntityId(StudentId identifier) 
+    {
+        return this.getStudent(identifier);
     }
 
 }

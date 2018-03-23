@@ -43,7 +43,7 @@ public class InMemoryEnrolmentRepository
     @Override
     public Enrolment forCourse(Course course, Student student) 
     {
-        Collection<Enrolment> enrolments = this.all();
+        Collection<Enrolment> enrolments = this.forAll();
         for (Enrolment enrolment : enrolments) {
             if ( enrolment.getCourseId().equals(course.getIdentifier()) &&
                  enrolment.getStudentId().equals(student.getIdentifier()) ) {
@@ -58,6 +58,18 @@ public class InMemoryEnrolmentRepository
     {
         UUID uuid = UUID.randomUUID();
         return new EnrolmentNumber(uuid.toString());
+    }
+
+    @Override
+    public Enrolment forEntityId(EnrolmentNumber identifier) 
+    {
+        return this.forIdentifierAsString(identifier.stringValue());
+    }
+
+    @Override
+    public boolean contains(EnrolmentNumber identifier) 
+    {
+        return this.forEntityId(identifier) != null;
     }
 
 }

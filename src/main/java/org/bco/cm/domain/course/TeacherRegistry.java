@@ -22,41 +22,27 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.domain.course;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.dto.TeacherDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.util.Repository;
 
 /**
- *
+ * Holds teachers.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherRepository {
+public interface TeacherRegistry extends Repository<Teacher, TeacherId> {
     
-    private TeacherRegistry teacherRepository_;
+    /**
+     * Returns teacher with given identifier.
+     * @param teacherId Identifier.
+     * @return Teacher, or null if nonexistent.
+     */
+    Teacher forTeacherId(TeacherId teacherId);    
     
-    @Autowired
-    public void setTeacherRepository(TeacherRegistry teacherRepository)
-    {
-        teacherRepository_ = teacherRepository;
-    }
-
-    @Override
-    public List<TeacherDTO> getAllTeachers() 
-    {
-        Collection<Teacher> teachers = teacherRepository_.forAll();
-        List<TeacherDTO> dtos = new ArrayList<>();
-        teachers.forEach(((teacher) -> {
-            TeacherDTO dto = teacher.toDTO();
-            dtos.add(dto);
-        }));
-        return dtos;
-    }
+    /**
+     * Returns a teacher identifier.
+     * @return Identifier.
+     */
+    TeacherId generateId();
 
 }

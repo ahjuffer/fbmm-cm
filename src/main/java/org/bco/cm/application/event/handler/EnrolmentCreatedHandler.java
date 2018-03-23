@@ -22,43 +22,40 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course.event;
+package org.bco.cm.application.event.handler;
 
-import com.tribc.ddd.domain.event.AbstractEvent;
+import com.tribc.ddd.domain.event.EventHandler;
+import org.bco.cm.domain.course.Course;
+import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.course.event.EnrolmentCreated;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.bco.cm.domain.course.StudentRegistry;
 
 /**
- * Student enrolled in course.
+ * Adds student to course roster.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StudentEnrolledInCourse extends AbstractEvent {
+public class EnrolmentCreatedHandler extends EventHandler<EnrolmentCreated> {
+    
+    @Autowired
+    private CourseCatalog courseCatalog_;
+    
+    @Autowired
+    private StudentRegistry studentRepository_;
 
-    private final StudentId studentId_;
-    private final CourseId courseId_;
-    
-    public StudentEnrolledInCourse(StudentId studentId, CourseId courseId)
+    @Override
+    public void handle(EnrolmentCreated event) 
     {
-        super(StudentEnrolledInCourse.class);
-        studentId_ = studentId;
-        courseId_ = courseId;
+        CourseId courseId = event.getCourseId();
+        StudentId studentId = event.getStudentId();
+        
+        Course course = courseCatalog_.forCourseId(courseId);
+        Student student = studentRepository_.forStudentId(studentId);
+        course.enrolled(student);
+        courseCatalog_.update(course);           
     }
-    
-    /**
-     * Returns student identifier.
-     * @return Identifier.
-     */
-    public StudentId getStudentId()
-    {
-        return studentId_;
-    }
-    
-    /**
-     * Returns course identifier.
-     * @return Identifier.
-     */
-    public CourseId getCourseId()
-    {
-        return courseId_;
-    }
+
 }

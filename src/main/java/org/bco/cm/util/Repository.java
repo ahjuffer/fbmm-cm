@@ -24,11 +24,13 @@
 
 package org.bco.cm.util;
 
+import java.util.List;
+
 /**
- * Holds entities of type T
+ * Holds entities of type T.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
- * @param <T> Entity type the repository manages
- * @param <ID> Domain identifier type.
+ * @param <T> Entity type.
+ * @param <ID> Entity identifier type.
  */
 public interface Repository<T,ID> {
     
@@ -51,10 +53,23 @@ public interface Repository<T,ID> {
     void remove(T t);
     
     /**
-     * Returns a new identifier.
-     * @return Identifier.
+     * Queries for entity with given identifier.
+     * @param identifier Entity identifier.
+     * @return Entity, or null if nonexistent.
      */
-    ID generateId();
+    T forEntityId(ID identifier);
     
-
+    /**
+     * Returns all entities in the repository.
+     * @return Entities. May be empty.
+     */
+    public List<T> forAll();    
+    
+    /**
+     * Inquires whether this repository holds an entity with given identifier.
+     * @param identifier Identifier.
+     * @return Result.
+     */
+    boolean contains(ID identifier);
+    
 }

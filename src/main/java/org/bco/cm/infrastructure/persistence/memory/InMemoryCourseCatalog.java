@@ -37,7 +37,6 @@ public class InMemoryCourseCatalog
     extends InMemoryMapRepository<Course> 
     implements CourseCatalog {
     
-
     @Override
     public CourseId generateId() 
     {
@@ -49,6 +48,18 @@ public class InMemoryCourseCatalog
     public Course forCourseId(CourseId courseId) 
     {
         return this.forIdentifierAsString(courseId.stringValue());
+    }
+
+    @Override
+    public Course forEntityId(CourseId identifier) 
+    {
+        return this.forCourseId(identifier);
+    }
+
+    @Override
+    public boolean contains(CourseId identifier) 
+    {
+        return this.forCourseId(identifier) != null;
     }
 
 }

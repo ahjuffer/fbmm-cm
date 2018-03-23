@@ -43,12 +43,12 @@ import org.bco.cm.domain.course.CourseId;
 @Repository
 public class InMemoryReadOnlyCourseCatalog implements ReadOnlyCourseCatalog {
 
-    private InMemoryCourseCatalog courseCatalog_;
+    private CourseCatalog courseCatalog_;
     
     @Autowired
     public void setCourseCatalog(CourseCatalog courseCatalog)
     {
-        courseCatalog_ = (InMemoryCourseCatalog)courseCatalog;
+        courseCatalog_ = courseCatalog;
     }
     
     @Override
@@ -60,7 +60,7 @@ public class InMemoryReadOnlyCourseCatalog implements ReadOnlyCourseCatalog {
     @Override
     public List<CourseDTO> getAllCourses()
     {
-        Collection<Course> courses = courseCatalog_.all();
+        Collection<Course> courses = courseCatalog_.forAll();
         List<CourseDTO> dtos = new ArrayList<>();
         courses.forEach((course) -> {
             CourseDTO dto = this.toDTO(course);
@@ -72,7 +72,7 @@ public class InMemoryReadOnlyCourseCatalog implements ReadOnlyCourseCatalog {
     @Override
     public List<CourseDTO> getOngoingCourses()
     {
-        Collection<Course> courses = courseCatalog_.all();
+        Collection<Course> courses = courseCatalog_.forAll();
         List<CourseDTO> dtos = new ArrayList<>();
         courses.forEach((course) -> {
             if ( course.isOngoing() ) {

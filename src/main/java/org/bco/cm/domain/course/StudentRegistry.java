@@ -22,41 +22,24 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.domain.course;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.dto.TeacherDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.util.Repository;
+//import org.springframework.data.jpa.repository.JpaRepository;
+//import org.springframework.data.repository.CrudRepository;
 
 /**
- *
+ * Holds students.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherRepository {
+public interface StudentRegistry extends Repository<Student, StudentId> {
+//public interface StudentRegistry extends JpaRepository<Student, String> {
     
-    private TeacherRegistry teacherRepository_;
+    /**
+     * Returns student with given identifier.
+     * @param studentId Identifier.
+     * @return Student, or null if nonexistent.
+     */
+    Student forStudentId(StudentId studentId);
     
-    @Autowired
-    public void setTeacherRepository(TeacherRegistry teacherRepository)
-    {
-        teacherRepository_ = teacherRepository;
-    }
-
-    @Override
-    public List<TeacherDTO> getAllTeachers() 
-    {
-        Collection<Teacher> teachers = teacherRepository_.forAll();
-        List<TeacherDTO> dtos = new ArrayList<>();
-        teachers.forEach(((teacher) -> {
-            TeacherDTO dto = teacher.toDTO();
-            dtos.add(dto);
-        }));
-        return dtos;
-    }
-
 }

@@ -27,7 +27,7 @@ package org.bco.cm.application.command.handler;
 import org.bco.cm.application.command.RegisterNewStudent;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRepository;
+import org.bco.cm.domain.course.StudentRegistry;
 import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,7 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RegisterNewStudentHandler extends CmCommandHandler<RegisterNewStudent> {
     
     @Autowired
-    StudentRepository studentRepository_;
+    StudentRegistry studentRepository_;
 
     @Override
     public void handle(RegisterNewStudent command) 
@@ -46,7 +46,7 @@ public class RegisterNewStudentHandler extends CmCommandHandler<RegisterNewStude
         StudentId studentId = command.getStudentId();
         StudentDTO spec = command.getSpec();
         
-        if ( studentRepository_.hasStudent(studentId) ) {
+        if ( studentRepository_.contains(studentId) ) {
             throw new IllegalStateException(
                 studentId.stringValue() + 
                 ": Student with this identifier already registered."
@@ -55,7 +55,8 @@ public class RegisterNewStudentHandler extends CmCommandHandler<RegisterNewStude
         Student student = Student.register(studentId, spec);
         studentRepository_.add(student);
         
-        this.handleEventsAsync(student);
+        // Handle in same thread.
+        this.handleEvents(student);
     }
 
 }

@@ -24,37 +24,39 @@
 
 package org.bco.cm.infrastructure.persistence.memory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRepository;
+import org.bco.cm.domain.course.StudentRegistry;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class InMemoryStudentRepository 
-    extends InMemoryMapRepository<Student>
-    implements StudentRepository
+//    extends InMemoryMapRepository<Student>
+//    implements StudentRegistry
 {
 
-    @Override
+    //@Override
     public Student forStudentId(StudentId studentId) 
     {
-        return this.forIdentifierAsString(studentId.stringValue());
+        return null;
+        //return this.forIdentifierAsString(studentId.stringValue());
     }
 
-    @Override
-    public StudentId generateId() 
+    //@Override
+    public Student forEntityId(StudentId identifier) 
     {
-        UUID uuid = UUID.randomUUID();
-        return new StudentId(uuid.toString());
+        return this.forStudentId(identifier);
     }
 
-    @Override
-    public boolean hasStudent(StudentId studentId) 
+    //@Override
+    public boolean contains(StudentId identifier) 
     {
-        return this.forStudentId(studentId) != null;
+        return this.forEntityId(identifier) != null;
     }
 
 }

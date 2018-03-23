@@ -25,6 +25,9 @@
 package org.bco.cm.util;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import org.bco.cm.dto.PersonDTO;
 
 /**
@@ -32,6 +35,7 @@ import org.bco.cm.dto.PersonDTO;
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  * @param <ID> Person identifier type.
  */
+@MappedSuperclass
 public class Person<ID extends Id<String>> implements Identifiable {
     
     private ID identifier_;
@@ -41,8 +45,14 @@ public class Person<ID extends Id<String>> implements Identifiable {
     protected Person()
     {
         identifier_ = null;
+        firstName_ = null;
+        surname_ = null;
     }
     
+    /**
+     * Sets identifier.
+     * @param identifier Identifier.
+     */
     protected void setIdentifier(ID identifier)
     {
         if ( identifier == null ) {
@@ -57,12 +67,14 @@ public class Person<ID extends Id<String>> implements Identifiable {
      * Returns identifier.
      * @return Identifier.
      */
+    @Transient
     public ID getIdentifier()        
     {
         return identifier_;
     }
     
     @Override
+    @Transient
     public String getIdentifierAsString()
     {
         return identifier_.stringValue();
@@ -70,7 +82,7 @@ public class Person<ID extends Id<String>> implements Identifiable {
     
     /**
      * Sets first name.
-     * @param firstName First name. Must not be null and empty. 
+     * @param firstName First name. Must neither be null nor empty. 
      */
     protected void setFirstName(String firstName)
     {
@@ -87,6 +99,7 @@ public class Person<ID extends Id<String>> implements Identifiable {
      * Returns first name.
      * @return First name. Never null or empty.
      */
+    @Column(name = "first_name")
     public String getFirstName()
     {
         return firstName_;
@@ -94,7 +107,7 @@ public class Person<ID extends Id<String>> implements Identifiable {
     
     /**
      * Sets surname.
-     * @param surname Surname. Must not be null and empty. 
+     * @param surname Surname. Must neither be null nor empty. 
      */
     protected void setSurname(String surname)
     {
@@ -111,6 +124,7 @@ public class Person<ID extends Id<String>> implements Identifiable {
      * Returns surname.
      * @return Surname. Never null or empty.
      */
+    @Column(name = "surname")    
     public String getSurname()
     {
         return surname_;
@@ -125,7 +139,7 @@ public class Person<ID extends Id<String>> implements Identifiable {
         if ( this == other ) {
             return true;
         }
-        if ( !(other instanceof Person) ) {
+        if ( this.getClass() != other.getClass() ) {
             return false;
         }
         Person person = (Person)other;
@@ -133,13 +147,14 @@ public class Person<ID extends Id<String>> implements Identifiable {
     }
 
     @Override
-    public int hashCode() 
-    {
-        int hash = 5;
-        hash = 17 * hash + Objects.hashCode(this.identifier_);
+    public int hashCode() {
+        int hash = 3;
+        hash = 11 * hash + Objects.hashCode(this.identifier_);
+        hash = 11 * hash + Objects.hashCode(this.firstName_);
+        hash = 11 * hash + Objects.hashCode(this.surname_);
         return hash;
     }
-    
+
     /**
      * Populate DTO.
      * @param <T> DTO type.
@@ -147,9 +162,7 @@ public class Person<ID extends Id<String>> implements Identifiable {
      */
     protected final <T extends PersonDTO> void populateDTO(T dto)
     {
-        if ( identifier_ != null ) {
-            dto.setIdentifier(identifier_.toString());
-        }
+        dto.setIdentifier(identifier_.toString());
         dto.setFirstName(firstName_);
         dto.setSurname(surname_);
     }

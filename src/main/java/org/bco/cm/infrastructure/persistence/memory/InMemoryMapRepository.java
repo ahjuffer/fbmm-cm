@@ -24,7 +24,8 @@
 
 package org.bco.cm.infrastructure.persistence.memory;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import org.bco.cm.util.Identifiable;
@@ -85,6 +86,11 @@ public class InMemoryMapRepository<T extends Identifiable> {
         map_.remove(key);
     }
     
+    public void deleteAll()
+    {
+        
+    }
+    
     /**
      * Returns object using an identifier as key.
      * @param id Identifier.
@@ -95,18 +101,14 @@ public class InMemoryMapRepository<T extends Identifiable> {
         return map_.get(id);
     }
     
-    /**
-     * Returns all entities.
-     * @return Entities.
-     */
-    protected Collection<T> all()
+    public List<T> forAll()
     {
-        return map_.values();
+        return new ArrayList<>(map_.values());
     }
 
     private String key(T t)
     {
         return t.getIdentifierAsString();
     }
-
+    
 }

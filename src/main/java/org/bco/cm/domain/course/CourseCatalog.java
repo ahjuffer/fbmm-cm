@@ -38,4 +38,10 @@ public interface CourseCatalog extends Repository<Course, CourseId> {
      * @return Course, or null if nonexistent.
      */
     Course forCourseId(CourseId courseId);
+    
+    /**
+     * Returns a coarse identifier.
+     * @return Identifier.
+     */
+    CourseId generateId();
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2017 Andr&#233; Juffer, Biocenter Oulu.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,13 +23,14 @@
  */
 package org.bco.cm.application.command;
 
+import com.tribc.cqrs.domain.command.AbstractCommand;
 import org.bco.cm.domain.course.CourseId;
 
 /**
  * Command to begin an existing course
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * @author Andr&#233; Juffer, Biocenter Oulu
  */
-public class BeginCourse {
+public class BeginCourse extends AbstractCommand {
     
     private final CourseId courseId_;
     
@@ -39,6 +40,7 @@ public class BeginCourse {
      */
     public BeginCourse(CourseId courseId)
     {
+        super(BeginCourse.class);
         courseId_ = courseId;
     }
     

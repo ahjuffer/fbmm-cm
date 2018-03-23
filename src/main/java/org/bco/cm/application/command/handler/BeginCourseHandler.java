@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2017 Andr&#233; Juffer, Biocenter Oulu.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,9 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Handles beginning an existing course.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * @author Andr&#233; Juffer, Biocenter Oulu
  */
-public class BeginCourseHandler {
+public class BeginCourseHandler extends CmCommandHandler<BeginCourse> {
     
     private CourseCatalog courseCatalog_;
     
@@ -44,11 +44,15 @@ public class BeginCourseHandler {
         courseCatalog_ = courseCatalog;
     }
     
+    @Override
     public void handle(BeginCourse command)
     {
         CourseId courseId = command.getCourseId();
         Course course = courseCatalog_.forCourseId(courseId);
         course.begin();
         courseCatalog_.update(course);
+        
+        // Handle in same thread.
+        this.handleEvents(course);
     }
 }

@@ -26,34 +26,36 @@ package org.bco.cm.api.facade;
 
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
-import org.bco.cm.application.command.RegisterNewStudent;
 import org.bco.cm.application.command.EnrolStudent;
-import org.bco.cm.application.query.ReadOnlyStudentRepository;
+import org.bco.cm.application.command.RegisterNewStudent;
+import org.bco.cm.application.query.ReadOnlyStudentRegistry;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.EnrolmentNumber;
 import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRepository;
 import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Simple interface for students.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+@Transactional
 public class StudentFacade {
     
     @Autowired
-    private StudentRepository studentRepository_;
-    
-    @Autowired
-    private ReadOnlyStudentRepository readOnlyStudentRepository_;
+    private ReadOnlyStudentRegistry readOnlyStudentRegistry_;
     
     @Autowired
     private CommandBus commandBus_;
     
+    /**
+     * Returns new student identifier.
+     * @return Student identifier.
+     */
     public StudentId generateStudentId()
     {
-        return studentRepository_.generateId();
+        return StudentId.generate();
     }
     
     /**
@@ -74,7 +76,7 @@ public class StudentFacade {
      */
     public StudentDTO getStudent(StudentId studentId)
     {
-        return readOnlyStudentRepository_.getStudent(studentId);
+        return readOnlyStudentRegistry_.getStudent(studentId);
     }
     
     /**
@@ -83,7 +85,7 @@ public class StudentFacade {
      */
     public List<StudentDTO> getAllStudents()
     {
-        return readOnlyStudentRepository_.getAllStudents();
+        return readOnlyStudentRegistry_.getAllStudents();
     }
     
     /**

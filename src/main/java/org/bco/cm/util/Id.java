@@ -33,12 +33,27 @@ import java.util.Objects;
  */
 public class Id<T> {
     
-    private final T value_;
+    private T value_;
+    
+    protected Id()
+    {
+        value_ = null;
+    }
 
     protected Id(T value)
     {
         value_ = value;
         this.validate();
+    }
+    
+    protected void setValue(T value)
+    {
+        value_ = value;
+    }
+    
+    protected T getValue()
+    {
+        return value_;
     }
     
     /**

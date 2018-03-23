@@ -22,21 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
-
-import org.bco.cm.util.Repository;
-
 /**
- * Holds teachers.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Domain event handlers.
  */
-public interface TeacherRepository extends Repository<Teacher, TeacherId> {
-    
-    /**
-     * Returns teacher with given identifier.
-     * @param teacherId Identifier.
-     * @return Teacher, or null if nonexistent.
-     */
-    Teacher forTeacherId(TeacherId teacherId);
-
-}
+package org.bco.cm.application.event.handler;

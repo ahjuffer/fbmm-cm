@@ -25,13 +25,10 @@
 package org.bco.cm.application.event.handler;
 
 import com.tribc.ddd.domain.event.EventHandler;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bco.cm.domain.course.Student;
-import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRepository;
 import org.bco.cm.domain.course.event.NewStudentRegistered;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Creates new account for student.
@@ -40,18 +37,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class NewStudentRegisteredHandler 
     extends EventHandler<NewStudentRegistered>
 {
-    static final Logger LOGGER = LogManager.getLogger("crapp");
+    static final Logger LOGGER = LogManager.getLogger("com.bco.cm");
     
-    @Autowired
-    private StudentRepository studentRepository_;
-
     @Override
     public void handle(NewStudentRegistered event) 
-    {
-        StudentId studentId = event.getStudentId();
-        Student student = studentRepository_.forStudentId(studentId);
+    {        
+        Student student = event.getStudent();
         
-        LOGGER.info("Creating an account for student: " + student.toDTO().getFullName());
+        LOGGER.info("Creating an account for student: " + student.getSurname());
     }
 
 }
