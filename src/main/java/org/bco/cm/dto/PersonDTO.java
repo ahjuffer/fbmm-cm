@@ -102,6 +102,7 @@ public class PersonDTO implements Serializable
         s.append("identifier - ").append(identifier_).append(newline);
         s.append("firstName - ").append(firstName_).append(newline);
         s.append("surname - ").append(surname_).append(newline);
+        s.append("fullName - ").append(this.getFullName()).append(newline);
     }
     
     @Override

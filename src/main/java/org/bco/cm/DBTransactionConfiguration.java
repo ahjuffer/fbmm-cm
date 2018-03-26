@@ -33,8 +33,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.annotation.Primary;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -50,14 +48,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@ImportResource("classpath:spring-transactions.cfg.xml")
+//@ImportResource("classpath:spring-transactions.cfg.xml")
 @EnableAutoConfiguration(exclude={
     DataSourceAutoConfiguration.class,
     DataSourceTransactionManagerAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class
 })
 public class DBTransactionConfiguration {
-            /*
+
     @Bean( name="dataSource" )
     public DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource(); 
@@ -67,38 +65,29 @@ public class DBTransactionConfiguration {
         dataSource.setPassword("crapp_pm62mj5p");
         return dataSource;
     }
-    
+
     @Bean( name="entityManagerFactory" )
-    //@Primary
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emf = 
             new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(this.dataSource());
-        emf.setPackagesToScan(new String[] { "org.bco.cm" });
+        emf.setPackagesToScan(new String[] { "org.bco.cm.domain", "org.bco.cm.dto" });
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         emf.setJpaVendorAdapter(vendorAdapter);
         emf.setJpaProperties(this.jpaProperties());
         return emf;
     }
     
-    /*
     @Bean( name="transactionManager" )
     public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory") EntityManagerFactory emf){
       JpaTransactionManager transactionManager = new JpaTransactionManager();
       transactionManager.setEntityManagerFactory(emf); 
       return transactionManager;
     }
-    */
     
-    /*
     @Bean( name="exceptionTranslation" )
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
         return new PersistenceExceptionTranslationPostProcessor();
-    }
-    
-    @Bean
-    public SessionFactory sessionFactory(@Qualifier("entityManagerFactory") EntityManagerFactory emf) {
-        return emf.unwrap(SessionFactory.class);
     }
     
     private Properties jpaProperties() {
@@ -111,5 +100,4 @@ public class DBTransactionConfiguration {
                                "org.springframework.orm.hibernate5.SpringSessionContext");
         return properties;
     }
-*/
 }

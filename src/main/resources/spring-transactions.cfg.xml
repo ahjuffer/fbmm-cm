@@ -36,7 +36,7 @@ THE SOFTWARE.
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop.xsd">
     
-    
+
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" 
           destroy-method="close">
         <property name="driverClassName" value="org.postgresql.Driver"/>
@@ -44,7 +44,6 @@ THE SOFTWARE.
         <property name="username" value="crapp"/>
         <property name="password" value="crapp_pm62mj5p"/>
     </bean>
-    
     
     <bean id="entityManagerFactory" 
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
