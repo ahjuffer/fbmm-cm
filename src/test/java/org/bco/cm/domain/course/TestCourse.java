@@ -1,4 +1,4 @@
-package org.bco.cm;
+package org.bco.cm.domain.course;
 
 /*
  * The MIT License
@@ -25,14 +25,11 @@ package org.bco.cm;
  */
 
 
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.LearningPathDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.OnlineMaterialDTO;
+import org.bco.cm.dto.TeacherDTO;
 import org.jboss.logging.Logger;
 
 /**
@@ -47,16 +44,19 @@ public class TestCourse {
     public static void main(String[] args) {
         
         TeacherId teacherId = new TeacherId("qwerty");
-        Teacher teacher = Teacher.create(teacherId);
+        TeacherDTO tspec = new TeacherDTO();
+        tspec.setFirstName("André");
+        tspec.setSurname("Juffer");
+        Teacher teacher = Teacher.valueOf(teacherId, tspec);
         
         // Create a course.
-        CourseDTO spec = new CourseDTO();
+        CourseDTO sspec = new CourseDTO();
         CourseId courseId = new CourseId("123456");
         // Leaving out any of the next three statements causes an exception.
-        spec.setDescription("This is a test description.");
-        spec.setTitle("This is a test title.");
-        spec.setObjective("This is an objective.");
-        Course course = Course.start(teacher, courseId, spec);
+        sspec.setDescription("This is a test description.");
+        sspec.setTitle("This is a test title.");
+        sspec.setObjective("This is an objective.");
+        Course course = Course.start(teacher, courseId, sspec);
         Logger.getLogger(TestCourse.class).info("New coursed: " + course.toDTO());
         
         // Course cannot begin if no modules were added.

@@ -53,11 +53,11 @@ public interface Repository<T,ID> {
     void remove(T t);
     
     /**
-     * Queries for entity with given identifier.
-     * @param identifier Entity identifier.
-     * @return Entity, or null if nonexistent.
+     * Returns entity with given identifier.
+     * @param identifier Identifier.
+     * @return Entity.
      */
-    T forEntityId(ID identifier);
+    public T forEntityId(ID identifier);
     
     /**
      * Returns all entities in the repository.

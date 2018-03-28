@@ -24,9 +24,8 @@
 
 package org.bco.cm.infrastructure.persistence.memory;
 
-import java.util.UUID;
-import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.domain.course.CourseId;
 
 /**
@@ -34,32 +33,25 @@ import org.bco.cm.domain.course.CourseId;
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class InMemoryCourseCatalog 
-    extends InMemoryMapRepository<Course> 
+    extends InMemoryMapRepository<CourseDescription> 
     implements CourseCatalog {
     
     @Override
-    public CourseId generateId() 
-    {
-        UUID uuid = UUID.randomUUID();
-        return new CourseId(uuid.toString());
-    }
-    
-    @Override
-    public Course forCourseId(CourseId courseId) 
+    public CourseDescription forCourseId(CourseId courseId) 
     {
         return this.forIdentifierAsString(courseId.stringValue());
-    }
-
-    @Override
-    public Course forEntityId(CourseId identifier) 
-    {
-        return this.forCourseId(identifier);
     }
 
     @Override
     public boolean contains(CourseId identifier) 
     {
         return this.forCourseId(identifier) != null;
+    }
+    
+    @Override
+    public CourseDescription forEntityId(CourseId identifier)
+    {
+        return this.forCourseId(identifier);
     }
 
 }

@@ -84,12 +84,12 @@ public class Id<T> {
         String name = this.getClass().getName();
         if ( this.value() == null ) {
             throw new NullPointerException(
-                "Identifier value of '" + name + "' must not be null."
+                "Missing identifier value for '" + name + "."
             );
         }
         if ( this.stringValue().isEmpty() ) {
             throw new IllegalStateException(
-                "Identifier value of '" + name + "' must not be empty."
+                "Empty identifier value for '" + name + "'."
             );
         }
     }

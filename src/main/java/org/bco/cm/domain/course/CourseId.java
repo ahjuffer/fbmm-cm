@@ -24,17 +24,52 @@
 
 package org.bco.cm.domain.course;
 
+import java.io.Serializable;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import org.bco.cm.util.Id;
 
 /**
  * Identifies course.
  * @author André H. Juffer, Biocenter Oulu
  */
-public class CourseId extends Id<String> {
+@Embeddable
+public class CourseId extends Id<String> implements Serializable {
+    
+    protected CourseId()
+    {
+        super();
+    }
     
     public CourseId(String id)
     {
         super(id);
     }    
     
+    private void setId(String id)
+    {
+        this.setValue(id);
+    }
+    
+    /**
+     * Returns identifier value.
+     * @return Value.
+     */
+    @Column(name="course_id")
+    protected String getId()
+    {
+        return this.getValue();
+    }
+    
+    /**
+     * Returns new identifier.
+     * @return Identifier.
+     */
+    public static CourseId generate()
+    {
+        UUID uuid = UUID.randomUUID();
+        return new CourseId(uuid.toString());
+    }
+        
 }

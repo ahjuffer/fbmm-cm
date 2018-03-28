@@ -24,6 +24,7 @@
 
 package org.bco.cm.domain.course;
 
+import com.tribc.cqrs.util.EventUtil;
 import com.tribc.ddd.domain.event.Event;
 import com.tribc.ddd.domain.event.Eventful;
 import java.time.Instant;
@@ -382,7 +383,7 @@ public class Course implements Eventful, Identifiable {
                 
         // Create new module according to specification.
         int moduleId = this.generateModuleId();
-        Module next = Module.createNew(moduleId, spec);
+        Module next = Module.valueOf(moduleId, spec);
         
         // The new module becomes the first module of this course, if no other modules
         // are present.
@@ -542,7 +543,7 @@ public class Course implements Eventful, Identifiable {
     @Override
     public Collection<Event> getEvents() 
     {
-        return Collections.unmodifiableCollection(events_);
+        return EventUtil.selectUnhandled(events_);
     }
 
     @Override

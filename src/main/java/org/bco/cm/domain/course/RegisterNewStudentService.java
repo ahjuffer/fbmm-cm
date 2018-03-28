@@ -22,20 +22,38 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.query;
+package org.bco.cm.domain.course;
 
-import java.util.List;
-import org.bco.cm.dto.TeacherDTO;
+import org.bco.cm.dto.StudentDTO;
 
 /**
- * A read-only repository of teachers. Teachers are stored as DTOs.
+ * Domain service for registering a new student.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface ReadOnlyTeacherRepository {
+public class RegisterNewStudentService {
+    
+    private RegisterNewStudentService()
+    {        
+    }
+    
+    public static Student register(StudentId studentId,
+                                   StudentDTO spec,
+                                   StudentRegistry studentRegistry)
+    {
+        if (studentId == null || spec == null || studentRegistry == null ) {
+            throw new NullPointerException(
+                "Cannot register new student: Missing arguments."
+            );
+        }
+        if ( studentRegistry.contains(studentId) ) {
+            throw new IllegalArgumentException(
+                studentId.stringValue() + ": Identifier already in use."
+            );
+        }
+        Student student = Student.valueOf(studentId, spec);
+        studentRegistry.add(student);
+        student.registered();
+        return student;
+    }
 
-    /**
-     * Returns all teachers.
-     * @return Teachers. May be empty.
-     */
-    List<TeacherDTO> getAllTeachers();
 }

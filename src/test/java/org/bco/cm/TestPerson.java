@@ -44,7 +44,7 @@ public class TestPerson {
         StudentDTO spec = new StudentDTO();
         spec.setFirstName("Foo");
         spec.setSurname("Bar");
-        Student student = Student.register(studentId, spec);
+        Student student = Student.valueOf(studentId, spec);
         System.out.println("Student - " + student.toDTO());
     }
     

@@ -28,6 +28,8 @@ import com.tribc.ddd.domain.event.EventBus;
 import com.tribc.ddd.domain.event.EventHandler;
 import org.bco.cm.domain.course.event.NewStudentRegistered;
 import org.bco.cm.domain.course.event.EnrolmentCreated;
+import org.bco.cm.domain.course.event.NewCourseAddedToCatalog;
+import org.bco.cm.domain.course.event.NewTeacherRegistered;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -46,6 +48,18 @@ public class CmEventBus extends EventBus {
     public void setNewStudentRegisteredHandler(NewStudentRegisteredHandler handler)
     {
         this.setHandler(NewStudentRegistered.class, handler);
+    }
+    
+    @Autowired
+    public void setNewTeacherRegisteredHandler(NewTeacherRegisteredHandler handler)
+    {
+        this.setHandler(NewTeacherRegistered.class, handler);
+    }
+    
+    @Autowired
+    public void setNewCourseAddedToCatalogHandler(NewCourseAddedToCatalogHandler handler)
+    {
+        this.setHandler(NewCourseAddedToCatalog.class, handler);
     }
     
     private void setHandler(Class clazz, EventHandler handler)

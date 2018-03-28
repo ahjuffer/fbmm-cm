@@ -25,11 +25,10 @@
 package org.bco.cm.api.facade;
 
 import java.util.List;
-import org.bco.cm.application.query.CourseSpecification;
+import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
-import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -41,30 +40,30 @@ public class CourseFacade {
     @Autowired    
     private ReadOnlyCourseCatalog readOnlyCourseCatalog_;
     
-    @Autowired 
-    private CourseCatalog courseCatalog_;
-    
-    
     /**
      * Generates a new course identifier.
      * @return Identifier.
      */
     public CourseId generateCourseId()
     {
-        return courseCatalog_.generateId();
+        return CourseId.generate();
     }
     
     /**
-     * Returns specified courses.
-     * @param spec Course specification.
+     * Returns all courses.
      * @return Courses.
      */
-    public List<CourseDTO> getSpecifiedCourses(CourseSpecification spec) 
+    public List<CourseDescriptionDTO> getAllCourses() 
     {
-        return readOnlyCourseCatalog_.getSpecifiedCourses(spec);
+        return readOnlyCourseCatalog_.getAllCourses();
     }
     
-    public CourseDTO getCourse(CourseId courseId)
+    /**
+     * Returns specified course.
+     * @param courseId Course identifier.
+     * @return Course description.
+     */
+    public CourseDescriptionDTO getCourse(CourseId courseId)
     {
         return readOnlyCourseCatalog_.getCourse(courseId);
     }

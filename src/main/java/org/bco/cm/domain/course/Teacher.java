@@ -24,12 +24,20 @@
 
 package org.bco.cm.domain.course;
 
+import com.tribc.cqrs.util.EventUtil;
+import com.tribc.ddd.domain.event.Event;
+import com.tribc.ddd.domain.event.Eventful;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.UUID;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import org.bco.cm.domain.course.event.NewTeacherRegistered;
 import org.bco.cm.dto.TeacherDTO;
 import org.bco.cm.util.Person;
 import org.hibernate.annotations.NaturalId;
@@ -40,14 +48,17 @@ import org.hibernate.annotations.NaturalId;
  */
 @Entity(name = "Teacher")
 @Table(name = "teachers")
-public class Teacher extends Person<TeacherId> implements Serializable {
+public class Teacher extends Person<TeacherId> implements Eventful, Serializable {
     
     private UUID id_;
+    
+    private final Collection<Event> events_;
     
     protected Teacher()
     {
         super();
         id_ = null;
+        events_ = new HashSet<>();
     }
     
     private void setId(UUID id)
@@ -77,20 +88,24 @@ public class Teacher extends Person<TeacherId> implements Serializable {
      * @return Teacher identifier.
      */
     @NaturalId
+    @Embedded
     public TeacherId getTeacherId()
     {
         return this.getIdentifier();
     }
     
     /**
-     * Returns new teacher instance.
+     * Creates new teacher.
      * @param teacherId Identifier. Must not be null.
-     * @return Teacher.
+     * @param spec New teacher specification. Must hold first name and surname.
+     * @return Newly created teacher.
      */
-    public static Teacher create(TeacherId teacherId)
+    static Teacher valueOf(TeacherId teacherId, TeacherDTO spec)
     {
         Teacher teacher = new Teacher();
         teacher.setIdentifier(teacherId);
+        teacher.setFirstName(spec.getFirstName());
+        teacher.setSurname(spec.getSurname());
         return teacher;
     }
     
@@ -104,4 +119,26 @@ public class Teacher extends Person<TeacherId> implements Serializable {
         this.populateDTO(dto);
         return dto;
     }
+    
+    @Override
+    @Transient
+    public Collection<Event> getEvents() 
+    {
+        return EventUtil.selectUnhandled(events_);
+    }
+
+    @Override
+    public void clearEvents() 
+    {
+        events_.clear();
+    }
+    
+    /**
+     * Signals this teacher is newly registered.
+     */
+    void registered()
+    {
+        events_.add(new NewTeacherRegistered(this));
+    }
+        
 }

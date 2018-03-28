@@ -24,12 +24,12 @@
 
 package org.bco.cm.domain.course;
 
+import com.tribc.cqrs.util.EventUtil;
 import com.tribc.ddd.domain.event.Event;
 import com.tribc.ddd.domain.event.Eventful;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -97,24 +97,18 @@ public class Student extends Person<StudentId> implements Eventful, Serializable
     }
     
     /**
-     * Registers new student. Two things happen:
-     * <ol>
-     *   <li> A new student instance is created.</li>
-     *   <li> A corresponding domain event is raised.</lI>
-     * </ol>
+     * Creates new student.
      * @param studentId New student identifier. Must not be null.
-     * @param spec New student specification. Must not be null. Must hold first name and 
-     * surname.
+     * @param spec New student specification. Must not be null. Must hold 
+     * first name and surname.
      * @return Newly created student.
-     * @see #raiseRegistered() 
      */
-    public static Student register(StudentId studentId, StudentDTO spec)
+    public static Student valueOf(StudentId studentId, StudentDTO spec)
     {
         Student student = new Student();
         student.setIdentifier(studentId);
         student.setFirstName(spec.getFirstName());
         student.setSurname(spec.getSurname());
-        student.raiseRegistered();
         return student;
     }
     
@@ -147,7 +141,7 @@ public class Student extends Person<StudentId> implements Eventful, Serializable
     @Transient
     public Collection<Event> getEvents() 
     {
-        return Collections.unmodifiableCollection(events_);
+        return EventUtil.selectUnhandled(events_);
     }
 
     @Override
@@ -157,10 +151,9 @@ public class Student extends Person<StudentId> implements Eventful, Serializable
     }
     
     /**
-     * Raise event to signal that this student did register with the client 
-     * application.
+     * Signals that this student is newly registered.
      */
-    private void raiseRegistered()        
+    void registered()        
     {
         events_.add(new NewStudentRegistered(this));
     }

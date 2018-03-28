@@ -25,6 +25,7 @@
 package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.RegisterNewStudent;
+import org.bco.cm.domain.course.RegisterNewStudentService;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
 import org.bco.cm.domain.course.StudentRegistry;
@@ -43,19 +44,15 @@ public class RegisterNewStudentHandler extends CmCommandHandler<RegisterNewStude
     @Override
     public void handle(RegisterNewStudent command) 
     {
+        // Get student info.
         StudentId studentId = command.getStudentId();
         StudentDTO spec = command.getSpec();
         
-        if ( studentRepository_.contains(studentId) ) {
-            throw new IllegalStateException(
-                studentId.stringValue() + 
-                ": Student with this identifier already registered."
-            );
-        }
-        Student student = Student.register(studentId, spec);
-        studentRepository_.add(student);
+        // Register the student.
+        Student student = 
+            RegisterNewStudentService.register(studentId, spec, studentRepository_);
         
-        // Handle in same thread.
+        // Handle possible domain events.
         this.handleEvents(student);
     }
 

@@ -24,18 +24,33 @@
 
 package org.bco.cm.dto;
 
+import java.io.Serializable;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import org.hibernate.annotations.NaturalId;
+
 /**
  * DTO for Module.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class ModuleDTO {
+@Entity( name = "ModuleDTO" )
+@Table ( name = "modules")
+public class ModuleDTO implements Serializable {
     
+    private UUID id_;
     private int moduleId_;
     private String name_;
     private LearningPathDTO learningPath_;
     private AssignmentDTO assignment_;
     private QuizDTO quiz_;
-    private int nextModuleId_;
+    private ModuleDTO next_;
     
     public ModuleDTO()
     {
@@ -44,7 +59,19 @@ public class ModuleDTO {
         learningPath_ = null;
         assignment_ = null;
         quiz_ = null;
-        nextModuleId_ = -1;
+        next_ = null;
+    }
+    
+    private void setId(UUID id)
+    {
+        id_ = id;
+    }
+    
+    @Id
+    @GeneratedValue
+    protected UUID getId()
+    {
+        return id_;
     }
     
     /**
@@ -61,6 +88,8 @@ public class ModuleDTO {
      * @return Identifier value. A value of -1 indicates that it was not (yet) 
      * specified.
      */
+    @Column( name = "module_id" )
+    @NaturalId
     public int getModuleId()
     {
         return moduleId_;
@@ -71,6 +100,7 @@ public class ModuleDTO {
         name_ = name;
     }
     
+    @Column ( name = "name" )
     public String getName()
     {
         return name_;
@@ -81,6 +111,7 @@ public class ModuleDTO {
         learningPath_ = learningPath;
     }
     
+    @Transient
     public LearningPathDTO getLearningPath()
     {
         return learningPath_;
@@ -91,6 +122,7 @@ public class ModuleDTO {
         assignment_ = assignment;
     }
     
+    @Transient
     public AssignmentDTO getAssignment()
     {
         return assignment_;
@@ -101,28 +133,30 @@ public class ModuleDTO {
         quiz_ = quiz;
     }
     
+    @Transient
     public QuizDTO getQuiz()
     {
         return quiz_;
     }
     
     /**
-     * Sets the module identifier value of the module following the given module.
-     * @param nextModuleId Identifier value. A value of -1 indicates that it 
-     * was not (yet) specified.
+     * Sets the next module following the this module.
+     * @param next Next module.
      */
-    public void setNextModuleId(int nextModuleId)
+    public void setNextModule(ModuleDTO next)
     {
-        nextModuleId_ = nextModuleId;
+        next_ = next;
     }
     
     /**
-     * Returns the module identifier value of the module following the given module.
-     * @return Identifier value. 
+     * Returns the module following the this module.
+     * @return Module.
      */
-    public int getNextModuleId()
+    @OneToOne
+    @JoinColumn(name = "next_module_id")
+    public ModuleDTO getNextModule()
     {
-        return nextModuleId_;
+        return next_;
     }
     
     @Override
@@ -141,7 +175,9 @@ public class ModuleDTO {
         if ( quiz_ != null ) {
             s.append("quiz - ").append(quiz_).append(newline);
         }
-        s.append("nextModuleId - ").append(nextModuleId_).append(newline);
+        if ( next_ != null ) {
+            s.append("nextModule - ").append(next_).append(newline);
+        }   
         s.append("}");
         return s.toString();
     }

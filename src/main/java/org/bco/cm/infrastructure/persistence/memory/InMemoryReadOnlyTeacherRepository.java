@@ -27,17 +27,18 @@ package org.bco.cm.infrastructure.persistence.memory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
 import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.application.query.ReadOnlyTeacherRegistry;
+import org.bco.cm.domain.course.TeacherId;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherRepository {
+public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherRegistry {
     
     private TeacherRegistry teacherRepository_;
     
@@ -57,6 +58,12 @@ public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherReposit
             dtos.add(dto);
         }));
         return dtos;
+    }
+
+    @Override
+    public TeacherDTO getTeacher(TeacherId teacherId) 
+    {
+        return teacherRepository_.forTeacherId(teacherId).toDTO();
     }
 
 }

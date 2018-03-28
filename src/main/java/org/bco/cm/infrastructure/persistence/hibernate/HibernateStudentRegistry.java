@@ -50,8 +50,7 @@ public class HibernateStudentRegistry
         String hql = 
             FROM + 
             "where student.studentId.id = '" + id + "'";
-        //return this.forSingle(hql);
-        return null;
+        return this.forSingle(hql);
     }
 
     /**
@@ -60,15 +59,15 @@ public class HibernateStudentRegistry
      */
 
     @Override
-    public Student forEntityId(StudentId identifier) 
-    {
-        return this.forStudentId(identifier);
-    }
-
-    @Override
     public List<Student> forAll() 
     {
         return this.forMany(FROM);
+    }
+    
+    @Override
+    public Student forEntityId(StudentId identifier)
+    {
+        return this.forStudentId(identifier);
     }
 
 }

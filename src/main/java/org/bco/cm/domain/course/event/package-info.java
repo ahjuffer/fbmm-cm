@@ -23,6 +23,6 @@
  */
 
 /**
- * Course domain events
+ * Domain events.
  */
 package org.bco.cm.domain.course.event;

@@ -22,43 +22,51 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
+package org.bco.cm.application.command;
 
-import org.bco.cm.application.command.StartNewCourse;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.Teacher;
+import com.tribc.cqrs.domain.command.AbstractCommand;
+import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.dto.CourseDescriptionDTO;
 
 /**
- * Handles starting a new course
+ * Command to start a new course.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class StartNewCourseHandler extends CmCommandHandler<StartNewCourse> {
+public class PostNewCourse extends AbstractCommand {
     
-    @Autowired
-    private TeacherRegistry teacherRepository_;   
+    private final TeacherId teacherId_;
+    private final CourseId courseId_;
+    private final CourseDescriptionDTO spec_;
     
-    @Autowired
-    private CourseCatalog courseCatalog_;
-    
-    @Override
-    public void handle(StartNewCourse command)
+    /**
+     * Constructor.
+     * @param teacherId Identifier of responsible teacher.
+     * @param courseId New course identifier.
+     * @param spec New course specification.
+     */
+    public PostNewCourse(TeacherId teacherId,
+                         CourseId courseId,
+                         CourseDescriptionDTO spec)
     {
-        TeacherId teacherId = command.getTeacherId();
-        Teacher teacher = teacherRepository_.forTeacherId(teacherId);
-        if ( teacher == null ) {
-            throw new NullPointerException(teacherId.stringValue() + ": No such teacher.");
-        }
-        Course course = Course.start(teacher,
-                                     command.getCourseId(), 
-                                     command.getCourseSpecification());
-        courseCatalog_.add(course);
-        
-        // Handle in same thread.
-        this.handleEvents(course);
+        super(PostNewCourse.class);
+        teacherId_ = teacherId;
+        courseId_ = courseId;
+        spec_ = spec;
     }
     
+    public TeacherId getTeacherId()
+    {
+        return teacherId_;
+    }
+    
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
+    
+    public CourseDescriptionDTO getCourseSpecification()
+    {
+        return spec_;
+    }
 }

@@ -28,19 +28,17 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bco.cm.api.facade.StudentFacade;
+import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.EnrolmentRepository;
 import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRegistry;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.dto.TeacherDTO;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseCatalog;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryEnrolmentRepository;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyCourseCatalog;
-import org.bco.cm.infrastructure.persistence.memory.InMemoryReadOnlyTeacherRepository;
-import org.bco.cm.infrastructure.persistence.memory.InMemoryTeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -53,79 +51,55 @@ import org.springframework.context.annotation.Primary;
  * @author Andr&#233; Juffer, Biocenter Oulu
  */
 
-@SpringBootApplication
-/*@EnableAutoConfiguration(exclude = {
-        DataSourceAutoConfiguration.class,
-        DataSourceTransactionManagerAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class })
-*/
-public class TestApplication implements ApplicationRunner {
+//@SpringBootApplication
+public class TestNewStudentAndTeacherApp implements ApplicationRunner {
     
     private static final Logger LOGGER = LogManager.getLogger("com.bco.cm");
     
     @Autowired
     private StudentFacade studentFacade_;
     
-    @Bean
-    @Primary
-    TeacherRegistry teacherRegistry()
-    {
-        return new InMemoryTeacherRepository();
-    }
-    
-    @Bean
-    @Primary
-    ReadOnlyTeacherRepository readOnlyTeacherRepository()
-    {
-        return new InMemoryReadOnlyTeacherRepository();
-    }
-    
-    @Bean
-    @Primary
-    ReadOnlyCourseCatalog readOnlyCourseCatalog()
-    {
-        return new InMemoryReadOnlyCourseCatalog();
-    }
-    
-    @Bean 
-    @Primary
-    CourseCatalog courseCatalog()
-    {
-        return new InMemoryCourseCatalog();
-    }
-    
-    @Bean
-    @Primary    
-    EnrolmentRepository enrolmentRepository()
-    {
-        return new InMemoryEnrolmentRepository();
-    }
-    
+    @Autowired
+    private TeacherFacade teacherFacade_;
+        
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) 
     {
-        SpringApplication app = new SpringApplication(TestApplication.class);
+        SpringApplication app = new SpringApplication(TestNewStudentAndTeacherApp.class);
         app.run();
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception 
     {
-        
+        // Register new student.
         StudentId studentId = StudentId.generate();
         LOGGER.info("StudentId - " + studentId.stringValue());
         StudentDTO spec = new StudentDTO();
-        spec.setFirstName("André");
-        spec.setSurname("Juffer");
+        spec.setFirstName("Pierre");
+        spec.setSurname("Leprovost");
         studentFacade_.register(studentId, spec);
         
         StudentDTO registered = studentFacade_.getStudent(studentId);
         LOGGER.info("Registered - " + registered);
         
         List<StudentDTO> students = studentFacade_.getAllStudents();
-        LOGGER.info("All students: " + students);
+        LOGGER.info("All students: " + students);        
+                
+        // Register new teacher.
+        TeacherId teacherId = TeacherId.generateId();
+        TeacherDTO tspec = new TeacherDTO();
+        tspec.setFirstName("André");
+        tspec.setSurname("Juffer");
+        teacherFacade_.register(teacherId, tspec);
+        
+        TeacherDTO tregistered = teacherFacade_.getTeacher(teacherId);
+        LOGGER.info("Registered - " + tregistered);
+        
+        List<TeacherDTO> teachers = teacherFacade_.getAllTeachers();
+        LOGGER.info("All teachers: " + teachers);
         
         
         /*

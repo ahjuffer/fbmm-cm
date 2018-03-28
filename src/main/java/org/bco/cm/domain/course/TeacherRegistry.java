@@ -39,10 +39,4 @@ public interface TeacherRegistry extends Repository<Teacher, TeacherId> {
      */
     Teacher forTeacherId(TeacherId teacherId);    
     
-    /**
-     * Returns a teacher identifier.
-     * @return Identifier.
-     */
-    TeacherId generateId();
-
 }

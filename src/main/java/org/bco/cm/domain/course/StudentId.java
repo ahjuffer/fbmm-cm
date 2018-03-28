@@ -62,6 +62,10 @@ public class StudentId extends Id<String> implements Serializable {
         return this.getValue();
     }
     
+    /**
+     * Returns new identifier.
+     * @return Identifier.
+     */
     public static StudentId generate()
     {
         UUID uuid = UUID.randomUUID();

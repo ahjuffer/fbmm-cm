@@ -26,26 +26,25 @@ package org.bco.cm.api.facade;
 
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
-import org.bco.cm.application.command.StartNewCourse;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
+import org.bco.cm.application.command.PostNewCourse;
+import org.bco.cm.application.command.RegisterNewTeacher;
+import org.bco.cm.application.query.ReadOnlyTeacherRegistry;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Simplified interface for teachers.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+@Transactional( rollbackFor = { Throwable.class } )
 public class TeacherFacade {
     
     @Autowired
-    private TeacherRegistry teacherRepository_;
-    
-    @Autowired
-    private ReadOnlyTeacherRepository readOnlyTeacherRepository_;
+    private ReadOnlyTeacherRegistry readOnlyTeacherRepository_;
     
     @Autowired
     private CommandBus commandBus_;
@@ -54,21 +53,23 @@ public class TeacherFacade {
      * Generates a new teacher identifier.
      * @return Identifier.
      */
+    @Transactional( readOnly=true )
     public TeacherId generateTeacherId()
     {
-        return teacherRepository_.generateId();
+        return TeacherId.generateId();
     }
 
     /**
-     * Adds new course to course catalog.
+     * Posts new course to course catalog.
      * @param teacherId Identifier of responsible teacher.
      * @param courseId New course identifier.
-     * @param spec New course specification. Must hold title, description, and 
-     * objective.
+     * @param spec New course specification. Must only hold title and summary.
      */
-    public void startNewCourse(TeacherId teacherId, CourseId courseId, CourseDTO spec)
+    public void postNewCourse(TeacherId teacherId, 
+                             CourseId courseId, 
+                             CourseDescriptionDTO spec)
     {
-        StartNewCourse command = new StartNewCourse(teacherId, courseId, spec);
+        PostNewCourse command = new PostNewCourse(teacherId, courseId, spec);
         commandBus_.handle(command);
     }
     
@@ -76,9 +77,32 @@ public class TeacherFacade {
      * Returns all teachers.
      * @return Teachers. May be empty.
      */
+    @Transactional( readOnly=true )
     public List<TeacherDTO> getAllTeachers()
     {
         return readOnlyTeacherRepository_.getAllTeachers();
+    }
+    
+    /**
+     * Returns teacher.
+     * @param teacherId Teacher identifier.
+     * @return Teacher.
+     */
+    @Transactional( readOnly=true )
+    public TeacherDTO getTeacher(TeacherId teacherId)
+    {
+        return readOnlyTeacherRepository_.getTeacher(teacherId);
+    }
+    
+    /**
+     * Adds new teacher to teacher registry.
+     * @param teacherId New teacher identifier.
+     * @param spec New teacher specification.
+     */
+    public void register(TeacherId teacherId, TeacherDTO spec)
+    {
+        RegisterNewTeacher command = new RegisterNewTeacher(teacherId, spec);
+        commandBus_.handle(command);
     }
 
 }

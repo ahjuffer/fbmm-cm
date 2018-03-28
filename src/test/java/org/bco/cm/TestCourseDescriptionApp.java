@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,51 +22,32 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command;
+package org.bco.cm;
 
-import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.ApplicationArguments;
 
 /**
- * Command to start a new course.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StartNewCourse extends AbstractCommand {
-    
-    private final TeacherId teacherId_;
-    private final CourseId courseId_;
-    private final CourseDTO spec_;
+@SpringBootApplication
+public class TestCourseDescriptionApp implements ApplicationRunner {
     
     /**
-     * Constructor.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId New course identifier.
-     * @param spec New course specification.
+     * @param args the command line arguments
      */
-    public StartNewCourse(TeacherId teacherId,
-                          CourseId courseId,
-                          CourseDTO spec)
+    public static void main(String[] args) 
     {
-        super(StartNewCourse.class);
-        teacherId_ = teacherId;
-        courseId_ = courseId;
-        spec_ = spec;
+        SpringApplication app = new SpringApplication(TestCourseDescriptionApp.class);
+        app.run();
     }
     
-    public TeacherId getTeacherId()
+    @Override
+    public void run(ApplicationArguments args) throws Exception 
     {
-        return teacherId_;
     }
     
-    public CourseId getCourseId()
-    {
-        return courseId_;
-    }
-    
-    public CourseDTO getCourseSpecification()
-    {
-        return spec_;
-    }
 }

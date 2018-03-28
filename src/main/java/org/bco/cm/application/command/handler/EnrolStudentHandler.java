@@ -28,13 +28,12 @@ import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.Enrolment;
 import org.bco.cm.domain.course.EnrolmentNumber;
 import org.bco.cm.domain.course.EnrolmentRepository;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.bco.cm.domain.course.StudentRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Creates a record of enrolment in a course.
@@ -62,7 +61,9 @@ public class EnrolStudentHandler extends CmCommandHandler<EnrolStudent> {
         StudentId studentId = command.getStudentId();
         CourseId courseId = command.getCourseId();
            
-        Student student = studentRepository_.forStudentId(studentId);
+        Student student = CommandHandlerUtil.findStudent(studentId, studentRepository_);
+        
+        /*
         Course course = courseCatalog_.forCourseId(courseId);
         if ( this.isEnrolled(student, course) ) {
             throw new IllegalStateException("Student already enrolled in course.");
@@ -72,6 +73,7 @@ public class EnrolStudentHandler extends CmCommandHandler<EnrolStudent> {
 
         // Handle in same thread.
         this.handleEvents(enrolment);
+        */
     }
     
     private boolean isEnrolled(Student student, Course course)

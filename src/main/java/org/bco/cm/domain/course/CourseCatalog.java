@@ -30,18 +30,13 @@ import org.bco.cm.util.Repository;
  * A catalog of all available courses.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public interface CourseCatalog extends Repository<Course, CourseId> {
+public interface CourseCatalog extends Repository<CourseDescription, CourseId> {
     
     /**
      * Queries for specific course.
      * @param courseId Course identifier.
      * @return Course, or null if nonexistent.
      */
-    Course forCourseId(CourseId courseId);
+    CourseDescription forCourseId(CourseId courseId);
     
-    /**
-     * Returns a coarse identifier.
-     * @return Identifier.
-     */
-    CourseId generateId();
 }

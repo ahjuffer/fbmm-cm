@@ -26,8 +26,9 @@ package org.bco.cm.application.command.handler;
 
 import com.tribc.cqrs.domain.command.CommandBus;
 import org.bco.cm.application.command.RegisterNewStudent;
+import org.bco.cm.application.command.RegisterNewTeacher;
 import org.bco.cm.application.command.EnrolStudent;
-import org.bco.cm.application.command.StartNewCourse;
+import org.bco.cm.application.command.PostNewCourse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -44,15 +45,21 @@ public class CmCommandBus extends CommandBus {
     }
     
     @Autowired
+    public void setRegisterNewTeacherHandler(RegisterNewTeacherHandler handler)
+    {
+        this.setHandler(RegisterNewTeacher.class, handler);
+    }
+    
+    @Autowired
     public void setEnrolStudentHandler(EnrolStudentHandler handler)
     {
         this.setHandler(EnrolStudent.class, handler);
     }
     
     @Autowired
-    public void setStartNewCourseHandler(StartNewCourseHandler handler)
+    public void setPostNewCourseHandler(PostNewCourseHandler handler)
     {
-        this.setHandler(StartNewCourse.class, handler);
+        this.setHandler(PostNewCourse.class, handler);
     }
     
     private void setHandler(Class clazz, CmCommandHandler handler)

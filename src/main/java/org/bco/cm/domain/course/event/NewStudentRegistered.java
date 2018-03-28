@@ -41,6 +41,10 @@ public class NewStudentRegistered extends AbstractEvent {
         student_ = student;
     }
     
+    /**
+     * Returns newly registered student.
+     * @return Student.
+     */
     public Student getStudent()
     {
         return student_;

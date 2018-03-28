@@ -29,7 +29,7 @@ import org.bco.cm.domain.course.StudentId;
 import org.bco.cm.dto.StudentDTO;
 
 /**
- * Command for adding a new student to student repository.
+ * Command for adding a new student to student registry.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class RegisterNewStudent extends AbstractCommand {

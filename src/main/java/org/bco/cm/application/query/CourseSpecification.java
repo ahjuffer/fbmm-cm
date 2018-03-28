@@ -26,7 +26,7 @@ package org.bco.cm.application.query;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.CourseDescriptionDTO;
 
 /**
  *
@@ -35,11 +35,9 @@ import org.bco.cm.dto.CourseDTO;
 public class CourseSpecification {
     
     private static final CourseSpecification ALL;
-    private static final CourseSpecification ONGOING;
     
     static {
         ALL = new CourseSpecification("all");
-        ONGOING = new CourseSpecification("ongoing");
     }
     
     private final String spec_;
@@ -64,15 +62,6 @@ public class CourseSpecification {
     }
     
     /**
-     * Specification for ongoing courses.
-     * @return Specification.
-     */
-    public static CourseSpecification ongoing()
-    {
-        return ONGOING;
-    }
-    
-    /**
      * Returns course specification.
      * @param spec Specification.
      * @return Course specification.
@@ -90,8 +79,6 @@ public class CourseSpecification {
         }
         if ( spec.equals(ALL.spec_) ) {
             return CourseSpecification.all();
-        } else if ( spec.equals(ONGOING.spec_) ) {
-            return CourseSpecification.ongoing();
         } else {
             throw new IllegalArgumentException(spec + ": Illegal course specification.");
         }
@@ -102,13 +89,10 @@ public class CourseSpecification {
      * @param courseRepository Course repository.
      * @return Courses. May be empty.
      */
-    public List<CourseDTO> query(ReadOnlyCourseCatalog courseRepository)
+    public List<CourseDescriptionDTO> query(ReadOnlyCourseCatalog courseRepository)
     {
         if ( spec_.equals(ALL.spec_) ) {
             return courseRepository.getAllCourses();
-        }
-        if ( spec_.equals(ONGOING.spec_) ) {
-            return courseRepository.getOngoingCourses();
         }
         return new ArrayList<>();
     }

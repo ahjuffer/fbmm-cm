@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Simple interface for students.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Transactional
+@Transactional( rollbackFor = { Throwable.class } )
 public class StudentFacade {
     
     @Autowired
@@ -53,6 +53,7 @@ public class StudentFacade {
      * Returns new student identifier.
      * @return Student identifier.
      */
+    @Transactional( readOnly=true )
     public StudentId generateStudentId()
     {
         return StudentId.generate();
@@ -74,6 +75,7 @@ public class StudentFacade {
      * @param studentId Identifier.
      * @return Student.
      */
+    @Transactional( readOnly=true )
     public StudentDTO getStudent(StudentId studentId)
     {
         return readOnlyStudentRegistry_.getStudent(studentId);
@@ -83,6 +85,7 @@ public class StudentFacade {
      * Returns all students.
      * @return Students. May be empty.
      */
+    @Transactional( readOnly=true )
     public List<StudentDTO> getAllStudents()
     {
         return readOnlyStudentRegistry_.getAllStudents();
@@ -94,7 +97,9 @@ public class StudentFacade {
      * @param studentId Student identifier.
      * @param courseId Course identifier.
      */
-    public void enrolInCourse(EnrolmentNumber eid, StudentId studentId, CourseId courseId)
+    public void enrolInCourse(EnrolmentNumber eid, 
+                              StudentId studentId, 
+                              CourseId courseId)
     {
         EnrolStudent command = new EnrolStudent(eid, studentId, courseId);
         commandBus_.handle(command);

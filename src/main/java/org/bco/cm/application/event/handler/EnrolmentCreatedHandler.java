@@ -52,10 +52,12 @@ public class EnrolmentCreatedHandler extends EventHandler<EnrolmentCreated> {
         CourseId courseId = event.getCourseId();
         StudentId studentId = event.getStudentId();
         
+        /*
         Course course = courseCatalog_.forCourseId(courseId);
         Student student = studentRepository_.forStudentId(studentId);
         course.enrolled(student);
         courseCatalog_.update(course);           
+        */
     }
 
 }

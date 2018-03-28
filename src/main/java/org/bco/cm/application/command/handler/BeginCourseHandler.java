@@ -47,6 +47,7 @@ public class BeginCourseHandler extends CmCommandHandler<BeginCourse> {
     @Override
     public void handle(BeginCourse command)
     {
+        /*
         CourseId courseId = command.getCourseId();
         Course course = courseCatalog_.forCourseId(courseId);
         course.begin();
@@ -54,5 +55,6 @@ public class BeginCourseHandler extends CmCommandHandler<BeginCourse> {
         
         // Handle in same thread.
         this.handleEvents(course);
+        */  
     }
 }

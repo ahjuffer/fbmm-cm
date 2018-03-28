@@ -31,34 +31,46 @@ import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.application.command.handler.CmCommandBus;
 import org.bco.cm.application.command.handler.EnrolStudentHandler;
+import org.bco.cm.application.command.handler.PostNewCourseHandler;
 import org.bco.cm.application.command.handler.RegisterNewStudentHandler;
-import org.bco.cm.application.command.handler.StartNewCourseHandler;
+import org.bco.cm.application.command.handler.RegisterNewTeacherHandler;
 import org.bco.cm.application.event.handler.CmEventBus;
 import org.bco.cm.application.event.handler.EnrolmentCreatedHandler;
 import org.bco.cm.application.event.handler.NewStudentRegisteredHandler;
+import org.bco.cm.application.event.handler.NewTeacherRegisteredHandler;
 import org.bco.cm.application.query.ReadOnlyStudentRegistry;
+import org.bco.cm.application.query.ReadOnlyTeacherRegistry;
+import org.bco.cm.application.query.ReadOnlyCourseCatalog;
+import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.StudentRegistry;
+import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateCourseCatalog;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyStudentRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyTeacherRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateStudentRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateTeacherRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyCourseCatalog;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.bco.cm.application.event.handler.NewCourseAddedToCatalogHandler;
 
 /**
  * Bean configuration.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 @Configuration
-public class CmConfiguration {
+public class CmConfiguration 
+{
     
-    /*
+    // Repositories.
+    
     @Bean
     @Primary
     StudentRegistry studentRegistry()
     {
         return new HibernateStudentRegistry();
     }
-    */
     
     @Bean
     @Primary
@@ -66,6 +78,37 @@ public class CmConfiguration {
     {
         return new HibernateReadOnlyStudentRegistry();
     }
+    
+    @Bean
+    @Primary    
+    TeacherRegistry teacherRegistry()
+    {
+        return new HibernateTeacherRegistry();
+    }
+    
+    @Bean
+    @Primary
+    ReadOnlyTeacherRegistry readOnlyTeacherRegistry()
+    {
+        return new HibernateReadOnlyTeacherRegistry();
+    }
+    
+    @Bean
+    @Primary
+    CourseCatalog courseCatalog()
+    {
+        return new HibernateCourseCatalog();
+    }
+    
+    @Bean
+    @Primary
+    ReadOnlyCourseCatalog readOnlyCourseCatalog()
+    {
+        return new HibernateReadOnlyCourseCatalog();
+    }
+    
+    
+    // Facades
     
     @Bean
     CourseFacade courseFacade()
@@ -85,10 +128,19 @@ public class CmConfiguration {
         return new StudentFacade();
     }
     
+    
+    // Handlers
+    
     @Bean
     RegisterNewStudentHandler registerNewStudentHandler()
     {
         return new RegisterNewStudentHandler();
+    }
+    
+    @Bean
+    RegisterNewTeacherHandler registerNewTeacherHandler()
+    {
+        return new RegisterNewTeacherHandler();
     }
     
     @Bean 
@@ -98,21 +150,27 @@ public class CmConfiguration {
     }
     
     @Bean
-    StartNewCourseHandler startNewCourseHandler()
+    PostNewCourseHandler postNewCourseHandler()
     {
-        return new StartNewCourseHandler();
-    }
-    
-    @Bean
-    CommandBus commandBus()
-    {
-        return new CmCommandBus();
+        return new PostNewCourseHandler();
     }
     
     @Bean
     NewStudentRegisteredHandler newStudentRegisteredHandler()
     {
         return new NewStudentRegisteredHandler();
+    }
+    
+    @Bean
+    NewTeacherRegisteredHandler newTeacherRegistredHandler()
+    {
+        return new NewTeacherRegisteredHandler();
+    }
+    
+    @Bean
+    NewCourseAddedToCatalogHandler newCourseAddedToCatalogHandler()
+    {
+        return new NewCourseAddedToCatalogHandler();
     }
     
     @Bean
@@ -127,4 +185,10 @@ public class CmConfiguration {
         return new CmEventBus();
     }
 
+    @Bean
+    CommandBus commandBus()
+    {
+        return new CmCommandBus();
+    }
+    
 }

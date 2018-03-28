@@ -133,12 +133,12 @@ public abstract class HibernateRepository<T,ID> implements Repository<T,ID> {
     }
 
     @Override
-    abstract public T forEntityId(ID identifier);
-    
-    @Override
     public boolean contains(ID identifier)
     {
         return this.forEntityId(identifier) != null;
     }
     
+    @Override
+    public abstract T forEntityId(ID identifier);
+        
 }

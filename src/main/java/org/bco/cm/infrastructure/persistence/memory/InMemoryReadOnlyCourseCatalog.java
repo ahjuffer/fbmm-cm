@@ -28,13 +28,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.bco.cm.application.query.CourseSpecification;
-import org.bco.cm.domain.course.Course;
+import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.domain.course.CourseDescription;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.bco.cm.application.query.ReadOnlyCourseCatalog;
-import org.bco.cm.domain.course.CourseId;
 
 /**
  * 
@@ -51,48 +51,33 @@ public class InMemoryReadOnlyCourseCatalog implements ReadOnlyCourseCatalog {
         courseCatalog_ = courseCatalog;
     }
     
-    @Override
-    public List<CourseDTO> getSpecifiedCourses(CourseSpecification spec) 
+    @Override    
+    public List<CourseDescriptionDTO> getSpecifiedCourses(CourseSpecification spec) 
     {
         return spec.query(this);
     }
     
     @Override
-    public List<CourseDTO> getAllCourses()
+    public List<CourseDescriptionDTO> getAllCourses()
     {
-        Collection<Course> courses = courseCatalog_.forAll();
-        List<CourseDTO> dtos = new ArrayList<>();
+        Collection<CourseDescription> courses = courseCatalog_.forAll();
+        List<CourseDescriptionDTO> dtos = new ArrayList<>();
         courses.forEach((course) -> {
-            CourseDTO dto = this.toDTO(course);
+            CourseDescriptionDTO dto = this.toDTO(course);
             dtos.add(dto);             
         });
         return dtos;
     }
     
-    @Override
-    public List<CourseDTO> getOngoingCourses()
-    {
-        Collection<Course> courses = courseCatalog_.forAll();
-        List<CourseDTO> dtos = new ArrayList<>();
-        courses.forEach((course) -> {
-            if ( course.isOngoing() ) {
-                CourseDTO dto = this.toDTO(course);
-                dtos.add(dto); 
-            }            
-        });
-        return dtos;
-        
-    }
-
-    private CourseDTO toDTO(Course course)
+    private CourseDescriptionDTO toDTO(CourseDescription course)
     {
         return course.toDTO();
     }
 
     @Override
-    public CourseDTO getCourse(CourseId courseId) 
+    public CourseDescriptionDTO getCourse(CourseId courseId) 
     {
-        Course course = courseCatalog_.forCourseId(courseId);
+        CourseDescription course = courseCatalog_.forCourseId(courseId);
         if ( course == null ) {
             throw new NullPointerException(courseId.stringValue() + ": No such course.");
         }

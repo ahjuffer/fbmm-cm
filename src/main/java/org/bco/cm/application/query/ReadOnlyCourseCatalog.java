@@ -26,7 +26,7 @@ package org.bco.cm.application.query;
 
 import java.util.List;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.CourseDescriptionDTO;
 
 /**
  * A read-only catalog of all available courses. Courses are stored as DTOs.
@@ -39,7 +39,7 @@ public interface ReadOnlyCourseCatalog {
      * @param courseId Course identifier.
      * @return Course.
      */
-    CourseDTO getCourse(CourseId courseId);
+    CourseDescriptionDTO getCourse(CourseId courseId);
     
     /**
      * Finds course according to a specification.
@@ -47,17 +47,12 @@ public interface ReadOnlyCourseCatalog {
      * @return Courses. May be empty.
      * @throws IllegalArgumentException if spec is neither "all" nor "ongoing".
      */
-    List<CourseDTO> getSpecifiedCourses(CourseSpecification spec);
+    List<CourseDescriptionDTO> getSpecifiedCourses(CourseSpecification spec);
     
     /**
      * Returns all courses.
      * @return Courses. May be empty.
      */
-    List<CourseDTO> getAllCourses();
+    List<CourseDescriptionDTO> getAllCourses();
     
-    /**
-     * Returns ongoing courses.
-     * @return Courses. May be empty.
-     */
-    List<CourseDTO> getOngoingCourses();
 }

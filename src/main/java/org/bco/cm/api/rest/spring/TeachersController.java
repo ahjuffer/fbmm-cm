@@ -27,10 +27,9 @@ package org.bco.cm.api.rest.spring;
 import java.util.List;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.TeacherFacade;
-import org.bco.cm.application.query.ReadOnlyTeacherRepository;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,30 +53,63 @@ public class TeachersController {
     private CourseFacade courseFacade_;
     
     @Autowired
-    private TeacherFacade teacherFacade_; 
+    private TeacherFacade teacherFacade_;
     
     /**
-     * Starts new course.
-     * @param id Identifier of responsible teacher.
-     * @param spec New course specification. Must hold title, description, and 
-     * objective.
-     * @return New course.
+     * Registers new teacher.
+     * @param spec New teacher specification. Must hold first name and surname.
+     * @return Teacher information.
      */
-    @RequestMapping(value="/{id}/course")
     @PostMapping(consumes = "application/json;charset=UTF-8", 
                  produces = "application/json;charset=UTF-8")
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseDTO startNewCourse(@PathVariable String id, 
-                                    @RequestBody CourseDTO spec)
+    public TeacherDTO register(@RequestBody TeacherDTO spec)
     {
-        TeacherId teacherId = new TeacherId(id);
-        CourseId courseId = courseFacade_.generateCourseId();
-        teacherFacade_.startNewCourse(teacherId, courseId, spec);
-        return courseFacade_.getCourse(courseId);
+        TeacherId teacherId = teacherFacade_.generateTeacherId();
+        teacherFacade_.register(teacherId, spec);
+        return teacherFacade_.getTeacher(teacherId);
     }
     
     /**
-     * Returns all teacher resources..
+     * Posts new course.
+     * @param id Identifier of responsible teacher.
+     * @param spec New course specification. Must hold only title and summary. 
+     * No modules.
+     * @return New course.
+     */
+    @RequestMapping(value="/{teacherId}/course")
+    @PostMapping(consumes = "application/json;charset=UTF-8", 
+                 produces = "application/json;charset=UTF-8")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CourseDescriptionDTO postNewCourse(@PathVariable("teacherId") String id, 
+                                              @RequestBody CourseDescriptionDTO spec)
+    {
+        TeacherId teacherId = new TeacherId(id);
+        CourseId courseId = courseFacade_.generateCourseId();
+        teacherFacade_.postNewCourse(teacherId, courseId, spec);
+        return courseFacade_.getCourse(courseId);
+    }
+    
+    public CourseDescriptionDTO addCourseModule()
+    {
+        return null;
+    }
+    
+    /**
+     * Returns a single teacher.
+     * @param id Teacher identifier.
+     * @return Teacher.
+     */
+    @GetMapping(produces = "application/json;charset=UTF-8")
+    @RequestMapping(value="/{teacherId}")
+    public TeacherDTO getTeacher(@PathVariable("teacherId") String id)
+    {
+        TeacherId teacherId = new TeacherId(id);
+        return teacherFacade_.getTeacher(teacherId);
+    }
+    
+    /**
+     * Returns all teacher resources.
      * @return Teachers.
      */
     @GetMapping(produces = "application/json;charset=UTF-8")

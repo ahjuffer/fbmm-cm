@@ -25,6 +25,7 @@
 package org.bco.cm.domain.course;
 
 import java.io.Serializable;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import org.bco.cm.util.Id;
@@ -59,5 +60,15 @@ public class TeacherId extends Id<String> implements Serializable {
     protected String getId()
     {
         return this.getValue();
+    }
+    
+    /**
+     * Generates new teacher identifier.
+     * @return Identifier.
+     */
+    public static TeacherId generateId()
+    {
+        UUID uuid = UUID.randomUUID();
+        return new TeacherId(uuid.toString());
     }
 }

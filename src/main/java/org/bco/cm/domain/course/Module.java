@@ -24,21 +24,36 @@
 
 package org.bco.cm.domain.course;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.bco.cm.dto.AssignmentDTO;
 import org.bco.cm.dto.LearningPathDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.OnlineMaterialDTO;
 import org.bco.cm.dto.QuizDTO;
+import org.hibernate.annotations.NaturalId;
 
 /**
  * Course module. A valid module must consist of a non-empty learning path, and 
  * may include an assignment and/or quiz.
  * @author André H. Juffer, Biocenter Oulu
  */
-public class Module {
+@Entity( name = "Module" )
+@Table ( name = "modules")
+public class Module implements Serializable {
     
+    private UUID id_;
     private int moduleId_;
     private String name_;
     private LearningPath learningPath_;
@@ -46,7 +61,7 @@ public class Module {
     private final Quiz quiz_;
     private Module next_;
     
-    private Module()
+    protected Module()
     {
         moduleId_ = -1;
         name_ = null;
@@ -55,11 +70,23 @@ public class Module {
         quiz_ = null;
         next_ = null;
     }
+    
+    private void setId(UUID id)
+    {
+        id_ = id;
+    }
+    
+    @Id
+    @GeneratedValue
+    protected UUID getId()
+    {
+        return id_;
+    }
 
     /**
      * Sets module identifier. Its value is provided by the owning course.
      * @param id Identifier.
-     */
+     */    
     void setModuleId(int id)
     {
         moduleId_ = id;
@@ -70,6 +97,8 @@ public class Module {
      * @return Identifier. It is guaranteed unique only in context of the 
      * owning course.
      */
+    @Column( name = "module_id" )
+    @NaturalId
     public int getModuleId()
     {
         return moduleId_;
@@ -86,7 +115,8 @@ public class Module {
         name_ = name;
     }     
     
-    String getName()
+    @Column ( name = "name" )
+    protected String getName()
     {
         return name_;
     }
@@ -102,6 +132,16 @@ public class Module {
     }
     
     /**
+     * Returns learning path.
+     * @return Learning path. Returns null if not yet assigned.
+     */
+    @Transient
+    protected LearningPath getLearningPath()
+    {
+        return learningPath_;
+    }
+    
+    /**
      * Sets the next module.
      * @param next Next module.
      */
@@ -110,7 +150,9 @@ public class Module {
         next_ = next;
     }
     
-    private Module getNext()
+    @OneToOne
+    @JoinColumn(name = "next_module_id")
+    protected Module getNext()
     {
         return next_;
     }
@@ -157,14 +199,16 @@ public class Module {
     /**
      * Creates new module.
      * @param moduleId New module identifier.
-     * @param spec New module specification.
+     * @param spec New module specification. Must include module name. May include
+     * learning path, assignment and quiz.
      * @return New module.
      */
-    static Module createNew(int moduleId, ModuleDTO spec)
+    static Module valueOf(int moduleId, ModuleDTO spec)
     {
         Module module = new Module();
         module.setModuleId(moduleId);
         module.setName(spec.getName());
+        /*
         LearningPath learningPath;
         if ( spec.getLearningPath() != null ) {
             learningPath = LearningPath.valueOf(spec.getLearningPath());
@@ -172,6 +216,7 @@ public class Module {
             learningPath = LearningPath.empty();
         }
         module.setLearningPath(learningPath);
+        */
         
         // Add assignment and/or quiz.
         
@@ -220,7 +265,7 @@ public class Module {
             dto.setQuiz(quiz);
         }
         if ( this.hasNext() ) {
-            dto.setNextModuleId(next_.getModuleId());
+            dto.setNextModule(next_.toDTO());
         }
         return dto;
     }
@@ -238,6 +283,36 @@ public class Module {
             dtos.add(dto);
         });
         return dtos;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + this.moduleId_;
+        hash = 41 * hash + Objects.hashCode(this.name_);
+        return hash;
+    }
+    
+    /**
+     * Comparing two modules has meaning only in context of the owning
+     * course.
+     * @param other Other object.
+     * @return Result.
+     */
+    @Override
+    public boolean equals(Object other)
+    {
+        if ( other == null ) {
+            return false;
+        }
+        if ( this == other ) {
+            return true;
+        }
+        if ( this.getClass() != other.getClass() ) {
+            return false;
+        }
+        Module module = (Module)other;
+        return ( moduleId_ == module.getModuleId() );
     }
         
 }

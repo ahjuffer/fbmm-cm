@@ -26,17 +26,17 @@ package org.bco.cm.api.rest.spring;
 
 import java.util.List;
 import org.bco.cm.api.facade.CourseFacade;
-import org.bco.cm.application.query.CourseSpecification;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST API implementation using Spring.
  * @author Andr&#233; Juffer, Biocenter Oulu
+ * @see org.bco.cm.api.rest.spring.TeachersController for adding new courses to
+ * the course catalog.
  */
 @RestController
 @RequestMapping(value="/courses")
@@ -45,16 +45,13 @@ public class CoursesController  {
     @Autowired
     private CourseFacade courseFacade_;
     
-    /**
-     * Queries for courses.
-     * @param spec Course specification. Either "all" or "ongoing".
+   /**
+     * Queries for all courses.
      * @return Courses. May be empty.
      */
     @GetMapping(produces = "application/json;charset=UTF-8")
-    public List<CourseDTO> getSpecifiedCourses(
-        @RequestParam(value="spec", defaultValue="all") String spec
-    ) 
+    public List<CourseDescriptionDTO> getAllCourses() 
     {
-        return courseFacade_.getSpecifiedCourses(CourseSpecification.valueOf(spec));
+        return courseFacade_.getAllCourses();
     }
 }
