@@ -29,6 +29,7 @@ import com.tribc.ddd.domain.event.EventBus;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
+import org.bco.cm.application.command.handler.AddCourseModuleHandler;
 import org.bco.cm.application.command.handler.CmCommandBus;
 import org.bco.cm.application.command.handler.EnrolStudentHandler;
 import org.bco.cm.application.command.handler.PostNewCourseHandler;
@@ -153,6 +154,12 @@ public class CmConfiguration
     PostNewCourseHandler postNewCourseHandler()
     {
         return new PostNewCourseHandler();
+    }
+    
+    @Bean
+    AddCourseModuleHandler addCourseModuleHandler()
+    {
+        return new AddCourseModuleHandler();
     }
     
     @Bean

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2018 juffer.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,32 +22,56 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm;
+package org.bco.cm.application.command;
 
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.ApplicationArguments;
+import com.tribc.cqrs.domain.command.AbstractCommand;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.dto.ModuleDTO;
 
 /**
- *
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Command for adding a module to an existing course.
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-@SpringBootApplication
-public class TestCourseDescriptionApp implements ApplicationRunner {
+public class AddCourseModule extends AbstractCommand {
+    
+    private final TeacherId teacherId_;
+    private final CourseId courseId_;
+    private final ModuleDTO spec_;
+    
+    public AddCourseModule(TeacherId teacherId, CourseId courseId, ModuleDTO spec)
+    {
+        super(AddCourseModule.class);
+        teacherId_ = teacherId;
+        courseId_ = courseId;
+        spec_ = spec;
+    }
     
     /**
-     * @param args the command line arguments
+     * Returns course identifier.
+     * @return Identifier.
      */
-    public static void main(String[] args) 
+    public CourseId getCourseId()
     {
-        SpringApplication app = new SpringApplication(TestCourseDescriptionApp.class);
-        app.run();
+        return courseId_;
     }
     
-    @Override
-    public void run(ApplicationArguments args) throws Exception 
+    /**
+     * Returns teacher identifier.
+     * @return Identifier
+     */
+    public TeacherId getTeacherId()
     {
+        return teacherId_;
     }
     
+    /**
+     * Returns new module specification.
+     * @return Specification.
+     */
+    public ModuleDTO getSpec()
+    {
+        return spec_;
+    }
+
 }

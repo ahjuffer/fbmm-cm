@@ -36,15 +36,18 @@ public class RegisterNewStudentService {
     {        
     }
     
+    /**
+     * Register new student. he new student is added to the student registry.
+     * @param studentId Student identifier.
+     * @param spec New student specification.
+     * @param studentRegistry Student registry.
+     * @return New student.
+     * @throws IllegalArgumentException if studentId is already in use.
+     */
     public static Student register(StudentId studentId,
                                    StudentDTO spec,
                                    StudentRegistry studentRegistry)
     {
-        if (studentId == null || spec == null || studentRegistry == null ) {
-            throw new NullPointerException(
-                "Cannot register new student: Missing arguments."
-            );
-        }
         if ( studentRegistry.contains(studentId) ) {
             throw new IllegalArgumentException(
                 studentId.stringValue() + ": Identifier already in use."

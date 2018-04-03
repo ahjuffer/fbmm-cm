@@ -26,12 +26,14 @@ package org.bco.cm.api.facade;
 
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
+import org.bco.cm.application.command.AddCourseModule;
 import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.command.RegisterNewTeacher;
 import org.bco.cm.application.query.ReadOnlyTeacherRegistry;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
+import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,13 +65,30 @@ public class TeacherFacade {
      * Posts new course to course catalog.
      * @param teacherId Identifier of responsible teacher.
      * @param courseId New course identifier.
-     * @param spec New course specification. Must only hold title and summary.
+     * @param spec New course specification. Must only hold title and summary. 
+     * No modules.
+     * @see #addCourseModule(org.bco.cm.domain.course.TeacherId, org.bco.cm.domain.course.CourseId, org.bco.cm.dto.ModuleDTO) 
      */
     public void postNewCourse(TeacherId teacherId, 
-                             CourseId courseId, 
-                             CourseDescriptionDTO spec)
+                              CourseId courseId, 
+                              CourseDescriptionDTO spec)
     {
         PostNewCourse command = new PostNewCourse(teacherId, courseId, spec);
+        commandBus_.handle(command);
+    }
+    
+    /**
+     * Adds module to course.
+     * @param teacherId Identifier of responsible teacher.
+     * @param courseId Course identifier.
+     * @param spec Module specification. This module is appended to the last 
+     * module.
+     */
+    public void addCourseModule(TeacherId teacherId,
+                                CourseId courseId,
+                                ModuleDTO spec)
+    {
+        AddCourseModule command = new AddCourseModule(teacherId, courseId, spec);
         commandBus_.handle(command);
     }
     

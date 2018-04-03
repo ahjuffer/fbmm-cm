@@ -252,8 +252,10 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
      * Creates a new course description.
      * @param teacher Responsible teacher.
      * @param courseId New course identifier.
-     * @param spec New course specification. Must include title and summary. 
+     * @param spec New course specification. Must include title and summary, no
+     * modules.
      * @return New course description.
+     * @see #addModule(org.bco.cm.dto.ModuleDTO) 
      */
     public static CourseDescription valueOf(Teacher teacher, 
                                             CourseId courseId,
@@ -261,9 +263,6 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     {
         if ( teacher == null ) {
             throw new NullPointerException("Missing new course teacher.");
-        }
-        if (courseId == null ) {
-            throw new NullPointerException("Missing new course identifier.");
         }
         if ( spec == null ) {
             throw new NullPointerException("Missing new course specification.");
@@ -306,7 +305,8 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     
     /**
      * Adds new module to this course.
-     * @param spec Module
+     * @param spec New module specification. Module is appended to the last
+     * module.
      */
     public void addModule(ModuleDTO spec)
     {

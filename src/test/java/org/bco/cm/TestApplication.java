@@ -27,6 +27,7 @@ package org.bco.cm;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
@@ -34,6 +35,7 @@ import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.EnrolmentRepository;
 import org.bco.cm.domain.course.StudentId;
 import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.StudentDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.bco.cm.infrastructure.persistence.memory.InMemoryCourseCatalog;
@@ -51,8 +53,8 @@ import org.springframework.context.annotation.Primary;
  * @author Andr&#233; Juffer, Biocenter Oulu
  */
 
-//@SpringBootApplication
-public class TestNewStudentAndTeacherApp implements ApplicationRunner {
+@SpringBootApplication
+public class TestApplication implements ApplicationRunner {
     
     private static final Logger LOGGER = LogManager.getLogger("com.bco.cm");
     
@@ -61,13 +63,23 @@ public class TestNewStudentAndTeacherApp implements ApplicationRunner {
     
     @Autowired
     private TeacherFacade teacherFacade_;
+    
+    @Autowired
+    private CourseFacade courseFacade_;
         
+    @Bean
+    @Primary    
+    EnrolmentRepository enrolmentRepository()
+    {
+        return new InMemoryEnrolmentRepository();
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) 
     {
-        SpringApplication app = new SpringApplication(TestNewStudentAndTeacherApp.class);
+        SpringApplication app = new SpringApplication(TestApplication.class);
         app.run();
     }
 
@@ -75,6 +87,7 @@ public class TestNewStudentAndTeacherApp implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception 
     {
         // Register new student.
+        /*
         StudentId studentId = StudentId.generate();
         LOGGER.info("StudentId - " + studentId.stringValue());
         StudentDTO spec = new StudentDTO();
@@ -87,8 +100,10 @@ public class TestNewStudentAndTeacherApp implements ApplicationRunner {
         
         List<StudentDTO> students = studentFacade_.getAllStudents();
         LOGGER.info("All students: " + students);        
-                
+        */
+        
         // Register new teacher.
+        /*
         TeacherId teacherId = TeacherId.generateId();
         TeacherDTO tspec = new TeacherDTO();
         tspec.setFirstName("André");
@@ -100,7 +115,7 @@ public class TestNewStudentAndTeacherApp implements ApplicationRunner {
         
         List<TeacherDTO> teachers = teacherFacade_.getAllTeachers();
         LOGGER.info("All teachers: " + teachers);
-        
+        */
         
         /*
         TeacherRegistry teacherRepository = this.teacherRegistry();
@@ -156,5 +171,9 @@ public class TestNewStudentAndTeacherApp implements ApplicationRunner {
         
         //insilico.begin();
         */
+        
+        List<CourseDescriptionDTO> courses = courseFacade_.getAllCourses();
+        LOGGER.info("All courses: " + courses);
+          
     }
 }

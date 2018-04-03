@@ -57,7 +57,7 @@ public class Person<ID extends Id<String>> implements Identifiable {
     {
         if ( identifier == null ) {
             throw new NullPointerException(
-                "Missing identifier for " + this.getClass().getName()
+                "Missing identifier for " + this.getClass().getName() + "."
             );
         }
         identifier_ = identifier;

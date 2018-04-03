@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2018 juffer.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,43 +24,37 @@
 
 package org.bco.cm.domain.course;
 
-import org.bco.cm.dto.CourseDescriptionDTO;
+import org.bco.cm.dto.ModuleDTO;
 
 /**
- * Domain service for registering a new course.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Domain service for adding a module to a course.
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class RegisterNewCourseService {
+public class AddCourseModuleService {
     
-    private RegisterNewCourseService()
+    private AddCourseModuleService()
     {        
     }
     
     /**
-     * Registers new course. The new course is added to course catalog.
+     * Adds course module. Updates course catalog.
      * @param teacher Responsible teacher.
-     * @param courseId New course identifier.
-     * @param spec New course specification.
+     * @param course Course.
+     * @param spec New module specification.
      * @param courseCatalog Course catalog.
-     * @return Newly registered course.
-     * @throws IllegalArgumentException if courseId is already in use.
+     * @return Updated course description.
+     * @throws IllegalArgumentException if teacher is not responsible for course.
      */
-    public static CourseDescription register(Teacher teacher,
-                                             CourseId courseId, 
-                                             CourseDescriptionDTO spec, 
-                                             CourseCatalog courseCatalog)
+    public static CourseDescription add(Teacher teacher, 
+                                        CourseDescription course, 
+                                        ModuleDTO spec,
+                                        CourseCatalog courseCatalog)
     {
-        if ( courseCatalog.contains(courseId) ) {
-            throw new IllegalArgumentException(
-                courseId.stringValue() + ": Identifier already in use."
-            );
+        if ( !teacher.getTeacherId().equals(course.getTeacherId()) ) {
+            throw new IllegalArgumentException("Teacher is not responsible for course.");
         }
-        
-        // Create course and add it to catalog.
-        CourseDescription course = CourseDescription.valueOf(teacher, courseId, spec);
-        courseCatalog.add(course);
-        course.addedToCourseCatalog();
-        
+        course.addModule(spec);
+        courseCatalog.update(course);
         return course;
     }
 

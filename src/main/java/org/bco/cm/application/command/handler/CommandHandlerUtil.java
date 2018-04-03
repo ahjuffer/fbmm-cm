@@ -24,6 +24,9 @@
 
 package org.bco.cm.application.command.handler;
 
+import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.domain.course.CourseDescription;
+import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.Student;
 import org.bco.cm.domain.course.StudentRegistry;
 import org.bco.cm.domain.course.StudentId;
@@ -75,6 +78,25 @@ public class CommandHandlerUtil {
             );
         }
         return student;
+    }
+    
+    /**
+     * Returns course description.
+     * @param courseId Course identifier.
+     * @param courseCatalog Course catalog.
+     * @return Course description.
+     * @throws NullPointerException if requested course description cannot be found.
+     */
+    public static CourseDescription findCourseDescription(CourseId courseId, 
+                                                          CourseCatalog courseCatalog)
+    {
+        CourseDescription course = courseCatalog.forCourseId(courseId);
+        if ( course == null ) {
+            throw new NullPointerException(
+                courseId.stringValue() + ": No such course."
+            );
+        }
+        return course;
     }
 
 }

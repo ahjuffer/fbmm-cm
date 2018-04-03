@@ -25,16 +25,17 @@
 package org.bco.cm.api.facade;
 
 import java.util.List;
-import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Simplified interface for courses.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+@Transactional( rollbackFor = { Throwable.class } )
 public class CourseFacade {
     
     @Autowired    
@@ -44,6 +45,7 @@ public class CourseFacade {
      * Generates a new course identifier.
      * @return Identifier.
      */
+    @Transactional( readOnly = true )
     public CourseId generateCourseId()
     {
         return CourseId.generate();
@@ -53,6 +55,7 @@ public class CourseFacade {
      * Returns all courses.
      * @return Courses.
      */
+    @Transactional( readOnly = true )
     public List<CourseDescriptionDTO> getAllCourses() 
     {
         return readOnlyCourseCatalog_.getAllCourses();
@@ -63,6 +66,7 @@ public class CourseFacade {
      * @param courseId Course identifier.
      * @return Course description.
      */
+    @Transactional( readOnly = true )
     public CourseDescriptionDTO getCourse(CourseId courseId)
     {
         return readOnlyCourseCatalog_.getCourse(courseId);

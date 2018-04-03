@@ -30,12 +30,14 @@ import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
+import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -71,11 +73,34 @@ public class TeachersController {
     }
     
     /**
+     * Adds module to existing course.
+     * @param tId Teacher identifier.
+     * @param cId Course identifier.
+     * @param spec New module specification. Must include name, may include learning
+     * path, assignment and/or quiz.
+     * @return Update course.
+     */
+    @RequestMapping(value="/{teacherId}/course/{courseId}/module")
+    @PutMapping(consumes = "application/json;charset=UTF-8", 
+                produces = "application/json;charset=UTF-8")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CourseDescriptionDTO addCourseModule(@PathVariable("teacherId") String tId,
+                                                @PathVariable("courseId") String cId,
+                                                @RequestBody ModuleDTO spec)
+    {
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        teacherFacade_.addCourseModule(teacherId, courseId, spec);
+        return courseFacade_.getCourse(courseId);
+    }
+    
+    /**
      * Posts new course.
      * @param id Identifier of responsible teacher.
      * @param spec New course specification. Must hold only title and summary. 
      * No modules.
      * @return New course.
+     * @see #addCourseModule(java.lang.String, java.lang.String, org.bco.cm.dto.ModuleDTO) 
      */
     @RequestMapping(value="/{teacherId}/course")
     @PostMapping(consumes = "application/json;charset=UTF-8", 
@@ -88,11 +113,6 @@ public class TeachersController {
         CourseId courseId = courseFacade_.generateCourseId();
         teacherFacade_.postNewCourse(teacherId, courseId, spec);
         return courseFacade_.getCourse(courseId);
-    }
-    
-    public CourseDescriptionDTO addCourseModule()
-    {
-        return null;
     }
     
     /**

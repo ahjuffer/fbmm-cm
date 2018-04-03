@@ -105,6 +105,9 @@ public class Student extends Person<StudentId> implements Eventful, Serializable
      */
     public static Student valueOf(StudentId studentId, StudentDTO spec)
     {
+        if ( spec == null ) {
+            throw new NullPointerException("Missing new student specification.");
+        }
         Student student = new Student();
         student.setIdentifier(studentId);
         student.setFirstName(spec.getFirstName());

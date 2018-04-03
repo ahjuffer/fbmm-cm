@@ -33,7 +33,7 @@ public interface Identifiable {
     
     /**
      * Returns identifier value.
-     * @return Value.
+     * @return Value. Never null, and unique.
      */
     String getIdentifierAsString();
 
