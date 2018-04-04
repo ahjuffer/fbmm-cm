@@ -31,7 +31,7 @@ create table modules
     id                      UUID not null primary key,
     module_id               int,
     name                    varchar(200),
-    next_module_id          UUID        
+    next_module_id          UUID
 );
 
 create table course_descriptions
@@ -43,6 +43,7 @@ create table course_descriptions
     first_module_id         UUID,
     teacher_id              varchar(200)
 );
+
 
 create table join_course_descriptions_modules
 (

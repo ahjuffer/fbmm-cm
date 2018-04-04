@@ -34,6 +34,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -61,6 +62,8 @@ public class Module implements Serializable {
     private final Quiz quiz_;
     private Module next_;
     
+    private CourseDescription course_;
+    
     protected Module()
     {
         moduleId_ = -1;
@@ -69,6 +72,7 @@ public class Module implements Serializable {
         assignment_ = null;
         quiz_ = null;
         next_ = null;
+        course_ = null;
     }
     
     private void setId(UUID id)
@@ -155,6 +159,29 @@ public class Module implements Serializable {
     protected Module getNext()
     {
         return next_;
+    }
+    
+    /**
+     * Sets the owning course description.
+     * @param course Course description.
+     */
+    void setCourseDescription(CourseDescription course)
+    {
+        course_ = course;
+    }
+    
+    /**
+     * Returns the owning course description.
+     * @return 
+     */
+    /*
+    @ManyToOne
+    @JoinColumn( name="course_description_id" )
+    */
+    @Transient
+    protected CourseDescription getCourseDescription()
+    {
+        return course_;
     }
     
     /**

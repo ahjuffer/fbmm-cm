@@ -201,12 +201,17 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
             throw new NullPointerException("Missing course modules.");
         }
         modules_ = modules;
+        modules_.values().forEach(module -> {
+            module.setCourseDescription(this);
+        });
     }
 
     @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true )
-    @JoinTable( name="join_course_descriptions_modules",
-                joinColumns = @JoinColumn(name = "module_id"),
-                inverseJoinColumns = @JoinColumn(name = "course_description_id") )
+    @JoinTable(
+        name = "join_course_descriptions_modules",
+        joinColumns = @JoinColumn( name = "module_id" ),
+        inverseJoinColumns = @JoinColumn( name = "course_description_id" )
+    )
     @MapKey( name = "moduleId" )
     protected Map<Integer,Module> getModules()
     {
@@ -225,10 +230,13 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     private void setFirstModule(Module first)
     {
         firstModule_ = first;
+        if ( firstModule_ != null ) {
+            firstModule_.setCourseDescription(this);
+        }
     }
     
     @OneToOne
-    @JoinColumn(name = "first_module_id")
+    @JoinColumn( name = "first_module_id" )
     protected Module getFirstModule()
     {
         return firstModule_;
@@ -319,6 +327,7 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         // Create new module according to specification.
         int moduleId = this.generateModuleId();
         Module next = Module.valueOf(moduleId, spec);
+        next.setCourseDescription(this);
         
         // The new module becomes the first module of this course, if no other modules
         // are present.
