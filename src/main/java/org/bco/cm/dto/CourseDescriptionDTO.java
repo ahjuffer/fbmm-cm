@@ -120,7 +120,7 @@ public class CourseDescriptionDTO implements Serializable {
         return summary_;
     }
     
-    public void setModules(Map<Integer, ModuleDTO> modules)
+    public void setModuleMap(Map<Integer, ModuleDTO> modules)
     {
         modules_.clear();
         modules_.putAll(modules);
@@ -132,12 +132,13 @@ public class CourseDescriptionDTO implements Serializable {
         cascade = CascadeType.ALL
     )
     @MapKey( name = "moduleId" )
-    public Map<Integer, ModuleDTO> getModules()
+    @JsonIgnore
+    public Map<Integer, ModuleDTO> getModuleMap()
     {
         return modules_;
     }
     
-    public void setAllModules(Collection<ModuleDTO> modules)
+    public void setModules(Collection<ModuleDTO> modules)
     {
         modules.forEach(module -> {
             int moduleId = module.getModuleId();
@@ -147,8 +148,7 @@ public class CourseDescriptionDTO implements Serializable {
     }
     
     @Transient
-    @JsonIgnore
-    public Collection<ModuleDTO> getAllModules()
+    public Collection<ModuleDTO> getModules()
     {
         return modules_.values();
     }

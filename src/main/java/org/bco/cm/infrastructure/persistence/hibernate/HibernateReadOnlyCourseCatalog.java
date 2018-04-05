@@ -28,6 +28,7 @@ import java.util.List;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.util.ReadOnlyHibernateRepository;
 import org.springframework.stereotype.Repository;
@@ -74,6 +75,16 @@ public class HibernateReadOnlyCourseCatalog
     public List<CourseDescriptionDTO> getAllCourses() 
     {
         return this.forMany(FROM);
+    }
+    
+    @Override
+    public List<CourseDescriptionDTO> getTeachersCourses(TeacherId teacherId)
+    {
+        String id = teacherId.stringValue();
+        String hql =
+            FROM + 
+            "where course.teacherId = '" + id + "'";
+        return this.forMany(hql);
     }
 
 }

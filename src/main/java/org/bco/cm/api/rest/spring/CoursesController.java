@@ -27,11 +27,13 @@ package org.bco.cm.api.rest.spring;
 import java.util.List;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -52,7 +54,7 @@ public class CoursesController  {
      * @param id Course identifier.
      * @return Course description.
      */
-    @RequestMapping( value = "/{courseId}")
+    @RequestMapping( value = "/{courseId}" )
     @GetMapping( produces = "application/json;charset=UTF-8" )
     public CourseDescriptionDTO getCourse(@PathVariable("courseId") String id)
     {
@@ -69,4 +71,20 @@ public class CoursesController  {
     {
         return courseFacade_.getAllCourses();
     }
+    
+     /**
+     * Returns all courses the given teacher is responsible for.
+     * @param id Teacher identifier.
+     * @return Courses. May be empty.
+     */     
+    @GetMapping(
+        produces = "application/json;charset=UTF-8", 
+        params = "teacherId"
+    )
+    public List<CourseDescriptionDTO> getTeachersCourses(@RequestParam("teacherId") String id)
+    {
+        TeacherId teacherId = new TeacherId(id);
+        return courseFacade_.getTeachersCourses(teacherId);
+    }
+    
 }

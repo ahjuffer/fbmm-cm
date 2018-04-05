@@ -32,6 +32,7 @@ import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -82,6 +83,11 @@ public class InMemoryReadOnlyCourseCatalog implements ReadOnlyCourseCatalog {
             throw new NullPointerException(courseId.stringValue() + ": No such course.");
         }
         return this.toDTO(course);
+    }
+
+    @Override
+    public List<CourseDescriptionDTO> getTeachersCourses(TeacherId teacherId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

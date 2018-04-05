@@ -331,7 +331,7 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         dto.setCourseId(courseId_.stringValue());
         dto.setSummary(summary_);
         dto.setTitle(title_);
-        dto.setAllModules(Module.toDTOs(modules_.values()));
+        dto.setModules(Module.toDTOs(modules_.values()));
         if ( this.hasModules() ) {
             dto.setFirstModule(this.getFirstModule().toDTO());        
         }

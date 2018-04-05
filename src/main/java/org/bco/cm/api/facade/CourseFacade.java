@@ -27,6 +27,7 @@ package org.bco.cm.api.facade;
 import java.util.List;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,5 +71,16 @@ public class CourseFacade {
     public CourseDescriptionDTO getCourse(CourseId courseId)
     {
         return readOnlyCourseCatalog_.getCourse(courseId);
+    }
+    
+    /**
+     * Returns all courses the given teacher is responsible for.
+     * @param teacherId Teacher identifier.
+     * @return Courses. May be empty.
+     */    
+    @Transactional( readOnly = true )
+    public List<CourseDescriptionDTO> getTeachersCourses(TeacherId teacherId)
+    {
+        return readOnlyCourseCatalog_.getTeachersCourses(teacherId);
     }
 }

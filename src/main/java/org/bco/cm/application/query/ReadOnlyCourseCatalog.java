@@ -26,6 +26,7 @@ package org.bco.cm.application.query;
 
 import java.util.List;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 
 /**
@@ -54,5 +55,12 @@ public interface ReadOnlyCourseCatalog {
      * @return Courses. May be empty.
      */
     List<CourseDescriptionDTO> getAllCourses();
+    
+    /**
+     * Returns all courses the given teacher is responsible for.
+     * @param teacherId Teacher identifier.
+     * @return Courses. May be empty.
+     */
+    List<CourseDescriptionDTO> getTeachersCourses(TeacherId teacherId);
     
 }
