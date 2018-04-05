@@ -24,9 +24,11 @@
 
 package org.bco.cm.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -34,12 +36,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.hibernate.annotations.NaturalId;
 
 /**
@@ -54,8 +54,9 @@ public class CourseDescriptionDTO implements Serializable {
     private String courseId_;
     private String title_;
     private String summary_;
-    private final Collection <ModuleDTO> modules_;
+    private final Map <Integer,ModuleDTO> modules_;
     private ModuleDTO firstModule_;
+    private int firstModuleId_;
     private String teacherId_;
     
     public CourseDescriptionDTO()
@@ -63,8 +64,9 @@ public class CourseDescriptionDTO implements Serializable {
         courseId_ = null;
         title_ = null;
         summary_ = null;
-        modules_ = new HashSet<>();
+        modules_ = new HashMap<>();
         firstModule_ = null;
+        firstModuleId_ = -1;
         teacherId_ = null;
     }
     
@@ -112,38 +114,80 @@ public class CourseDescriptionDTO implements Serializable {
         summary_ = summary;
     }
     
-    @Column( name="summary" )
+    @Column( name = "summary" )
     public String getSummary()
     {
         return summary_;
     }
     
-    public void setModules(Collection<ModuleDTO> modules)
+    public void setModules(Map<Integer, ModuleDTO> modules)
     {
         modules_.clear();
-        modules_.addAll(modules);
+        modules_.putAll(modules);
+        this.setFirstModuleId(firstModuleId_);
     }
     
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable( name="join_course_descriptions_modules",
-                joinColumns = @JoinColumn(name = "module_id"),
-                inverseJoinColumns = @JoinColumn(name = "course_description_id") )
+    @OneToMany(
+        mappedBy = "courseDescription", 
+        cascade = CascadeType.ALL
+    )
     @MapKey( name = "moduleId" )
-    public Collection<ModuleDTO> getModules()
+    public Map<Integer, ModuleDTO> getModules()
     {
         return modules_;
+    }
+    
+    public void setAllModules(Collection<ModuleDTO> modules)
+    {
+        modules.forEach(module -> {
+            int moduleId = module.getModuleId();
+            modules_.put(moduleId, module);
+        });
+        this.setFirstModuleId(firstModuleId_);
+    }
+    
+    @Transient
+    @JsonIgnore
+    public Collection<ModuleDTO> getAllModules()
+    {
+        return modules_.values();
     }
     
     public void setFirstModule(ModuleDTO first)
     {
         firstModule_ = first;
+        if ( firstModule_ != null ) {
+            firstModuleId_ = firstModule_.getModuleId();
+        }
     }
     
-    @OneToOne
-    @JoinColumn(name = "first_module_id")
+    @Transient
+    @JsonIgnore
     public ModuleDTO getFirstModule()
     {
         return firstModule_;
+    }
+    
+    public void setFirstModuleId(int firstModuleId) 
+    {
+        firstModuleId_ = firstModuleId;
+        if ( modules_.containsKey(firstModuleId_) ) {
+            firstModule_ = modules_.get(firstModuleId_);
+        }
+    }
+    
+    /**
+     * Return first module identifier value.
+     * @return Value or -1 if not set.
+     */
+    @Column( name = "first_module_id" )
+    public int getFirstModuleId()
+    {
+        if ( firstModule_ != null ) {
+            return firstModule_.getModuleId();
+        } else {
+            return firstModuleId_;
+        }
     }
     
     public void setTeacherId(String teacherId)
@@ -161,12 +205,16 @@ public class CourseDescriptionDTO implements Serializable {
     public String toString()
     {
         String newline = System.getProperty("line.separator");
-        StringBuilder s = new StringBuilder("CourseDTO : {").append(newline);
+        StringBuilder s = new StringBuilder("CourseDescriptionDTO : {").append(newline);
         s.append("courseId - ").append(courseId_).append(newline);
         s.append("title - ").append(title_).append(newline);
         s.append("summary - ").append(summary_).append(newline);
         s.append("modules - ").append(modules_).append(newline);
-        s.append("firstModuleId - ").append(firstModule_).append(newline);
+        if ( firstModule_ != null ) {
+            s.append("firstModuleId - ").append(firstModule_.getModuleId()).append(newline);
+        } else {
+            s.append("firstModuleId - ").append(firstModuleId_).append(newline);
+        }
         s.append("teacherId - ").append(teacherId_).append(newline);
         s.append("}");
         return s.toString();

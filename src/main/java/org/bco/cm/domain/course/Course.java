@@ -480,10 +480,10 @@ public class Course implements Eventful, Identifiable {
             throw new IllegalStateException("No modules specified for course.");
         }
         Module last = this.firstModule();
-        Module next = last.toNext();
+        Module next = last.getNext();
         while ( next != last ) {
             last = next;
-            next = last.toNext();
+            next = last.getNext();
         }
         return last;
     }

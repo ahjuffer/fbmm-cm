@@ -31,7 +31,8 @@ create table modules
     id                      UUID not null primary key,
     module_id               int,
     name                    varchar(200),
-    next_module_id          UUID
+    next_module_id          int,
+    course_description_id   UUID
 );
 
 create table course_descriptions
@@ -40,31 +41,11 @@ create table course_descriptions
     course_id               varchar(200),
     title                   varchar(200),
     summary                 varchar(200),
-    first_module_id         UUID,
+    first_module_id         int,
     teacher_id              varchar(200)
 );
 
-
-create table join_course_descriptions_modules
-(
-    course_description_id   UUID,
-    module_id               UUID,
-    primary key ( course_description_id, module_id )
-);
-
 alter table modules
-add foreign key (next_module_id)
-references modules (id);
-
-alter table course_descriptions
-add foreign key (first_module_id)
-references modules (id);
-
-alter table join_course_descriptions_modules
-add foreign key (course_description_id)
+add foreign key ( course_description_id )
 references course_descriptions (id);
-
-alter table join_course_descriptions_modules
-add foreign key (module_id)
-references modules (id);
 

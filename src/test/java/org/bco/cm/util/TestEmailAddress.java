@@ -1,4 +1,4 @@
-package org.bco.cm;
+package org.bco.cm.util;
 
 /*
  * The MIT License

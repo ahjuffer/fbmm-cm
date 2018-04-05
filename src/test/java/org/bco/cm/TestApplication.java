@@ -171,8 +171,7 @@ public class TestApplication implements ApplicationRunner {
         
         //insilico.begin();
         */
-        
-        
+                
         List<CourseDescriptionDTO> courses = courseFacade_.getAllCourses();
         LOGGER.info("All courses: " + courses);
         

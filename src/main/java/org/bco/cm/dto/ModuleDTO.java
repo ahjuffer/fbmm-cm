@@ -24,6 +24,7 @@
 
 package org.bco.cm.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -31,7 +32,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.hibernate.annotations.NaturalId;
@@ -41,7 +42,7 @@ import org.hibernate.annotations.NaturalId;
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 @Entity( name = "ModuleDTO" )
-@Table ( name = "modules")
+@Table ( name = "modules" )
 public class ModuleDTO implements Serializable {
     
     private UUID id_;
@@ -51,6 +52,10 @@ public class ModuleDTO implements Serializable {
     private AssignmentDTO assignment_;
     private QuizDTO quiz_;
     private ModuleDTO next_;
+    private int nextModuleId_;
+    
+    private CourseDescriptionDTO course_;
+    private String courseId_;
     
     public ModuleDTO()
     {
@@ -60,6 +65,9 @@ public class ModuleDTO implements Serializable {
         assignment_ = null;
         quiz_ = null;
         next_ = null;
+        nextModuleId_ = -1;
+        course_ = null;
+        courseId_ = "-1";
     }
     
     private void setId(UUID id)
@@ -152,11 +160,58 @@ public class ModuleDTO implements Serializable {
      * Returns the module following the this module.
      * @return Module.
      */
-    @OneToOne
-    @JoinColumn(name = "next_module_id")
+    @Transient
+    @JsonIgnore
     public ModuleDTO getNextModule()
     {
         return next_;
+    }
+    
+    public void setNextModuleId(int nextModuleId)
+    {
+        nextModuleId_ = nextModuleId;
+    }
+    
+    @Column( name = "next_module_id" )
+    public int getNextModuleId()
+    {
+        if ( next_ != null ) {
+            return next_.getModuleId();
+        } else {
+            return nextModuleId_;
+        }
+    }
+    
+    public void setCourseDescription(CourseDescriptionDTO course)
+    {
+        course_ = course;
+        if ( course_ != null ) {
+            this.setCourseId(course_.getCourseId());
+            this.setNextModuleId(nextModuleId_);
+        }
+    }
+    
+    @ManyToOne
+    @JoinColumn( name="course_description_id" )
+    @JsonIgnore
+    public CourseDescriptionDTO getCourseDescription()
+    {
+        return course_;
+    }
+    
+    public void setCourseId(String courseId)
+    {
+        courseId_ = courseId;
+    }
+    
+    @Transient
+    public String getCourseId()
+    {
+        if ( course_ != null ) {
+            return course_.getCourseId();
+        } else {
+            return courseId_;
+        }
     }
     
     @Override
@@ -164,6 +219,7 @@ public class ModuleDTO implements Serializable {
     {
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("ModuleDTO : {").append(newline);
+        s.append("id - ").append(id_).append(newline);
         s.append("moduleId - ").append(moduleId_).append(newline);
         s.append("name - ").append(name_).append(newline);
         if ( learningPath_ != null ) {
@@ -176,8 +232,11 @@ public class ModuleDTO implements Serializable {
             s.append("quiz - ").append(quiz_).append(newline);
         }
         if ( next_ != null ) {
-            s.append("nextModule - ").append(next_).append(newline);
-        }   
+            s.append("nextModuleId - ").append(next_.getModuleId()).append(newline);
+        } else {
+            s.append("nextModuleId - ").append(nextModuleId_).append(newline);
+        }
+        s.append("courseId - ").append(this.getCourseId()).append(newline);        
         s.append("}");
         return s.toString();
     }

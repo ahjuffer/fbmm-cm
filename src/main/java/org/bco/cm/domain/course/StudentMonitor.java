@@ -82,7 +82,7 @@ public class StudentMonitor {
             );
         }
         if ( current_.hasNext() ) {
-            current_ = current_.toNext();
+            current_ = current_.getNext();
         }
     }
     

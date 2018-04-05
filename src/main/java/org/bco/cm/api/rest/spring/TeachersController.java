@@ -80,7 +80,7 @@ public class TeachersController {
      * path, assignment and/or quiz.
      * @return Update course.
      */
-    @RequestMapping(value="/{teacherId}/course/{courseId}/module")
+    @RequestMapping(value="/{teacherId}/courses/{courseId}/modules")
     @PutMapping(consumes = "application/json;charset=UTF-8", 
                 produces = "application/json;charset=UTF-8")
     @ResponseStatus(HttpStatus.CREATED)
@@ -102,7 +102,7 @@ public class TeachersController {
      * @return New course.
      * @see #addCourseModule(java.lang.String, java.lang.String, org.bco.cm.dto.ModuleDTO) 
      */
-    @RequestMapping(value="/{teacherId}/course")
+    @RequestMapping(value="/{teacherId}/courses")
     @PostMapping(consumes = "application/json;charset=UTF-8", 
                  produces = "application/json;charset=UTF-8")
     @ResponseStatus(HttpStatus.CREATED)

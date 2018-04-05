@@ -25,10 +25,8 @@ package org.bco.cm.domain.course;
  */
 
 
-import org.bco.cm.dto.CourseDTO;
-import org.bco.cm.dto.LearningPathDTO;
+import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
-import org.bco.cm.dto.OnlineMaterialDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.jboss.logging.Logger;
 
@@ -36,51 +34,53 @@ import org.jboss.logging.Logger;
  *
  * @author ajuffer
  */
-public class TestCourse {
+public class TestCourseDescription {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         
-        TeacherId teacherId = new TeacherId("qwerty");
+        TeacherId teacherId = new TeacherId("1");
         TeacherDTO tspec = new TeacherDTO();
         tspec.setFirstName("André");
         tspec.setSurname("Juffer");
         Teacher teacher = Teacher.valueOf(teacherId, tspec);
         
         // Create a course.
-        CourseDTO sspec = new CourseDTO();
+        CourseDescriptionDTO sspec = new CourseDescriptionDTO();
         CourseId courseId = new CourseId("123456");
-        // Leaving out any of the next three statements causes an exception.
-        sspec.setDescription("This is a test description.");
+        // Leaving out any of the next two statements causes an exception.
+        sspec.setSummary("This is a test description.");
         sspec.setTitle("This is a test title.");
-        sspec.setObjective("This is an objective.");
-        Course course = Course.start(teacher, courseId, sspec);
-        Logger.getLogger(TestCourse.class).info("New coursed: " + course.toDTO());
+        CourseDescription course = CourseDescription.valueOf(teacher, courseId, sspec);
+        Logger.getLogger("TestCourseDescription")
+              .info("Created course: " + course.toDTO());
+        Logger.getLogger("TestCourseDescription").info("--------------------------------");
         
-        // Course cannot begin if no modules were added.
-        //course.begin();
+        // Add module #1.
+        ModuleDTO m1 = new ModuleDTO();
+        m1.setName("MODULE #1");
+        course.addModule(m1);
+        Logger.getLogger("TestCourseDescription")
+              .info("Update #1: " + course.toDTO());
+        Logger.getLogger("TestCourseDescription").info("--------------------------------");
         
-        // Create a module.
-        ModuleDTO module = new ModuleDTO();
-        LearningPathDTO lp = new LearningPathDTO();
-        OnlineMaterialDTO material = new OnlineMaterialDTO();
-        material.setMaterialType("reading");
-        material.setObjective("This is a test objective.");
-        material.setResource("Http://www.example.com/something");
-        // Leaving out next statement causes an exception.
-        lp.addOnlineMaterial(material);
-        module.setLearningPath(lp);
-        module.setName("Module name");
-        course.addModule(module);
-        Logger.getLogger(TestCourse.class).info("Updated course: " + course.toDTO());
+        // Add module #2.
+        ModuleDTO m2 = new ModuleDTO();
+        m2.setName("MODULE #2");
+        course.addModule(m2);
+        Logger.getLogger("TestCourseDescription")
+              .info("Update #2: " + course.toDTO());
+        Logger.getLogger("TestCourseDescription").info("--------------------------------");
         
-        // Next statement may cause exception.
-        course.begin();
-        Logger.getLogger(TestCourse.class).info("Course ongoing? " + course.isOngoing());
-        Logger.getLogger(TestCourse.class).info("Ongoing course: " + course.toDTO());
-        
+        // Add module #3.
+        ModuleDTO m3 = new ModuleDTO();
+        m3.setName("MODULE #3");
+        course.addModule(m3);
+        Logger.getLogger("TestCourseDescription")
+              .info("Update #3: " + course.toDTO());
+        Logger.getLogger("TestCourseDescription").info("--------------------------------");
     }
     
 }
