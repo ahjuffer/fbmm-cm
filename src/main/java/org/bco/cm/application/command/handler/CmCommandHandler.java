@@ -52,9 +52,7 @@ public abstract class CmCommandHandler<C extends AbstractCommand>
     /**
      * Handle raised domain events asynchronously.
      * @param eventful Object that may have raised domain events.
-     * @deprecated
      */
-    @Deprecated
     protected void handleEventsAsync(Eventful eventful)
     {
         eventBus_.handleAsync(eventful);

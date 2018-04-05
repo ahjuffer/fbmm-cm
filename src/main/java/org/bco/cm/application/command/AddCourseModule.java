@@ -39,6 +39,12 @@ public class AddCourseModule extends AbstractCommand {
     private final CourseId courseId_;
     private final ModuleDTO spec_;
     
+    /**
+     * Constructor. 
+     * @param teacherId Identifier responsible teacher.
+     * @param courseId Identifier course to which module is added.
+     * @param spec New module specification.
+     */
     public AddCourseModule(TeacherId teacherId, CourseId courseId, ModuleDTO spec)
     {
         super(AddCourseModule.class);

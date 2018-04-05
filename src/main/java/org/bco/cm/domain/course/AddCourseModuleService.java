@@ -37,20 +37,21 @@ public class AddCourseModuleService {
     }
     
     /**
-     * Adds course module. Updates course catalog.
+     * Adds course module. Also updates course catalog.
      * @param teacher Responsible teacher.
      * @param course Course.
      * @param spec New module specification.
      * @param courseCatalog Course catalog.
      * @return Updated course description.
-     * @throws IllegalArgumentException if teacher is not responsible for course.
+     * @throws IllegalArgumentException if given teacher is not responsible 
+     * for course.
      */
     public static CourseDescription add(Teacher teacher, 
                                         CourseDescription course, 
                                         ModuleDTO spec,
                                         CourseCatalog courseCatalog)
     {
-        if ( !teacher.getTeacherId().equals(course.getTeacherId()) ) {
+        if ( !course.isResponsibleTeacher(teacher) ) {
             throw new IllegalArgumentException("Teacher is not responsible for course.");
         }
         course.addModule(spec);

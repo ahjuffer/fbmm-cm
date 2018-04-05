@@ -186,7 +186,7 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     }
     
     /**
-     * Return course summary.
+     * Returns course summary.
      * @return Summary. Never null or empty.
      */
     @Column( name = "summary")
@@ -272,6 +272,10 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         teacherId_ = teacherId;
     }
     
+    /**
+     * Returns identifier responsible teacher.
+     * @return Identifier.
+     */
     @Embedded
     protected TeacherId getTeacherId()
     {
@@ -279,7 +283,7 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     }
     
     /**
-     * Creates a new course description.
+     * Creates a new course description. Arguments must not be null.
      * @param teacher Responsible teacher.
      * @param courseId New course identifier.
      * @param spec New course specification. Must include title and summary, no
@@ -307,7 +311,9 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     
     /**
      * Updates course description.
-     * @param spec Course update specification. Title and summary only.
+     * @param spec Course update specification. Must not be null, and 
+     * must include title and summary. Modules are ignored.
+     * @see #addModule(org.bco.cm.dto.ModuleDTO) 
      */
     public void update(CourseDescriptionDTO spec)
     {
@@ -364,7 +370,16 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         modules_.put(moduleId, next);
     }
     
-    
+    /**
+     * Is given teacher responsible for this course.
+     * @param teacher Teacher.
+     * @return Result.
+     */
+    public boolean isResponsibleTeacher(Teacher teacher)
+    {
+        return teacherId_.equals(teacher.getTeacherId());
+    }
+        
     private boolean hasModules()
     {
         return !modules_.isEmpty();
@@ -405,9 +420,9 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     }
 
     /**
-     * Returns identifier only unique in context of this course.
-     * @return Identifier. This value is in the interval 
-     * &lt;0, Integer.MAX_VALUE - 100]. 
+     * Returns new module identifier value that is unique in the context of 
+     * this course.
+     * @return Identifier, always > 0.
      */
     private int generateModuleId()
     {
@@ -460,7 +475,7 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     }
     
     /**
-     * Signals this course is newly to course catalog.
+     * Signals that this course is newly added to the course catalog.
      */
     void addedToCourseCatalog()
     {
