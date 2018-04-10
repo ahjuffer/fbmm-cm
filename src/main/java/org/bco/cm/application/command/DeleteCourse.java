@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2018 André H. Juffer, Biocenter Oulu
@@ -21,31 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+package org.bco.cm.application.command;
+
+import com.tribc.cqrs.domain.command.AbstractCommand;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
+
 /**
- * Author:  ajuffer
- * Created: Mar 27, 2018
+ * Command for deleting a course description.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+public class DeleteCourse extends AbstractCommand {
+    
+    private final TeacherId teacherId_;
+    private final CourseId courseId_;
+    
+    public DeleteCourse(TeacherId teacherId, CourseId courseId)
+    {
+        super(DeleteCourse.class);
+        teacherId_ = teacherId;
+        courseId_ = courseId;
+    }
 
-create table modules
-(
-    id                      UUID not null primary key,
-    module_id               int,
-    name                    varchar(200),
-    next_module_id          int,
-    course_description_id   UUID
-);
-
-create table course_descriptions
-(
-    id                      UUID not null primary key,
-    course_id               varchar(200),
-    title                   varchar(200),
-    summary                 varchar(2000),
-    first_module_id         int,
-    teacher_id              varchar(200)
-);
-
-alter table modules
-add foreign key ( course_description_id )
-references course_descriptions (id);
-
+    public TeacherId getTeacherId()
+    {
+        return teacherId_;
+    }
+    
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
+    
+}

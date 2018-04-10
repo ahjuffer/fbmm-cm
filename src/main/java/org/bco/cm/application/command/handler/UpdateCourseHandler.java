@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,23 +24,23 @@
 
 package org.bco.cm.application.command.handler;
 
-import org.bco.cm.application.command.PostNewCourse;
+import org.bco.cm.application.command.UpdateCourse;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.RegisterNewCourseService;
 import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.domain.course.UpdateCourseInCatalogService;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Handles starting a new course
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class PostNewCourseHandler extends CmCommandHandler<PostNewCourse> {
-    
+public class UpdateCourseHandler extends CmCommandHandler<UpdateCourse> {
+
     @Autowired
     private TeacherRegistry teacherRepository_;   
     
@@ -48,20 +48,21 @@ public class PostNewCourseHandler extends CmCommandHandler<PostNewCourse> {
     private CourseCatalog courseCatalog_;
     
     @Override
-    public void handle(PostNewCourse command)
+    public void handle(UpdateCourse command) 
     {
         TeacherId teacherId = command.getTeacherId();
         Teacher teacher = 
             CommandHandlerUtil.findTeacher(teacherId, teacherRepository_);
         CourseId courseId = command.getCourseId();
-        CourseDescriptionDTO spec = command.getCourseSpecification();
+        CourseDescriptionDTO spec = command.getCourseSpecification();        
+        CourseDescription course = courseCatalog_.forCourseId(courseId);
         
-        // Create course.
-        CourseDescription course = 
-            RegisterNewCourseService.register(teacher, courseId, spec, courseCatalog_);
+        // Update course.
+        CourseDescription updated = 
+            UpdateCourseInCatalogService.update(teacher, course, spec, courseCatalog_);
         
         // Handle possible domain events.
-        this.handleEvents(course);
+        this.handleEvents(updated);
     }
-    
+
 }

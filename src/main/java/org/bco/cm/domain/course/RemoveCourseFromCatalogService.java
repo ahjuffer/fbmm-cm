@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2018 André H. Juffer, Biocenter Oulu
@@ -21,31 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+package org.bco.cm.domain.course;
+
 /**
- * Author:  ajuffer
- * Created: Mar 27, 2018
+ * Domain service for removing a course description from the course catalog by
+ * a teacher.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+public class RemoveCourseFromCatalogService {
+    
+    private RemoveCourseFromCatalogService()
+    {        
+    }
+    
+    /**
+     * Removes courses.
+     * @param teacher Responsible teacher.
+     * @param course Course description.
+     * @param courseCatalog Course catalog.
+     * @throws IllegalArgumentException if teacher is not responsible for course.
+     */
+    public static void remove(Teacher teacher, 
+                              CourseDescription course, 
+                              CourseCatalog courseCatalog)
+    {
+        if ( !course.isResponsibleTeacher(teacher) ) {
+            throw new IllegalArgumentException(
+                "Teacher is not responsible for course '" + course.getTitle() + "'."
+            );
+        }
+        courseCatalog.remove(course);
+    }
 
-create table modules
-(
-    id                      UUID not null primary key,
-    module_id               int,
-    name                    varchar(200),
-    next_module_id          int,
-    course_description_id   UUID
-);
-
-create table course_descriptions
-(
-    id                      UUID not null primary key,
-    course_id               varchar(200),
-    title                   varchar(200),
-    summary                 varchar(2000),
-    first_module_id         int,
-    teacher_id              varchar(200)
-);
-
-alter table modules
-add foreign key ( course_description_id )
-references course_descriptions (id);
-
+}

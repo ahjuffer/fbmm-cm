@@ -31,10 +31,12 @@ import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.application.command.handler.AddCourseModuleHandler;
 import org.bco.cm.application.command.handler.CmCommandBus;
+import org.bco.cm.application.command.handler.DeleteCourseHandler;
 import org.bco.cm.application.command.handler.EnrolStudentHandler;
 import org.bco.cm.application.command.handler.PostNewCourseHandler;
 import org.bco.cm.application.command.handler.RegisterNewStudentHandler;
 import org.bco.cm.application.command.handler.RegisterNewTeacherHandler;
+import org.bco.cm.application.command.handler.UpdateCourseHandler;
 import org.bco.cm.application.event.handler.CmEventBus;
 import org.bco.cm.application.event.handler.EnrolmentCreatedHandler;
 import org.bco.cm.application.event.handler.NewStudentRegisteredHandler;
@@ -154,6 +156,18 @@ public class CmConfiguration
     PostNewCourseHandler postNewCourseHandler()
     {
         return new PostNewCourseHandler();
+    }
+    
+    @Bean
+    UpdateCourseHandler updateCourseHandler()
+    {
+        return new UpdateCourseHandler();
+    }
+    
+    @Bean
+    DeleteCourseHandler deleteCourseHandler()
+    {
+        return new DeleteCourseHandler();
     }
     
     @Bean

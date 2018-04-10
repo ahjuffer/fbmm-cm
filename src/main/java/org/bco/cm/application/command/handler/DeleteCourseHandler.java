@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André J. Juffer, Triacle Biocomputing
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,44 +24,39 @@
 
 package org.bco.cm.application.command.handler;
 
-import org.bco.cm.application.command.PostNewCourse;
+import org.bco.cm.application.command.DeleteCourse;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.RegisterNewCourseService;
+import org.bco.cm.domain.course.RemoveCourseFromCatalogService;
 import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.domain.course.TeacherRegistry;
-import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-
 /**
- * Handles starting a new course
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class PostNewCourseHandler extends CmCommandHandler<PostNewCourse> {
-    
+public class DeleteCourseHandler extends CmCommandHandler<DeleteCourse> {
+
     @Autowired
     private TeacherRegistry teacherRepository_;   
     
     @Autowired
     private CourseCatalog courseCatalog_;
-    
+
     @Override
-    public void handle(PostNewCourse command)
+    public void handle(DeleteCourse command) 
     {
         TeacherId teacherId = command.getTeacherId();
         Teacher teacher = 
             CommandHandlerUtil.findTeacher(teacherId, teacherRepository_);
         CourseId courseId = command.getCourseId();
-        CourseDescriptionDTO spec = command.getCourseSpecification();
+        CourseDescription course = courseCatalog_.forCourseId(courseId);
         
-        // Create course.
-        CourseDescription course = 
-            RegisterNewCourseService.register(teacher, courseId, spec, courseCatalog_);
+        RemoveCourseFromCatalogService.remove(teacher, course, courseCatalog_);
         
-        // Handle possible domain events.
-        this.handleEvents(course);
     }
+    
     
 }

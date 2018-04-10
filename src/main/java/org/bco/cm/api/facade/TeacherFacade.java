@@ -27,8 +27,10 @@ package org.bco.cm.api.facade;
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
 import org.bco.cm.application.command.AddCourseModule;
+import org.bco.cm.application.command.DeleteCourse;
 import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.command.RegisterNewTeacher;
+import org.bco.cm.application.command.UpdateCourse;
 import org.bco.cm.application.query.ReadOnlyTeacherRegistry;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
@@ -74,6 +76,32 @@ public class TeacherFacade {
                               CourseDescriptionDTO spec)
     {
         PostNewCourse command = new PostNewCourse(teacherId, courseId, spec);
+        commandBus_.handle(command);
+    }
+    
+    /**
+     * Updates course description.
+     * @param teacherId Identifier of responsible teacher.
+     * @param courseId Course identifier.
+     * @param spec Update course specification. Must only hold title and summary. 
+     * No modules.
+     */
+    public void updateCourse(TeacherId teacherId,
+                             CourseId courseId,
+                             CourseDescriptionDTO spec)
+    {
+        UpdateCourse command = new UpdateCourse(teacherId, courseId, spec);
+        commandBus_.handle(command);
+    }
+    
+    /**
+     * Deletes course description in course catalog.
+     * @param teacherId Identifier of responsible teacher.
+     * @param courseId Course identifier.
+     */
+    public void deleteCourse(TeacherId teacherId, CourseId courseId)
+    {
+        DeleteCourse command = new DeleteCourse(teacherId, courseId);
         commandBus_.handle(command);
     }
     

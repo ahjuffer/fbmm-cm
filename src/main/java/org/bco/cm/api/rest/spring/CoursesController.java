@@ -54,8 +54,10 @@ public class CoursesController  {
      * @param id Course identifier.
      * @return Course description.
      */
-    @RequestMapping( value = "/{courseId}" )
-    @GetMapping( produces = "application/json;charset=UTF-8" )
+    @GetMapping( 
+        path = "/{courseId}",
+        produces = "application/json;charset=UTF-8" 
+    )
     public CourseDescriptionDTO getCourse(@PathVariable("courseId") String id)
     {
         CourseId courseId = new CourseId(id);
@@ -66,7 +68,7 @@ public class CoursesController  {
      * Queries for all courses.
      * @return Courses. May be empty.
      */
-    @GetMapping(produces = "application/json;charset=UTF-8")
+    @GetMapping( produces = "application/json;charset=UTF-8" )
     public List<CourseDescriptionDTO> getAllCourses() 
     {
         return courseFacade_.getAllCourses();

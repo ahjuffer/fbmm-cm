@@ -34,6 +34,7 @@ import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,8 +63,10 @@ public class TeachersController {
      * @param spec New teacher specification. Must hold first name and surname.
      * @return Teacher information.
      */
-    @PostMapping(consumes = "application/json;charset=UTF-8", 
-                 produces = "application/json;charset=UTF-8")
+    @PostMapping(
+        consumes = "application/json;charset=UTF-8", 
+        produces = "application/json;charset=UTF-8"
+    )
     @ResponseStatus(HttpStatus.CREATED)
     public TeacherDTO register(@RequestBody TeacherDTO spec)
     {
@@ -80,9 +83,11 @@ public class TeachersController {
      * path, assignment and/or quiz.
      * @return Update course.
      */
-    @RequestMapping(value="/{teacherId}/courses/{courseId}/modules")
-    @PutMapping(consumes = "application/json;charset=UTF-8", 
-                produces = "application/json;charset=UTF-8")
+    @PutMapping(
+        path ="/{teacherId}/courses/{courseId}/modules",
+        consumes = "application/json;charset=UTF-8", 
+        produces = "application/json;charset=UTF-8"
+    )
     @ResponseStatus(HttpStatus.CREATED)
     public CourseDescriptionDTO addCourseModule(@PathVariable("teacherId") String tId,
                                                 @PathVariable("courseId") String cId,
@@ -95,6 +100,43 @@ public class TeachersController {
     }
     
     /**
+     * Updates existing course.
+     * @param tId Teacher identifier.
+     * @param cId Course identifier.
+     * @param spec Course update specification. Must hold only title and summary. 
+     * No modules.
+     * @return Updated course.
+     */
+    @PutMapping(
+        path = "/{teacherId}/courses/{courseId}",
+        consumes = "application/json;charset=UTF-8", 
+        produces = "application/json;charset=UTF-8"
+    )
+    public CourseDescriptionDTO updateCourse(@PathVariable("teacherId") String tId,
+                                             @PathVariable("courseId") String cId,
+                                             @RequestBody CourseDescriptionDTO spec)
+    {
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        teacherFacade_.updateCourse(teacherId, courseId, spec);
+        return courseFacade_.getCourse(courseId);
+    }
+    
+    /**
+     * Delete existing course in course catalog.
+     * @param tId Teacher identifier.
+     * @param cId Course identifier.
+     */
+    @DeleteMapping( path = "/{teacherId}/courses/{courseId}" )
+    public void deleteCourse(@PathVariable("teacherId") String tId,
+                             @PathVariable("courseId") String cId)
+    {
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        teacherFacade_.deleteCourse(teacherId, courseId);
+    }
+    
+    /**
      * Posts new course.
      * @param id Identifier of responsible teacher.
      * @param spec New course specification. Must hold only title and summary. 
@@ -102,9 +144,11 @@ public class TeachersController {
      * @return New course.
      * @see #addCourseModule(java.lang.String, java.lang.String, org.bco.cm.dto.ModuleDTO) 
      */
-    @RequestMapping(value="/{teacherId}/courses")
-    @PostMapping(consumes = "application/json;charset=UTF-8", 
-                 produces = "application/json;charset=UTF-8")
+    @PostMapping(
+        path = "/{teacherId}/courses",
+        consumes = "application/json;charset=UTF-8", 
+        produces = "application/json;charset=UTF-8"
+    )
     @ResponseStatus(HttpStatus.CREATED)
     public CourseDescriptionDTO postNewCourse(@PathVariable("teacherId") String id, 
                                               @RequestBody CourseDescriptionDTO spec)
@@ -120,8 +164,10 @@ public class TeachersController {
      * @param id Teacher identifier.
      * @return Teacher.
      */
-    @GetMapping(produces = "application/json;charset=UTF-8")
-    @RequestMapping(value="/{teacherId}")
+    @GetMapping(
+        path = "/{teacherId}",
+        produces = "application/json;charset=UTF-8"
+    )
     public TeacherDTO getTeacher(@PathVariable("teacherId") String id)
     {
         TeacherId teacherId = new TeacherId(id);
@@ -132,7 +178,7 @@ public class TeachersController {
      * Returns all teacher resources.
      * @return Teachers.
      */
-    @GetMapping(produces = "application/json;charset=UTF-8")
+    @GetMapping( produces = "application/json;charset=UTF-8" )
     public List<TeacherDTO> getAllTeachers()
     {
         return teacherFacade_.getAllTeachers();

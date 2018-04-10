@@ -139,6 +139,6 @@ public class Teacher extends Person<TeacherId> implements Eventful, Serializable
     void registered()
     {
         events_.add(new NewTeacherRegistered(this));
-    }
+    }        
         
 }
