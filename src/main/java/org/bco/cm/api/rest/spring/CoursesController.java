@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value="/courses")
-public class CoursesController  {
+public class CoursesController {
     
     @Autowired
     private CourseFacade courseFacade_;

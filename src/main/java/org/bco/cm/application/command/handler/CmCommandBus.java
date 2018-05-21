@@ -27,11 +27,13 @@ package org.bco.cm.application.command.handler;
 import com.tribc.cqrs.domain.command.CommandBus;
 import org.bco.cm.application.command.AddCourseModule;
 import org.bco.cm.application.command.DeleteCourse;
+import org.bco.cm.application.command.DeleteCourseModule;
 import org.bco.cm.application.command.RegisterNewStudent;
 import org.bco.cm.application.command.RegisterNewTeacher;
 import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.command.UpdateCourse;
+import org.bco.cm.application.command.UpdateCourseModule;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -81,6 +83,18 @@ public class CmCommandBus extends CommandBus {
     public void setDeleteCourse(DeleteCourseHandler handler)
     {
         this.setHandler(DeleteCourse.class, handler);
+    }
+    
+    @Autowired
+    public void setUpdateCourseModuleHandler(UpdateCourseModuleHandler handler)
+    {
+        this.setHandler(UpdateCourseModule.class, handler);
+    }
+    
+    @Autowired
+    public void setDeleteCourseModuleHandler(DeleteCourseModuleHandler handler)
+    {
+        this.setHandler(DeleteCourseModule.class, handler);
     }
     
     private void setHandler(Class clazz, CmCommandHandler handler)

@@ -81,9 +81,11 @@ public class StudentMonitor {
                 "Next module is not assigned in current module."
             );
         }
+        /*
         if ( current_.hasNext() ) {
             current_ = current_.getNext();
         }
+        */  
     }
     
     /**

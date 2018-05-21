@@ -76,35 +76,11 @@ public class TeachersController {
     }
     
     /**
-     * Adds module to existing course.
+     * Updates course description in course catalog.
      * @param tId Teacher identifier.
      * @param cId Course identifier.
-     * @param spec New module specification. Must include name, may include learning
-     * path, assignment and/or quiz.
-     * @return Update course.
-     */
-    @PutMapping(
-        path ="/{teacherId}/courses/{courseId}/modules",
-        consumes = "application/json;charset=UTF-8", 
-        produces = "application/json;charset=UTF-8"
-    )
-    @ResponseStatus(HttpStatus.CREATED)
-    public CourseDescriptionDTO addCourseModule(@PathVariable("teacherId") String tId,
-                                                @PathVariable("courseId") String cId,
-                                                @RequestBody ModuleDTO spec)
-    {
-        TeacherId teacherId = new TeacherId(tId);
-        CourseId courseId = new CourseId(cId);
-        teacherFacade_.addCourseModule(teacherId, courseId, spec);
-        return courseFacade_.getCourse(courseId);
-    }
-    
-    /**
-     * Updates existing course.
-     * @param tId Teacher identifier.
-     * @param cId Course identifier.
-     * @param spec Course update specification. Must hold only title and summary. 
-     * No modules.
+     * @param spec Course update specification. Must hold title and summary, 
+     * and may hold modules.
      * @return Updated course.
      */
     @PutMapping(
@@ -123,7 +99,7 @@ public class TeachersController {
     }
     
     /**
-     * Delete existing course in course catalog.
+     * Removes course description from course catalog.
      * @param tId Teacher identifier.
      * @param cId Course identifier.
      */
@@ -137,12 +113,11 @@ public class TeachersController {
     }
     
     /**
-     * Posts new course.
+     * Posts new course description.
      * @param id Identifier of responsible teacher.
-     * @param spec New course specification. Must hold only title and summary. 
-     * No modules.
+     * @param spec New course specification. Must hold at least title and summary,
+     * and may hold modules.
      * @return New course.
-     * @see #addCourseModule(java.lang.String, java.lang.String, org.bco.cm.dto.ModuleDTO) 
      */
     @PostMapping(
         path = "/{teacherId}/courses",
@@ -157,6 +132,79 @@ public class TeachersController {
         CourseId courseId = courseFacade_.generateCourseId();
         teacherFacade_.postNewCourse(teacherId, courseId, spec);
         return courseFacade_.getCourse(courseId);
+    }
+    
+    /**
+     * Adds new module to course description.
+     * @param tId Teacher identifier.
+     * @param cId Course identifier.
+     * @param spec New module specification. Must include name, may include learning
+     * path, assignment and/or quiz.
+     * @return Update course.
+     */
+    @PostMapping(
+        path ="/{teacherId}/courses/{courseId}/modules",
+        consumes = "application/json;charset=UTF-8", 
+        produces = "application/json;charset=UTF-8"
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    public CourseDescriptionDTO addCourseModule(@PathVariable("teacherId") String tId,
+                                                @PathVariable("courseId") String cId,
+                                                @RequestBody ModuleDTO spec)
+    {
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        teacherFacade_.addCourseModule(teacherId, courseId, spec);
+        return courseFacade_.getCourse(courseId);
+    }
+    
+    /**
+     * Updates module in course description.
+     * @param tId Teacher identifier.
+     * @param cId Course identifier.
+     * @param mId Module identifier.
+     * @param spec New module specification. Must include moduleId, name, may 
+     * include learning path, assignment and/or quiz.
+     * @return Updated course description.
+     */
+    @PutMapping(
+        path ="/{teacherId}/courses/{courseId}/modules/{moduleId}",
+        consumes = "application/json;charset=UTF-8", 
+        produces = "application/json;charset=UTF-8"
+    )
+    public CourseDescriptionDTO updateCourseModule(@PathVariable("teacherId") String tId,
+                                                   @PathVariable("courseId") String cId,
+                                                   @PathVariable("moduleId") String mId,
+                                                   @RequestBody ModuleDTO spec)
+    {
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        int moduleId = Integer.valueOf(mId);
+        teacherFacade_.updateCourseModule(teacherId, courseId, moduleId, spec);
+        return courseFacade_.getCourse(courseId);
+    }
+    
+    /**
+     * Removes a module from course description.
+     * @param tId Teacher identifier.
+     * @param cId Course identifier.
+     * @param mId Module identifier.
+     * @return Updated course description.
+     */
+    @DeleteMapping(
+        path ="/{teacherId}/courses/{courseId}/modules/{moduleId}",
+        consumes = "application/json;charset=UTF-8", 
+        produces = "application/json;charset=UTF-8"
+    )
+    public CourseDescriptionDTO deleteCourseModule(@PathVariable("teacherId") String tId,
+                                                   @PathVariable("courseId") String cId,
+                                                   @PathVariable("moduleId") String mId)
+    {
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        int moduleId = Integer.valueOf(mId);
+        teacherFacade_.deleteCourseModule(teacherId, courseId, moduleId);
+        return courseFacade_.getCourse(courseId);        
     }
     
     /**
@@ -182,6 +230,14 @@ public class TeachersController {
     public List<TeacherDTO> getAllTeachers()
     {
         return teacherFacade_.getAllTeachers();
+    }
+    
+    /**
+     * Activates course.
+     */
+    public void activateCourse()
+    {
+        
     }
     
 }

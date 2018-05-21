@@ -27,23 +27,32 @@ package org.bco.cm.application.command;
 import com.tribc.cqrs.domain.command.AbstractCommand;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.dto.ModuleDTO;
 
 /**
- * Command for deleting a course description.
+ * Command for updating a course module from a course description.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class DeleteCourse extends AbstractCommand {
+public class UpdateCourseModule extends AbstractCommand {
     
     private final TeacherId teacherId_;
     private final CourseId courseId_;
+    private final int moduleId_;
+    private final ModuleDTO spec_;
     
-    public DeleteCourse(TeacherId teacherId, CourseId courseId)
+    
+    public UpdateCourseModule(TeacherId teacherId, 
+                              CourseId courseId, 
+                              int moduleId, 
+                              ModuleDTO spec)
     {
-        super(DeleteCourse.class);
+        super(UpdateCourseModule.class);
         teacherId_ = teacherId;
         courseId_ = courseId;
+        moduleId_ = moduleId;
+        spec_ = spec;
     }
-
+    
     /**
      * Return teacher identifier.
      * @return Identifier.
@@ -61,5 +70,22 @@ public class DeleteCourse extends AbstractCommand {
     {
         return courseId_;
     }
+
+    /**
+     * Returns module identifier.
+     * @return Identifier.
+     */
+    public int getModuleId()
+    {
+        return moduleId_;
+    }
     
+    /**
+     * Returns module update specification.
+     * @return Specification.
+     */
+    public ModuleDTO getSpec()
+    {
+        return spec_;
+    }
 }

@@ -375,27 +375,6 @@ public class Course implements Eventful, Identifiable {
      */
     public void addModule(ModuleDTO spec)
     {
-        if ( spec == null ) {
-            throw new NullPointerException(
-                "Trying to add an undefined module to course."
-            );
-        }
-                
-        // Create new module according to specification.
-        int moduleId = this.generateModuleId();
-        Module next = Module.valueOf(moduleId, spec);
-        
-        // The new module becomes the first module of this course, if no other modules
-        // are present.
-        if ( this.hasModules() ) {
-            Module last = this.lastModule();
-            last.setNext(next);
-        } else {
-            this.setFirstModule(next);
-        }
-        
-        // Save new module.
-        modules_.put(moduleId, next);
     }
     
     /**
@@ -442,7 +421,7 @@ public class Course implements Eventful, Identifiable {
         dto.setDescription(description_);
         dto.setTitle(title_);
         dto.setObjective(objective_);
-        dto.setModules(Module.toDTOs(modules_.values()));
+        //dto.setModules(Module.toDTOs(modules_.values()));
         dto.setRoster(StudentMonitor.toDTOs(roster_.values()));
         if ( this.hasModules() ) {
             dto.setFirstModuleId(this.getFirstModule().getModuleId());        
@@ -476,16 +455,7 @@ public class Course implements Eventful, Identifiable {
     
     private Module lastModule()
     {
-        if ( modules_.isEmpty() ) {
-            throw new IllegalStateException("No modules specified for course.");
-        }
-        Module last = this.firstModule();
-        Module next = last.getNext();
-        while ( next != last ) {
-            last = next;
-            next = last.getNext();
-        }
-        return last;
+        return null;
     }
     
     private void giveStudentsAccessToFirstModule()

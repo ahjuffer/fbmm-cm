@@ -22,42 +22,55 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.application.command;
 
-import org.bco.cm.dto.CourseDescriptionDTO;
+import com.tribc.cqrs.domain.command.AbstractCommand;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
 
 /**
- * Domain service for updating a course description by a teacher.
+ * Command for removing a course module from a course description.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class UpdateCourseInCatalogService {
+public class DeleteCourseModule extends AbstractCommand {
     
-    private UpdateCourseInCatalogService()
-    {        
+    private final TeacherId teacherId_;
+    private final CourseId courseId_;
+    private final int moduleId_;
+    
+    public DeleteCourseModule(TeacherId teacherId, CourseId courseId, int moduleId)
+    {
+        super(DeleteCourseModule.class);
+        teacherId_ = teacherId;
+        courseId_ = courseId;
+        moduleId_ = moduleId;
     }
     
     /**
-     * Updates course description.
-     * @param teacher Responsible teacher.
-     * @param course Course description.
-     * @param spec Update specification.
-     * @param courseCatalog Course catalog.
-     * @return Updated course description.
-     * @throws IllegalArgumentException if teacher is not responsible for course.
+     * Return teacher identifier.
+     * @return Identifier.
      */
-    public static CourseDescription update(Teacher teacher, 
-                                           CourseDescription course,
-                                           CourseDescriptionDTO spec,
-                                           CourseCatalog courseCatalog)
+    public TeacherId getTeacherId()
     {
-        if ( !course.isResponsibleTeacher(teacher) ) {
-            throw new IllegalArgumentException(
-                "Teacher is not responsible for course '" + course.getTitle() + "'."
-            );
-        }
-        course.update(spec);
-        courseCatalog.update(course);
-        return course;
+        return teacherId_;
     }
+    
+    /**
+     * Returns course identifier.
+     * @return Identifier.
+     */
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
+
+    /**
+     * Returns module identifier.
+     * @return Identifier.
+     */
+    public int getModuleId()
+    {
+        return moduleId_;
+    }        
 
 }

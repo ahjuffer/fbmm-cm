@@ -29,14 +29,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import org.bco.cm.dto.AssignmentDTO;
 import org.bco.cm.dto.LearningPathDTO;
 import org.bco.cm.dto.ModuleDTO;
@@ -59,8 +62,6 @@ public class Module implements Serializable {
     private LearningPath learningPath_;
     private final Assignment assignment_;
     private final Quiz quiz_;
-    private Module next_;
-    private int nextModuleId_;
     
     private CourseDescription course_;
     
@@ -71,8 +72,6 @@ public class Module implements Serializable {
         learningPath_ = null;
         assignment_ = null;
         quiz_ = null;
-        next_ = null;
-        nextModuleId_ = -1;
         course_ = null;
     }
     
@@ -137,61 +136,23 @@ public class Module implements Serializable {
     private void setLearningPath(LearningPath learningPath)
     {
         learningPath_ = learningPath;
+        if ( learningPath_ != null ) {
+            learningPath_.setModule(this);
+        }
     }
     
     /**
      * Returns learning path.
      * @return Learning path. Returns null if not yet assigned.
      */
-    @Transient
+    @OneToOne(
+        mappedBy = "module", 
+        cascade = CascadeType.ALL, 
+        orphanRemoval = true
+    )
     protected LearningPath getLearningPath()
     {
         return learningPath_;
-    }
-    
-    /**
-     * Sets the next module.
-     * @param next Next module.
-     */
-    void setNext(Module next)
-    {
-        next_ = next;
-        if ( next_ != null ) {
-            nextModuleId_ = next_.getModuleId();
-        }
-    }
-    
-    /**
-     * Returns next module.
-     * @return Next module. May be null.
-     * @see #hasNext()
-     */
-    @Transient
-    Module getNext()
-    {
-        return next_;
-    }
-    
-    private void setNextModuleId(int nextModuleId)
-    {
-        nextModuleId_ = nextModuleId;
-        if ( nextModuleId_ > 0 && course_ != null ) {
-            next_ = course_.findModule(nextModuleId);
-        }
-    }
-    
-    /**
-     * Returns next module identifier.
-     * @return Identifier. A value of -1 indicates that next module is not set.
-     */
-    @Column ( name = "next_module_id" )
-    protected int getNextModuleId()
-    {
-        if ( this.hasNext() ) {
-            return next_.getModuleId();
-        } else {
-            return nextModuleId_;
-        }
     }
     
     /**
@@ -201,7 +162,6 @@ public class Module implements Serializable {
     void setCourseDescription(CourseDescription course)
     {
         course_ = course;
-        this.setNextModuleId(nextModuleId_);
     }
     
     /**
@@ -222,7 +182,7 @@ public class Module implements Serializable {
     boolean hasLearningPath()
     {
         if ( learningPath_ != null ) {
-            return learningPath_.isEmpty() == false;
+            return learningPath_.hasOnlineMaterial() == false;
         }
         return false;
     }
@@ -246,21 +206,12 @@ public class Module implements Serializable {
     }
     
     /**
-     * Has next module?
-     * @return Result.
-     */
-    boolean hasNext()
-    {
-        return next_ != null;
-    }
-    
-    /**
      * Adds new online material.
      * @param spec New online material specification.
      */
     void addOnlineMaterialToLearningPath(OnlineMaterialDTO spec)
     {
-        learningPath_.addOnlineMaterial(spec);
+        learningPath_.appendOnlineMaterial(spec);
     }
     
     /**
@@ -275,19 +226,34 @@ public class Module implements Serializable {
         Module module = new Module();
         module.setModuleId(moduleId);
         module.setName(spec.getName());
-        /*
-        LearningPath learningPath;
+        
         if ( spec.getLearningPath() != null ) {
-            learningPath = LearningPath.valueOf(spec.getLearningPath());
+            LearningPath learningPath = LearningPath.valueOf(spec.getLearningPath());            
+            module.setLearningPath(learningPath);
         } else {
-            learningPath = LearningPath.empty();
+            module.setLearningPath(LearningPath.empty());
         }
-        module.setLearningPath(learningPath);
-        */
         
         // Add assignment and/or quiz.
         
         return module;
+    }
+    
+    /**
+     * Updates module.
+     * @param spec Module update specification.
+     */
+    void update(ModuleDTO spec)
+    {
+        this.setName(spec.getName());
+        if ( spec.getLearningPath() != null ) {
+            LearningPath learningPath = LearningPath.valueOf(spec.getLearningPath());
+            this.setLearningPath(learningPath);
+        } else {
+            this.setLearningPath(LearningPath.empty());
+        }
+        
+        // Add assignment and/or quiz.
     }
     
     /**
@@ -311,9 +277,6 @@ public class Module implements Serializable {
             QuizDTO quiz = new QuizDTO();
             dto.setQuiz(quiz);
         }
-        if ( this.hasNext() ) {
-            dto.setNextModule(next_.toDTO());
-        }
         if ( course_ != null ) {
             dto.setCourseId(course_.getCourseId().stringValue());
         }
@@ -325,9 +288,9 @@ public class Module implements Serializable {
      * @param modules Modules.
      * @return List.
      */
-    static Collection<ModuleDTO> toDTOs(Collection<Module> modules)
+    static List<ModuleDTO> toDTOs(List<Module> modules)
     {
-        Collection<ModuleDTO> dtos = new HashSet<>();
+        List<ModuleDTO> dtos = new ArrayList<>();
         modules.forEach((module) -> {
             ModuleDTO dto = module.toDTO();
             dtos.add(dto);

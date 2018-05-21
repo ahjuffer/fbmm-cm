@@ -33,9 +33,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.hibernate.annotations.NaturalId;
+import javax.persistence.CascadeType;
 
 /**
  * DTO for Module.
@@ -51,8 +53,6 @@ public class ModuleDTO implements Serializable {
     private LearningPathDTO learningPath_;
     private AssignmentDTO assignment_;
     private QuizDTO quiz_;
-    private ModuleDTO next_;
-    private int nextModuleId_;
     
     private CourseDescriptionDTO course_;
     private String courseId_;
@@ -64,8 +64,6 @@ public class ModuleDTO implements Serializable {
         learningPath_ = null;
         assignment_ = null;
         quiz_ = null;
-        next_ = null;
-        nextModuleId_ = -1;
         course_ = null;
         courseId_ = "-1";
     }
@@ -117,9 +115,16 @@ public class ModuleDTO implements Serializable {
     public void setLearningPath(LearningPathDTO learningPath)
     {
         learningPath_ = learningPath;
+        if ( learningPath_ != null ) {
+            learningPath_.setModule(this);
+        }
     }
     
-    @Transient
+    @OneToOne(
+        mappedBy = "module", 
+        cascade = CascadeType.ALL, 
+        orphanRemoval = true
+    )
     public LearningPathDTO getLearningPath()
     {
         return learningPath_;
@@ -147,47 +152,11 @@ public class ModuleDTO implements Serializable {
         return quiz_;
     }
     
-    /**
-     * Sets the next module following the this module.
-     * @param next Next module.
-     */
-    public void setNextModule(ModuleDTO next)
-    {
-        next_ = next;
-    }
-    
-    /**
-     * Returns the module following the this module.
-     * @return Module.
-     */
-    @Transient
-    @JsonIgnore
-    public ModuleDTO getNextModule()
-    {
-        return next_;
-    }
-    
-    public void setNextModuleId(int nextModuleId)
-    {
-        nextModuleId_ = nextModuleId;
-    }
-    
-    @Column( name = "next_module_id" )
-    public int getNextModuleId()
-    {
-        if ( next_ != null ) {
-            return next_.getModuleId();
-        } else {
-            return nextModuleId_;
-        }
-    }
-    
     public void setCourseDescription(CourseDescriptionDTO course)
     {
         course_ = course;
         if ( course_ != null ) {
             this.setCourseId(course_.getCourseId());
-            this.setNextModuleId(nextModuleId_);
         }
     }
     
@@ -230,11 +199,6 @@ public class ModuleDTO implements Serializable {
         }
         if ( quiz_ != null ) {
             s.append("quiz - ").append(quiz_).append(newline);
-        }
-        if ( next_ != null ) {
-            s.append("nextModuleId - ").append(next_.getModuleId()).append(newline);
-        } else {
-            s.append("nextModuleId - ").append(nextModuleId_).append(newline);
         }
         s.append("courseId - ").append(this.getCourseId()).append(newline);        
         s.append("}");

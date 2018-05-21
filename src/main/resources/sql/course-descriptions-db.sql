@@ -26,12 +26,25 @@
  * Created: Mar 27, 2018
  */
 
+create table online_materials
+(
+    id                      UUID not null primary key,
+    material_id             int,
+    learning_path_id        UUID,
+    content                 varchar(3000)
+);
+
+create table learning_paths
+(
+    id                      UUID not null primary key,
+    module_id               UUID
+);
+
 create table modules
 (
     id                      UUID not null primary key,
     module_id               int,
     name                    varchar(200),
-    next_module_id          int,
     course_description_id   UUID
 );
 
@@ -41,11 +54,17 @@ create table course_descriptions
     course_id               varchar(200),
     title                   varchar(200),
     summary                 varchar(2000),
-    first_module_id         int,
     teacher_id              varchar(200)
 );
 
 alter table modules
-add foreign key ( course_description_id )
+add foreign key (course_description_id)
 references course_descriptions (id);
 
+alter table learning_paths
+add foreign key (module_id)
+references modules (id);
+
+alter table online_materials
+add foreign key (learning_path_id) 
+references learning_paths (id);

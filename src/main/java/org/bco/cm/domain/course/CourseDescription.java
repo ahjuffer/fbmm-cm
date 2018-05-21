@@ -32,10 +32,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -45,7 +43,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -77,9 +74,7 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     private CourseId courseId_;
     private String title_;
     private String summary_;
-    private Map<Integer,Module> modules_;
-    private Module firstModule_;
-    private int firstModuleId_;
+    private List<Module> modules_;
     private TeacherId teacherId_;
     
     private final Collection<Event> events_;
@@ -89,9 +84,7 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         courseId_ = null;
         title_ = null;
         summary_ = null;
-        modules_ = new HashMap<>();
-        firstModule_ = null;
-        firstModuleId_ = -1;
+        modules_ = new ArrayList<>();
         teacherId_ = null;
         events_ = new HashSet<>();
     }
@@ -195,25 +188,23 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         return summary_;
     }
     
-    private void setModules(Map<Integer,Module> modules)
+    private void setModules(List<Module> modules)
     {        
-        if ( modules_ == null ) {
+        if ( modules == null ) {
             throw new NullPointerException("Missing course modules.");
         }
         modules_ = modules;
-        modules_.values().forEach(module -> {
+        modules_.forEach(module -> {
             module.setCourseDescription(this);
         });
-        this.setFirstModuleId(firstModuleId_);
     }
 
     @OneToMany( 
         mappedBy = "courseDescription", 
         cascade = CascadeType.ALL, 
-        orphanRemoval = true 
+        orphanRemoval = true
     )
-    @MapKey( name = "moduleId" )
-    protected Map<Integer,Module> getModules()
+    protected List<Module> getModules()
     {
         return modules_;
     }
@@ -224,46 +215,9 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
      */
     public List<Module> modules()
     {
-        return Collections.unmodifiableList(new ArrayList<>(modules_.values()));
+        return Collections.unmodifiableList(new ArrayList<>(modules_));
     }
-    
-    private void setFirstModule(Module first)
-    {
-        firstModule_ = first;
-        if ( firstModule_ != null ) {
-            firstModule_.setCourseDescription(this);
-            firstModuleId_ = firstModule_.getModuleId();
-        }
-    }
-    
-    @Transient
-    Module getFirstModule()
-    {
-        return firstModule_;
-    }
-    
-    private void setFirstModuleId(int firstModuleId)
-    {
-        firstModuleId_ = firstModuleId;
-        if ( !modules_.isEmpty() && firstModuleId > 0 ) {
-            firstModule_ = modules_.get(firstModuleId_);
-        }
-    }
-    
-    /**
-     * Returns the identifier of the first module of this course.
-     * @return Identifier value or -1 if th first module is not set.
-     */
-    @Column( name = "first_module_id" )
-    protected int getFirstModuleId()
-    {
-        if ( firstModule_ != null ) {
-            return firstModule_.getModuleId();
-        } else {
-            return -1;
-        }
-    }
-    
+        
     private void setTeacherId(TeacherId teacherId)
     {
         if ( teacherId == null ) {
@@ -306,6 +260,9 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         course.setTeacherId(teacher.getTeacherId());
         course.setSummary(spec.getSummary());
         course.setTitle(spec.getTitle());
+        spec.getModules().forEach(module -> {
+            course.addModule(module);
+        });
         return course;
     }
     
@@ -319,6 +276,10 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     {
         this.setSummary(spec.getSummary());
         this.setTitle(spec.getTitle());
+        this.clearModules();
+        spec.getModules().forEach(module -> {
+            this.addModule(module);
+        });
     }
     
     /**
@@ -331,10 +292,7 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         dto.setCourseId(courseId_.stringValue());
         dto.setSummary(summary_);
         dto.setTitle(title_);
-        dto.setModules(Module.toDTOs(modules_.values()));
-        if ( this.hasModules() ) {
-            dto.setFirstModule(this.getFirstModule().toDTO());        
-        }
+        dto.setModules(Module.toDTOs(modules_));
         dto.setTeacherId(teacherId_.stringValue());
         return dto;
     }
@@ -356,19 +314,30 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         int moduleId = this.generateModuleId();
         Module next = Module.valueOf(moduleId, spec);
         next.setCourseDescription(this);
-        
-        // The new module becomes the first module of this course, if no other modules
-        // are present.
-        if ( this.hasModules() ) {
-            Module last = this.lastModule();
-            last.setNext(next);
-        } else {
-            this.setFirstModule(next);
-        }
-        
-        // Save new module.
-        modules_.put(moduleId, next);
+        modules_.add(next);
     }
+    
+    /**
+     * Updates existing module.
+     * @param moduleId Module identifier.
+     * @param spec Module update specification.
+     */
+    public void updateModule(int moduleId, ModuleDTO spec)
+    {
+        Module module = this.findModule(moduleId);
+        module.update(spec);
+    }
+    
+    /**
+     * Removes a module.
+     * @param moduleId Module identifier.
+     */
+    public void removeModule(int moduleId)
+    {
+        Module module = this.findModule(moduleId);
+        module.setCourseDescription(null);
+        modules_.remove(module);
+   }
     
     /**
      * Is given teacher responsible for this course.
@@ -385,26 +354,6 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         return !modules_.isEmpty();
     }
     
-    private Module firstModule()
-    {
-        if ( modules_.isEmpty() ) {
-            throw new IllegalStateException("No modules specified for course.");
-        }
-        return this.getFirstModule();
-    }
-    
-    private Module lastModule()
-    {
-        if ( modules_.isEmpty() ) {
-            throw new IllegalStateException("No modules specified for course.");
-        }
-        Module current = this.firstModule();
-        while ( current.hasNext() ) {
-            current = current.getNext();
-        }
-        return current;
-    }
-    
     /**
      * Finds module.
      * @param moduleId Module identifier value.
@@ -413,7 +362,12 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     Module findModule(int moduleId)
     {
         if ( moduleId > 0 && !modules_.isEmpty() ) {
-            return modules_.get(moduleId);
+            for (Module module : modules_) {
+                if (module.getModuleId() == moduleId ) {
+                    return module;
+                }
+            }
+            return null;
         } else {
             return null;
         }
@@ -428,8 +382,8 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     {
         int bound = Integer.MAX_VALUE - 100;
         int id = RANDOM.nextInt(bound);
-        while ( modules_.containsKey(id) ) {
-            id = RANDOM.nextInt(bound) + 1;
+        while (this.containsModuleId(id) && id == 0) {
+            id = RANDOM.nextInt(bound);
         }
         return id;
     }
@@ -468,8 +422,6 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         hash = 47 * hash + Objects.hashCode(this.title_);
         hash = 47 * hash + Objects.hashCode(this.summary_);
         hash = 47 * hash + Objects.hashCode(this.modules_);
-        hash = 47 * hash + Objects.hashCode(this.firstModule_);
-        hash = 47 * hash + this.firstModuleId_;
         hash = 47 * hash + Objects.hashCode(this.teacherId_);
         return hash;
     }
@@ -482,5 +434,22 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         this.events_.add(new NewCourseAddedToCatalog(this));
     }
     
+    private void clearModules()
+    {
+        modules_.forEach(module -> {
+            module.setCourseDescription(null);
+        });
+        modules_.clear();
+    }
+    
+    private boolean containsModuleId(int moduleId)
+    {
+        for (Module module : modules_) {
+            if ( module.getModuleId() == moduleId ) {
+                return true;
+            }
+        }
+        return false;
+    }
     
 }

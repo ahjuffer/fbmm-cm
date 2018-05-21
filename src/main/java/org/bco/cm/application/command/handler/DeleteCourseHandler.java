@@ -28,11 +28,12 @@ import org.bco.cm.application.command.DeleteCourse;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.RemoveCourseFromCatalogService;
+import org.bco.cm.domain.course.CourseCatalogService;
 import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.domain.course.TeacherRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
@@ -52,10 +53,10 @@ public class DeleteCourseHandler extends CmCommandHandler<DeleteCourse> {
         Teacher teacher = 
             CommandHandlerUtil.findTeacher(teacherId, teacherRepository_);
         CourseId courseId = command.getCourseId();
-        CourseDescription course = courseCatalog_.forCourseId(courseId);
+        CourseDescription course = 
+            CommandHandlerUtil.findCourseDescription(courseId, courseCatalog_);
         
-        RemoveCourseFromCatalogService.remove(teacher, course, courseCatalog_);
-        
+        CourseCatalogService.remove(teacher, course, courseCatalog_);      
     }
     
     

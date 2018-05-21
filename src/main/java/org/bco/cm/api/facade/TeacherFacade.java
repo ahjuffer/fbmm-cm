@@ -28,6 +28,7 @@ import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
 import org.bco.cm.application.command.AddCourseModule;
 import org.bco.cm.application.command.DeleteCourse;
+import org.bco.cm.application.command.DeleteCourseModule;
 import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.command.RegisterNewTeacher;
 import org.bco.cm.application.command.UpdateCourse;
@@ -39,6 +40,7 @@ import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.bco.cm.application.command.UpdateCourseModule;
 
 /**
  * Simplified interface for teachers.
@@ -67,9 +69,8 @@ public class TeacherFacade {
      * Posts new course to course catalog.
      * @param teacherId Identifier of responsible teacher.
      * @param courseId New course identifier.
-     * @param spec New course specification. Must only hold title and summary. 
-     * No modules.
-     * @see #addCourseModule(org.bco.cm.domain.course.TeacherId, org.bco.cm.domain.course.CourseId, org.bco.cm.dto.ModuleDTO) 
+     * @param spec New course specification. Must hold title and summary and may 
+     * hold modules.
      */
     public void postNewCourse(TeacherId teacherId, 
                               CourseId courseId, 
@@ -83,8 +84,8 @@ public class TeacherFacade {
      * Updates course description.
      * @param teacherId Identifier of responsible teacher.
      * @param courseId Course identifier.
-     * @param spec Update course specification. Must only hold title and summary. 
-     * No modules.
+     * @param spec Update course specification. Must hold title and summary and 
+     * may hold modules.
      */
     public void updateCourse(TeacherId teacherId,
                              CourseId courseId,
@@ -111,12 +112,46 @@ public class TeacherFacade {
      * @param courseId Course identifier.
      * @param spec Module specification. This module is appended to the last 
      * module.
+     * @see #updateCourse(org.bco.cm.domain.course.TeacherId, org.bco.cm.domain.course.CourseId, org.bco.cm.dto.CourseDescriptionDTO) 
      */
     public void addCourseModule(TeacherId teacherId,
                                 CourseId courseId,
                                 ModuleDTO spec)
     {
         AddCourseModule command = new AddCourseModule(teacherId, courseId, spec);
+        commandBus_.handle(command);
+    }
+    
+    /**
+     * Updates module in course description. 
+     * @param teacherId Identifier of responsible teacher.
+     * @param courseId Course identifier.
+     * @param moduleId Module identifier.
+     * @param spec Update specification.
+     * @see #updateCourse(org.bco.cm.domain.course.TeacherId, org.bco.cm.domain.course.CourseId, org.bco.cm.dto.CourseDescriptionDTO) 
+     */
+    public void updateCourseModule(TeacherId teacherId,
+                                   CourseId courseId,
+                                   int moduleId,
+                                   ModuleDTO spec)
+    {
+        UpdateCourseModule command = 
+            new UpdateCourseModule(teacherId, courseId, moduleId, spec);
+        commandBus_.handle(command);
+    }
+    
+    /**
+     * Remove module from course description.
+     * @param teacherId Identifier of responsible teacher.
+     * @param courseId Course identifier.
+     * @param moduleId Module identifier.
+     */
+    public void deleteCourseModule(TeacherId teacherId,
+                                   CourseId courseId,
+                                   int moduleId)
+    {
+        DeleteCourseModule command =
+            new DeleteCourseModule(teacherId, courseId, moduleId);
         commandBus_.handle(command);
     }
     

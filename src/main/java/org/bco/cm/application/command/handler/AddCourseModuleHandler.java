@@ -25,7 +25,7 @@
 package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.AddCourseModule;
-import org.bco.cm.domain.course.AddCourseModuleService;
+import org.bco.cm.domain.course.CourseCatalogService;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.domain.course.CourseId;
@@ -60,7 +60,7 @@ public class AddCourseModuleHandler extends CmCommandHandler<AddCourseModule> {
         
         // Update course description.
         CourseDescription updated = 
-            AddCourseModuleService.add(teacher, course, spec, courseCatalog_);
+            CourseCatalogService.addModule(teacher, course, spec, courseCatalog_);
         
         // Handle possible domain events.
         this.handleEvents(updated);

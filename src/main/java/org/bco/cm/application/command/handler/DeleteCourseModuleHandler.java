@@ -22,36 +22,20 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.application.command.handler;
+
+import org.bco.cm.application.command.DeleteCourseModule;
 
 /**
- * Domain service for removing a course description from the course catalog by
- * a teacher.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class RemoveCourseFromCatalogService {
-    
-    private RemoveCourseFromCatalogService()
-    {        
-    }
-    
-    /**
-     * Removes courses.
-     * @param teacher Responsible teacher.
-     * @param course Course description.
-     * @param courseCatalog Course catalog.
-     * @throws IllegalArgumentException if teacher is not responsible for course.
-     */
-    public static void remove(Teacher teacher, 
-                              CourseDescription course, 
-                              CourseCatalog courseCatalog)
+public class DeleteCourseModuleHandler extends CmCommandHandler<DeleteCourseModule> {
+
+    @Override
+    public void handle(DeleteCourseModule command) 
     {
-        if ( !course.isResponsibleTeacher(teacher) ) {
-            throw new IllegalArgumentException(
-                "Teacher is not responsible for course '" + course.getTitle() + "'."
-            );
-        }
-        courseCatalog.remove(course);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

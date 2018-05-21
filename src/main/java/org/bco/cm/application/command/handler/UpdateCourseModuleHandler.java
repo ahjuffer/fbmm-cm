@@ -24,45 +24,50 @@
 
 package org.bco.cm.application.command.handler;
 
-import org.bco.cm.application.command.UpdateCourse;
+import org.bco.cm.application.command.UpdateCourseModule;
 import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.domain.course.TeacherRegistry;
-import org.bco.cm.domain.course.CourseCatalogService;
-import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.course.CourseDescription;
+import org.bco.cm.domain.course.Teacher;
+import org.bco.cm.domain.course.CourseCatalogService;
+import org.bco.cm.dto.ModuleDTO;
 
 /**
- *
+ * 
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class UpdateCourseHandler extends CmCommandHandler<UpdateCourse> {
-
+public class UpdateCourseModuleHandler extends CmCommandHandler<UpdateCourseModule> {
+    
     @Autowired
     private TeacherRegistry teacherRepository_;   
     
     @Autowired
     private CourseCatalog courseCatalog_;
-    
+
     @Override
-    public void handle(UpdateCourse command) 
+    public void handle(UpdateCourseModule command) 
     {
         TeacherId teacherId = command.getTeacherId();
         Teacher teacher = 
             CommandHandlerUtil.findTeacher(teacherId, teacherRepository_);
         CourseId courseId = command.getCourseId();
-        CourseDescriptionDTO spec = command.getCourseSpecification();        
         CourseDescription course = 
             CommandHandlerUtil.findCourseDescription(courseId, courseCatalog_);
+        int moduleId = command.getModuleId();
+        ModuleDTO spec = command.getSpec();
         
         // Update course.
         CourseDescription updated = 
-            CourseCatalogService.update(teacher, course, spec, courseCatalog_);
+            CourseCatalogService.updateModule(teacher, 
+                                              course, 
+                                              moduleId, 
+                                              spec, 
+                                              courseCatalog_);
         
-        // Handle possible domain events.
+        // Handle events.
         this.handleEvents(updated);
     }
 

@@ -21,28 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package org.bco.cm.domain.course;
 
-import java.net.URL;
+import org.bco.cm.dto.OnlineMaterialDTO;
 
 /**
- * Explanatory online video as part of the learning path.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ *
+ * @author ajuffer
  */
-public class VideoMaterial extends OnlineMaterial {
-    
-    static final String MATERIAL_TYPE = "video";
-    
-    VideoMaterial(int materialId, String objective, URL url)
-    {
-        super(materialId, objective, url);
-    }
-    
-    @Override
-    protected String getMaterialType() 
-    {
-        return MATERIAL_TYPE;
+public class TestLearningPath {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        LearningPath path = LearningPath.empty();
+        OnlineMaterialDTO material = new OnlineMaterialDTO();
+        material.setContent("Some content for learning path.");
+        path.appendOnlineMaterial(material);
+        System.out.println(path.toDTO());
     }
     
 }
