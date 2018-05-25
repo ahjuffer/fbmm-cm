@@ -36,7 +36,8 @@ import org.bco.cm.dto.ModuleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- *
+ * This adds a module to a course description. Note that modules can not be added to 
+ * activated courses, as they are created from course descriptions.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 public class AddCourseModuleHandler extends CmCommandHandler<AddCourseModule> {

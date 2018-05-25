@@ -59,7 +59,7 @@ public class InMemoryReadOnlyCourseCatalog implements ReadOnlyCourseCatalog {
     }
     
     @Override
-    public List<CourseDescriptionDTO> getAllCourses()
+    public List<CourseDescriptionDTO> getAll()
     {
         Collection<CourseDescription> courses = courseCatalog_.forAll();
         List<CourseDescriptionDTO> dtos = new ArrayList<>();
@@ -76,9 +76,9 @@ public class InMemoryReadOnlyCourseCatalog implements ReadOnlyCourseCatalog {
     }
 
     @Override
-    public CourseDescriptionDTO getCourse(CourseId courseId) 
+    public CourseDescriptionDTO getOne(CourseId courseId) 
     {
-        CourseDescription course = courseCatalog_.forCourseId(courseId);
+        CourseDescription course = courseCatalog_.forOne(courseId);
         if ( course == null ) {
             throw new NullPointerException(courseId.stringValue() + ": No such course.");
         }

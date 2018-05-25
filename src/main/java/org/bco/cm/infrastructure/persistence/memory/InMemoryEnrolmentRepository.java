@@ -63,11 +63,11 @@ public class InMemoryEnrolmentRepository
     @Override
     public boolean contains(EnrolmentNumber identifier) 
     {
-        return this.forEntityId(identifier) != null;
+        return this.forOne(identifier) != null;
     }
     
     @Override
-    public Enrolment forEntityId(EnrolmentNumber identifier)
+    public Enrolment forOne(EnrolmentNumber identifier)
     {
         return this.forIdentifierAsString(identifier.stringValue());
     }

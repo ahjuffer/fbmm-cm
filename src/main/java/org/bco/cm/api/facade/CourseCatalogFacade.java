@@ -24,41 +24,63 @@
 
 package org.bco.cm.api.facade;
 
-import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import org.bco.cm.application.query.ReadOnlyCourseRegistry;
+import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 /**
- * Simplified interface for handling active courses.
+ * Simplified interface for accessing course catalog.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 @Transactional( rollbackFor = { Throwable.class } )
-public class CourseFacade {
+public class CourseCatalogFacade {
     
-    @Autowired
-    private ReadOnlyCourseRegistry readOnlyCourseRegistry_;
+    @Autowired    
+    private ReadOnlyCourseCatalog readOnlyCourseCatalog_;
     
     /**
-     * Returns all courses, whether or not they are active.
+     * Generates a new course identifier.
+     * @return Identifier.
+     */
+    @Transactional( readOnly = true )
+    public CourseId generateCourseId()
+    {
+        return CourseId.generate();
+    }
+    
+    /**
+     * Returns all courses.
      * @return Courses.
      */
     @Transactional( readOnly = true )
-    public List<CourseDTO> getAllCourses()
+    public List<CourseDescriptionDTO> getAllCourses() 
     {
-        return readOnlyCourseRegistry_.getAll();
+        return readOnlyCourseCatalog_.getAll();
     }
     
     /**
-     * Returns a single course.
+     * Returns specified course.
      * @param courseId Course identifier.
-     * @return Course.
+     * @return Course description.
      */
     @Transactional( readOnly = true )
-    public CourseDTO getCourse(CourseId courseId)
+    public CourseDescriptionDTO getCourse(CourseId courseId)
     {
-        return readOnlyCourseRegistry_.getOne(courseId);
+        return readOnlyCourseCatalog_.getOne(courseId);
     }
-
+    
+    /**
+     * Returns all courses the given teacher is responsible for.
+     * @param teacherId Teacher identifier.
+     * @return Courses. May be empty.
+     */    
+    @Transactional( readOnly = true )
+    public List<CourseDescriptionDTO> getTeachersCourses(TeacherId teacherId)
+    {
+        return readOnlyCourseCatalog_.getTeachersCourses(teacherId);
+    }
 }

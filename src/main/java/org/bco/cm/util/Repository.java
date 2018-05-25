@@ -57,7 +57,7 @@ public interface Repository<T,ID> {
      * @param identifier Identifier.
      * @return Entity.
      */
-    public T forEntityId(ID identifier);
+    public T forOne(ID identifier);
     
     /**
      * Returns all entities in the repository.

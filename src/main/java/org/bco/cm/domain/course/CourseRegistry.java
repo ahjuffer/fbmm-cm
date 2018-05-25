@@ -22,31 +22,14 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.domain.course;
 
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.util.Repository;
 
 /**
- * Stores courses in memory.
+ * Holds courses
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryCourseCatalog 
-    extends InMemoryMapRepository<CourseDescription> 
-    implements CourseCatalog {
-    
-    @Override
-    public CourseDescription forOne(CourseId courseId) 
-    {
-        return this.forIdentifierAsString(courseId.stringValue());
-    }
-
-    @Override
-    public boolean contains(CourseId identifier) 
-    {
-        return this.forOne(identifier) != null;
-    }
-    
+public interface CourseRegistry extends Repository<Course, CourseId> {
 
 }

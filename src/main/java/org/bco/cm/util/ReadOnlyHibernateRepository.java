@@ -40,7 +40,6 @@ import org.hibernate.Session;
 public abstract class ReadOnlyHibernateRepository<T,ID> 
     implements ReadOnlyRepository<T,ID> {
 
-    //private SessionFactory sessionFactory_;
     private EntityManager entityManager_;
     
     protected ReadOnlyHibernateRepository()
@@ -48,23 +47,6 @@ public abstract class ReadOnlyHibernateRepository<T,ID>
         //sessionFactory_ = null;
         entityManager_ = null;
     }   
-    
-    /*
-    @Autowired
-    public void setSessionFactory(SessionFactory sessionFactory)
-    {
-        sessionFactory_ = sessionFactory;
-    }
-    */
-    
-    /*
-    @Autowired
-    @PersistenceUnit
-    public void setEntityManagerFactory(EntityManagerFactory emf)
-    {
-        sessionFactory_ = emf.unwrap(SessionFactory.class);
-    }
-    */
     
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager)
@@ -74,7 +56,10 @@ public abstract class ReadOnlyHibernateRepository<T,ID>
     
     
     @Override
-    abstract public T forEntityId(ID identifier);
+    abstract public T getOne(ID identifier);
+    
+    @Override
+    abstract public List<T> getAll();
     
     /**
      * Returns many entities.
@@ -114,7 +99,6 @@ public abstract class ReadOnlyHibernateRepository<T,ID>
     
     private Session getSession()
     {
-        //return sessionFactory_.getCurrentSession();
         return entityManager_.unwrap(Session.class);
     }
     

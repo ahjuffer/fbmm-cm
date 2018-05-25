@@ -50,7 +50,7 @@ public class HibernateTeacherRegistry
     }
 
     @Override
-    public Teacher forTeacherId(TeacherId teacherId) 
+    public Teacher forOne(TeacherId teacherId) 
     {
         String id = teacherId.stringValue();
         String hql = 
@@ -59,10 +59,4 @@ public class HibernateTeacherRegistry
         return this.forSingle(hql);
     }
     
-    @Override
-    public Teacher forEntityId(TeacherId identifier)
-    {
-        return this.forTeacherId(identifier);
-    }
-
 }

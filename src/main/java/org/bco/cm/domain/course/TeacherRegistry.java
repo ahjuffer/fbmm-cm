@@ -32,11 +32,4 @@ import org.bco.cm.util.Repository;
  */
 public interface TeacherRegistry extends Repository<Teacher, TeacherId> {
     
-    /**
-     * Returns teacher with given identifier.
-     * @param teacherId Identifier.
-     * @return Teacher, or null if nonexistent.
-     */
-    Teacher forTeacherId(TeacherId teacherId);    
-    
 }

@@ -28,19 +28,14 @@ import java.util.List;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
+import org.bco.cm.util.ReadOnlyRepository;
 
 /**
  * A read-only catalog of all available courses. Courses are stored as DTOs.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public interface ReadOnlyCourseCatalog {
-    
-    /**
-     * Returns course with given identifier.
-     * @param courseId Course identifier.
-     * @return Course.
-     */
-    CourseDescriptionDTO getCourse(CourseId courseId);
+public interface ReadOnlyCourseCatalog 
+    extends ReadOnlyRepository<CourseDescriptionDTO, CourseId>{
     
     /**
      * Finds course according to a specification.
@@ -49,12 +44,6 @@ public interface ReadOnlyCourseCatalog {
      * @throws IllegalArgumentException if spec is neither "all" nor "ongoing".
      */
     List<CourseDescriptionDTO> getSpecifiedCourses(CourseSpecification spec);
-    
-    /**
-     * Returns all courses.
-     * @return Courses. May be empty.
-     */
-    List<CourseDescriptionDTO> getAllCourses();
     
     /**
      * Returns all courses the given teacher is responsible for.

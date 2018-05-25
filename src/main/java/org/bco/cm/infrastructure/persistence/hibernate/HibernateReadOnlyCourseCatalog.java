@@ -46,13 +46,7 @@ public class HibernateReadOnlyCourseCatalog
         "select course from " + CourseDescriptionDTO.class.getName() + " course ";
 
     @Override
-    public CourseDescriptionDTO forEntityId(CourseId identifier) 
-    {
-        return this.getCourse(identifier);
-    }
-
-    @Override
-    public CourseDescriptionDTO getCourse(CourseId courseId) 
+    public CourseDescriptionDTO getOne(CourseId courseId) 
     {
         String id = courseId.stringValue();
         String hql = 
@@ -72,7 +66,7 @@ public class HibernateReadOnlyCourseCatalog
     }
 
     @Override
-    public List<CourseDescriptionDTO> getAllCourses() 
+    public List<CourseDescriptionDTO> getAll() 
     {
         return this.forMany(FROM);
     }

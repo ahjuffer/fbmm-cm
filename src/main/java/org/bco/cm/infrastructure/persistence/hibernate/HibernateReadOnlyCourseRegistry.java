@@ -22,31 +22,54 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.infrastructure.persistence.hibernate;
 
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescription;
+import java.util.List;
+import org.bco.cm.application.query.ReadOnlyCourseRegistry;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.util.ReadOnlyHibernateRepository;
 
 /**
- * Stores courses in memory.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryCourseCatalog 
-    extends InMemoryMapRepository<CourseDescription> 
-    implements CourseCatalog {
-    
+public class HibernateReadOnlyCourseRegistry 
+    extends ReadOnlyHibernateRepository<CourseDTO, CourseId> 
+    implements ReadOnlyCourseRegistry
+{
+    private static final String FROM = 
+        "select course from " + CourseDTO.class.getName() + " course ";        
+
     @Override
-    public CourseDescription forOne(CourseId courseId) 
+    public CourseDTO getOne(CourseId courseId) 
     {
-        return this.forIdentifierAsString(courseId.stringValue());
+        String id = courseId.stringValue();
+        String hql = 
+            FROM +
+            "where course.courseId = '" + id + "'";
+        CourseDTO course = this.forSingle(hql);
+        if (course == null ) {
+            throw new NullPointerException(id + ": No such course.");
+        }
+        return course;
+     }
+
+    @Override
+    public List<CourseDTO> getAll() 
+    {
+        return this.forMany(FROM);
     }
 
     @Override
-    public boolean contains(CourseId identifier) 
+    public List<CourseDTO> getTeachersCourses(TeacherId teacherId) 
     {
-        return this.forOne(identifier) != null;
+        String id = teacherId.stringValue();
+        String hql =
+            FROM + 
+            "where course.teacherId = '" + id + "'";
+        return this.forMany(hql);
     }
-    
 
 }

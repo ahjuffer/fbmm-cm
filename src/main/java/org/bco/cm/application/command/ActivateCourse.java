@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2018 André H. Juffer, Biocenter Oulu
@@ -21,50 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+package org.bco.cm.application.command;
+
+import com.tribc.cqrs.domain.command.AbstractCommand;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.dto.CourseDTO;
+
 /**
- * Author:  ajuffer
- * Created: Mar 27, 2018
+ * Command for activating a course.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+public class ActivateCourse extends AbstractCommand {
+    
+    private final TeacherId teacherId_;
+    private final CourseId courseId_;
+    private final CourseDTO spec_;
+        
+    public ActivateCourse(TeacherId teacherId,
+                          CourseId courseId,
+                          CourseDTO spec)
+    {
+        super(ActivateCourse.class);
+        teacherId_ = teacherId;
+        courseId_ = courseId;
+        spec_ = spec;
+    }
 
-create table online_materials
-(
-    id                      UUID not null primary key,
-    material_id             int,
-    learning_path_id        UUID,
-    content                 varchar(3000)
-);
-
-create table learning_paths
-(
-    id                      UUID not null primary key,
-    module_id               UUID
-);
-
-create table modules
-(
-    id                      UUID not null primary key,
-    module_id               int,
-    name                    varchar(200),
-    course_description_id   UUID
-);
-
-create table course_descriptions
-(
-    id                      UUID not null primary key,
-    course_id               varchar(200),
-    title                   varchar(200),
-    summary                 varchar(2000),
-    teacher_id              varchar(200)
-);
-
-alter table modules
-add foreign key (course_description_id)
-references course_descriptions (id);
-
-alter table learning_paths
-add foreign key (module_id)
-references modules (id);
-
-alter table online_materials
-add foreign key (learning_path_id) 
-references learning_paths (id);
+    public TeacherId getTeacherId()
+    {
+        return teacherId_;
+    }
+    
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
+    
+    public CourseDTO getSpecification()
+    {
+        return spec_;
+    }
+}

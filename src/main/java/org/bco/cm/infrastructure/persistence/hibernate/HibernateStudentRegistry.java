@@ -44,7 +44,7 @@ public class HibernateStudentRegistry
         "select student from " + Student.class.getName() + " student ";
 
     @Override
-    public Student forStudentId(StudentId studentId) 
+    public Student forOne(StudentId studentId) 
     {
         String id = studentId.stringValue();
         String hql = 
@@ -64,10 +64,4 @@ public class HibernateStudentRegistry
         return this.forMany(FROM);
     }
     
-    @Override
-    public Student forEntityId(StudentId identifier)
-    {
-        return this.forStudentId(identifier);
-    }
-
 }

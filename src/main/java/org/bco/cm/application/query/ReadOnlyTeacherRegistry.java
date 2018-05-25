@@ -27,23 +27,12 @@ package org.bco.cm.application.query;
 import java.util.List;
 import org.bco.cm.dto.TeacherDTO;
 import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.util.ReadOnlyRepository;
 
 /**
  * A read-only repository of teachers. Teachers are stored as DTOs.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface ReadOnlyTeacherRegistry {
-
-    /**
-     * Returns all teachers.
-     * @return Teachers. May be empty.
-     */
-    List<TeacherDTO> getAllTeachers();
-    
-    /**
-     * Returns specified teacher.
-     * @param teacherId Teacher identifier.
-     * @return Teacher.
-     */
-    TeacherDTO getTeacher(TeacherId teacherId);
+public interface ReadOnlyTeacherRegistry 
+    extends ReadOnlyRepository<TeacherDTO, TeacherId> {
 }

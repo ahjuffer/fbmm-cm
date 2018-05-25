@@ -25,10 +25,12 @@
 package org.bco.cm.api.rest.spring;
 
 import java.util.List;
+import org.bco.cm.api.facade.CourseCatalogFacade;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.TeacherDTO;
@@ -51,9 +53,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value="/teachers")
 public class TeachersController {
-
+    
     @Autowired
     private CourseFacade courseFacade_;
+
+    @Autowired
+    private CourseCatalogFacade courseCatalogFacade_;
     
     @Autowired
     private TeacherFacade teacherFacade_;
@@ -95,7 +100,7 @@ public class TeachersController {
         TeacherId teacherId = new TeacherId(tId);
         CourseId courseId = new CourseId(cId);
         teacherFacade_.updateCourse(teacherId, courseId, spec);
-        return courseFacade_.getCourse(courseId);
+        return courseCatalogFacade_.getCourse(courseId);
     }
     
     /**
@@ -129,9 +134,9 @@ public class TeachersController {
                                               @RequestBody CourseDescriptionDTO spec)
     {
         TeacherId teacherId = new TeacherId(id);
-        CourseId courseId = courseFacade_.generateCourseId();
+        CourseId courseId = courseCatalogFacade_.generateCourseId();
         teacherFacade_.postNewCourse(teacherId, courseId, spec);
-        return courseFacade_.getCourse(courseId);
+        return courseCatalogFacade_.getCourse(courseId);
     }
     
     /**
@@ -155,7 +160,7 @@ public class TeachersController {
         TeacherId teacherId = new TeacherId(tId);
         CourseId courseId = new CourseId(cId);
         teacherFacade_.addCourseModule(teacherId, courseId, spec);
-        return courseFacade_.getCourse(courseId);
+        return courseCatalogFacade_.getCourse(courseId);
     }
     
     /**
@@ -181,7 +186,7 @@ public class TeachersController {
         CourseId courseId = new CourseId(cId);
         int moduleId = Integer.valueOf(mId);
         teacherFacade_.updateCourseModule(teacherId, courseId, moduleId, spec);
-        return courseFacade_.getCourse(courseId);
+        return courseCatalogFacade_.getCourse(courseId);
     }
     
     /**
@@ -204,7 +209,7 @@ public class TeachersController {
         CourseId courseId = new CourseId(cId);
         int moduleId = Integer.valueOf(mId);
         teacherFacade_.deleteCourseModule(teacherId, courseId, moduleId);
-        return courseFacade_.getCourse(courseId);        
+        return courseCatalogFacade_.getCourse(courseId);        
     }
     
     /**
@@ -234,10 +239,22 @@ public class TeachersController {
     
     /**
      * Activates course.
+     * @param tId Teacher identifier.
+     * @param cId Course identifier.
+     * @param spec Activation specification.
      */
-    public void activateCourse()
+    @PostMapping(
+        path = "/{teacherId}/courses/{courseId}/activate",
+        consumes = "application/json;charset=UTF-8"
+    )
+    public CourseDTO activateCourse(@PathVariable("teacherId") String tId,
+                               @PathVariable("courseId") String cId,
+                               @RequestBody CourseDTO spec)
     {
-        
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        teacherFacade_.activateCourse(teacherId, courseId, spec);
+        return courseFacade_.getCourse(courseId);
     }
     
 }

@@ -25,12 +25,10 @@
 package org.bco.cm.domain.course;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.List;
-import java.util.ArrayList;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,8 +46,8 @@ import org.bco.cm.dto.QuizDTO;
 import org.hibernate.annotations.NaturalId;
 
 /**
- * Course module. A valid module must consist of a non-empty learning path, and 
- * may include an assignment and/or quiz.
+ * A component in a course. A valid module must consist of a non-empty 
+ * learning path, and may include an assignment and/or quiz.
  * @author André H. Juffer, Biocenter Oulu
  */
 @Entity( name = "Module" )
@@ -63,7 +61,9 @@ public class Module implements Serializable {
     private final Assignment assignment_;
     private final Quiz quiz_;
     
-    private CourseDescription course_;
+    // Parents
+    private CourseDescription courseDescription_;
+    private Course course_;
     
     protected Module()
     {
@@ -72,6 +72,8 @@ public class Module implements Serializable {
         learningPath_ = null;
         assignment_ = null;
         quiz_ = null;
+        //parent_ = null;
+        courseDescription_ = null;
         course_ = null;
     }
     
@@ -156,25 +158,48 @@ public class Module implements Serializable {
     }
     
     /**
-     * Sets the owning course description.
-     * @param course Course description.
+     * Sets the course description. Required if this module's parent is a course
+     * description.
+     * @param courseDescription Course description.
      */
-    void setCourseDescription(CourseDescription course)
+    void setCourseDescription(CourseDescription courseDescription)
     {
-        course_ = course;
+        courseDescription_ = courseDescription;
     }
     
     /**
-     * Returns the owning course description.
-     * @return Course description.
+     * Returns owning course description.
+     * @return Course description. Null if this module's parent is -not- a course
+     * description.
      */
     @ManyToOne
     @JoinColumn( name="course_description_id" )
     protected CourseDescription getCourseDescription()
     {
-        return course_;
+        return courseDescription_;
     }
     
+    /**
+     * Sets the active course. Required if this module's parent is an active 
+     * course.
+     * @param course Course.
+     */
+    void setCourse(Course course)
+    {
+        course_ = course;
+    }
+    
+    /**
+     * Return course.
+     * @return Course. Null if this module's parent is -not- an active course.
+     */
+    @ManyToOne()
+    @JoinColumn( name="course_id" )
+    protected Course getCourse()
+    {
+        return course_;
+    }
+        
     /**
      * Module includes a learning path?
      * @return Result.
@@ -216,7 +241,8 @@ public class Module implements Serializable {
     
     /**
      * Creates a new module.
-     * @param moduleId New module identifier.
+     * @param moduleId New module identifier. Must be provided by the owning 
+     * course (description).
      * @param spec New module specification. Must include module name. May include
      * learning path, assignment and/or quiz.
      * @return New module.
@@ -234,14 +260,15 @@ public class Module implements Serializable {
             module.setLearningPath(LearningPath.empty());
         }
         
-        // Add assignment and/or quiz.
+        // Set assignment and/or quiz.
         
         return module;
     }
     
     /**
-     * Updates module.
-     * @param spec Module update specification.
+     * Updates this module.
+     * @param spec Module update specification. Must include module name. May include
+     * learning path, assignment and/or quiz.
      */
     void update(ModuleDTO spec)
     {
@@ -253,7 +280,7 @@ public class Module implements Serializable {
             this.setLearningPath(LearningPath.empty());
         }
         
-        // Add assignment and/or quiz.
+        // Set assignment and/or quiz.
     }
     
     /**
@@ -263,12 +290,12 @@ public class Module implements Serializable {
     ModuleDTO toDTO()
     {
         ModuleDTO dto = new ModuleDTO();
+        dto.setModuleId(this.getModuleId());
+        dto.setName(name_);
         if ( this.hasLearningPath() ) {
             LearningPathDTO learningPath = learningPath_.toDTO();
             dto.setLearningPath(learningPath);
         }
-        dto.setModuleId(this.getModuleId());
-        dto.setName(name_);
         if ( this.hasAssignment() ) {
             AssignmentDTO assignment = assignment_.toDTO();
             dto.setAssignment(assignment);
@@ -276,6 +303,9 @@ public class Module implements Serializable {
         if ( this.hasQuiz() ) {
             QuizDTO quiz = new QuizDTO();
             dto.setQuiz(quiz);
+        }
+        if ( courseDescription_ != null ) {
+            dto.setCourseDescriptionId(courseDescription_.getCourseId().stringValue());
         }
         if ( course_ != null ) {
             dto.setCourseId(course_.getCourseId().stringValue());
@@ -298,14 +328,6 @@ public class Module implements Serializable {
         return dtos;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + this.moduleId_;
-        hash = 41 * hash + Objects.hashCode(this.name_);
-        return hash;
-    }
-    
     /**
      * Comparing two modules has meaning only in context of the owning
      * course.
@@ -321,11 +343,34 @@ public class Module implements Serializable {
         if ( this == other ) {
             return true;
         }
-        if ( this.getClass() != other.getClass() ) {
+        if ( !(other instanceof Module) ) {
             return false;
         }
         Module module = (Module)other;
         return ( moduleId_ == module.getModuleId() );
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + this.moduleId_;
+        hash = 97 * hash + Objects.hashCode(this.name_);
+        hash = 97 * hash + Objects.hashCode(this.learningPath_);
+        hash = 97 * hash + Objects.hashCode(this.assignment_);
+        hash = 97 * hash + Objects.hashCode(this.quiz_);
+        return hash;
+    }
+    
+    /**
+     * Returns a copy of the given module.
+     * @param moduleId Module identifier as provided by the owning course.
+     * @param original Module.
+     * @return Copy.
+     */
+    static Module makeCopy(int moduleId, Module original)
+    {
+        ModuleDTO dto = original.toDTO();
+        return Module.valueOf(moduleId, dto);        
     }
         
 }

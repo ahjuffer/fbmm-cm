@@ -39,7 +39,7 @@ public class InMemoryTeacherRepository
     implements TeacherRegistry {
     
     @Override
-    public Teacher forTeacherId(TeacherId teacherId) 
+    public Teacher forOne(TeacherId teacherId) 
     {
         return this.forIdentifierAsString(teacherId.stringValue());
     }
@@ -47,13 +47,7 @@ public class InMemoryTeacherRepository
     @Override
     public boolean contains(TeacherId identifier) 
     {
-        return this.forEntityId(identifier) != null;
+        return this.forOne(identifier) != null;
     }
     
-    @Override
-    public Teacher forEntityId(TeacherId identifier)
-    {
-        return this.forTeacherId(identifier);
-    }
-
 }

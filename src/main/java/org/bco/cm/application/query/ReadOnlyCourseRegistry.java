@@ -22,31 +22,25 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
 
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescription;
+package org.bco.cm.application.query;
+
+import java.util.List;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.util.ReadOnlyRepository;
 
 /**
- * Stores courses in memory.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryCourseCatalog 
-    extends InMemoryMapRepository<CourseDescription> 
-    implements CourseCatalog {
+public interface ReadOnlyCourseRegistry extends ReadOnlyRepository<CourseDTO, CourseId> {
     
-    @Override
-    public CourseDescription forOne(CourseId courseId) 
-    {
-        return this.forIdentifierAsString(courseId.stringValue());
-    }
-
-    @Override
-    public boolean contains(CourseId identifier) 
-    {
-        return this.forOne(identifier) != null;
-    }
-    
-
+    /**
+     * Returns all courses the given teacher is responsible for.
+     * @param teacherId Teacher identifier.
+     * @return Courses. May be empty.
+     */
+    List<CourseDTO> getTeachersCourses(TeacherId teacherId);
 }

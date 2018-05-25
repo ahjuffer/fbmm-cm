@@ -27,7 +27,7 @@ package org.bco.cm;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bco.cm.api.facade.CourseFacade;
+import org.bco.cm.api.facade.CourseCatalogFacade;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
@@ -65,7 +65,7 @@ public class TestApplication implements ApplicationRunner {
     private TeacherFacade teacherFacade_;
     
     @Autowired
-    private CourseFacade courseFacade_;
+    private CourseCatalogFacade courseFacade_;
         
     @Bean
     @Primary    

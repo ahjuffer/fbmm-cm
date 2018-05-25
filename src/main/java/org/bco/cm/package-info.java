@@ -23,7 +23,8 @@
  */
 
 /**
- * Bounded context for courses. Includes courses, course modules, learning 
- * paths, assignments, quizzes, and so forth. This package holds the Java Main class.
+ * Courses. Includes courses, course modules, learning 
+ * paths, assignments, quizzes, and so forth. This package also holds the 
+ * Java Main class.
  */
 package org.bco.cm;

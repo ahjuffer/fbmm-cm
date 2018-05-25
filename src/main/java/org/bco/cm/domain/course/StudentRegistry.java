@@ -33,13 +33,5 @@ import org.bco.cm.util.Repository;
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public interface StudentRegistry extends Repository<Student, StudentId> {
-//public interface StudentRegistry extends JpaRepository<Student, String> {
-    
-    /**
-     * Returns student with given identifier.
-     * @param studentId Identifier.
-     * @return Student, or null if nonexistent.
-     */
-    Student forStudentId(StudentId studentId);
     
 }

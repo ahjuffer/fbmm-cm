@@ -30,7 +30,7 @@ import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 
 /**
- * Command to start a new course.
+ * Command for posting a new course.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 public class PostNewCourse extends AbstractCommand {
@@ -65,7 +65,7 @@ public class PostNewCourse extends AbstractCommand {
         return courseId_;
     }
     
-    public CourseDescriptionDTO getCourseSpecification()
+    public CourseDescriptionDTO getSpecification()
     {
         return spec_;
     }

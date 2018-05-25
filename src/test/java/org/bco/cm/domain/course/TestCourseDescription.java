@@ -25,6 +25,8 @@ package org.bco.cm.domain.course;
  */
 
 
+import java.time.Instant;
+import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.LearningPathDTO;
 import org.bco.cm.dto.ModuleDTO;
@@ -91,6 +93,16 @@ public class TestCourseDescription {
         Logger.getLogger("TestCourseDescription")
               .info("Update #3: " + course.toDTO());
         Logger.getLogger("TestCourseDescription").info("--------------------------------");
+        
+        CourseDTO spec = new CourseDTO();
+        spec.setNumberOfSeats(10);
+        Instant startDate = Instant.now();
+        spec.setStartDate(startDate);
+        int number = 7 * 24 * 60 * 60; // One week in seconds.
+        Instant endDate = startDate.plusSeconds(number);
+        spec.setEndDate(endDate);
+        Course crs = Course.activate(course, spec);
+        Logger.getLogger("TestCourseDescription").info("Activated Course: " + crs.toDTO());
     }
     
 }

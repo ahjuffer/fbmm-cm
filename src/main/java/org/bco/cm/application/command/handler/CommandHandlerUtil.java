@@ -53,7 +53,7 @@ public class CommandHandlerUtil {
      */
     public static Teacher findTeacher(TeacherId teacherId, TeacherRegistry teacherRegistry)
     {
-        Teacher teacher = teacherRegistry.forTeacherId(teacherId);
+        Teacher teacher = teacherRegistry.forOne(teacherId);
         if ( teacher == null ) {
             throw new NullPointerException(
                 teacherId.stringValue() + ": No such teacher."
@@ -71,7 +71,7 @@ public class CommandHandlerUtil {
      */    
     public static Student findStudent(StudentId studentId, StudentRegistry studentRegistry)
     {
-        Student student = studentRegistry.forStudentId(studentId);
+        Student student = studentRegistry.forOne(studentId);
         if ( student == null ) {
             throw new NullPointerException(
                 studentId.stringValue() + ": No such student."
@@ -90,7 +90,7 @@ public class CommandHandlerUtil {
     public static CourseDescription findCourseDescription(CourseId courseId, 
                                                           CourseCatalog courseCatalog)
     {
-        CourseDescription course = courseCatalog.forCourseId(courseId);
+        CourseDescription course = courseCatalog.forOne(courseId);
         if ( course == null ) {
             throw new NullPointerException(
                 courseId.stringValue() + ": No such course."

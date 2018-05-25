@@ -54,7 +54,10 @@ public class ModuleDTO implements Serializable {
     private AssignmentDTO assignment_;
     private QuizDTO quiz_;
     
-    private CourseDescriptionDTO course_;
+    private CourseDescriptionDTO courseDescription_;
+    private CourseDTO course_;
+    
+    private String courseDescriptionId_;
     private String courseId_;
     
     public ModuleDTO()
@@ -64,8 +67,10 @@ public class ModuleDTO implements Serializable {
         learningPath_ = null;
         assignment_ = null;
         quiz_ = null;
+        courseDescription_ = null;
         course_ = null;
-        courseId_ = "-1";
+        courseDescriptionId_ = null;
+        courseId_ = null;
     }
     
     private void setId(UUID id)
@@ -150,22 +155,35 @@ public class ModuleDTO implements Serializable {
     public QuizDTO getQuiz()
     {
         return quiz_;
-    }
-    
-    public void setCourseDescription(CourseDescriptionDTO course)
+    }    
+        
+    public void setCourseDescriptionId(String id)
     {
-        course_ = course;
-        if ( course_ != null ) {
-            this.setCourseId(course_.getCourseId());
+        courseDescriptionId_ = id;
+    }
+
+    @Transient
+    @JsonIgnore
+    public String getCourseDescriptionId()
+    {
+        if ( courseDescription_ != null ) {
+            return courseDescription_.getCourseId();
+        } else {
+            return courseDescriptionId_;
         }
     }
     
-    @ManyToOne
+    public void setCourseDescription(CourseDescriptionDTO courseDescription)
+    {
+        courseDescription_ = courseDescription;
+    }
+    
+    @ManyToOne()
     @JoinColumn( name="course_description_id" )
     @JsonIgnore
     public CourseDescriptionDTO getCourseDescription()
     {
-        return course_;
+        return courseDescription_;
     }
     
     public void setCourseId(String courseId)
@@ -174,6 +192,7 @@ public class ModuleDTO implements Serializable {
     }
     
     @Transient
+    @JsonIgnore
     public String getCourseId()
     {
         if ( course_ != null ) {
@@ -181,6 +200,19 @@ public class ModuleDTO implements Serializable {
         } else {
             return courseId_;
         }
+    }
+    
+    public void setCourse(CourseDTO course)
+    {
+        course_ = course;
+    }
+    
+    @ManyToOne()
+    @JoinColumn( name="course_id" )
+    @JsonIgnore
+    public CourseDTO getCourse()
+    {
+        return course_;
     }
     
     @Override
@@ -200,7 +232,9 @@ public class ModuleDTO implements Serializable {
         if ( quiz_ != null ) {
             s.append("quiz - ").append(quiz_).append(newline);
         }
-        s.append("courseId - ").append(this.getCourseId()).append(newline);        
+        s.append("courseDescriptionId - ").append(this.getCourseDescriptionId())
+                                          .append(newline);
+        s.append("courseId - ").append(this.getCourseId()).append(newline);
         s.append("}");
         return s.toString();
     }

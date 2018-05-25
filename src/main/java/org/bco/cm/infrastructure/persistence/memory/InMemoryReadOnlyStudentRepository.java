@@ -48,14 +48,14 @@ public class InMemoryReadOnlyStudentRepository implements ReadOnlyStudentRegistr
     }
 
     @Override
-    public List<StudentDTO> getAllStudents() 
+    public List<StudentDTO> getAll() 
     {
         Collection<Student> students = studentRepository_.forAll();
         return Student.toDTOs(students);
     }
 
     @Override
-    public StudentDTO getStudent(StudentId studentId) 
+    public StudentDTO getOne(StudentId studentId) 
     {
         for (Student student : studentRepository_.forAll()) {
             if ( student.getIdentifier().equals(studentId) ) {
@@ -63,12 +63,6 @@ public class InMemoryReadOnlyStudentRepository implements ReadOnlyStudentRegistr
             }
         }
         throw new NullPointerException(studentId.stringValue() + ": No such student.");
-    }
-
-    @Override
-    public StudentDTO forEntityId(StudentId identifier) 
-    {
-        return this.getStudent(identifier);
     }
 
 }

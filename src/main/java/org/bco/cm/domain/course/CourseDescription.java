@@ -28,18 +28,12 @@ import com.tribc.cqrs.util.EventUtil;
 import com.tribc.ddd.domain.event.Event;
 import com.tribc.ddd.domain.event.Eventful;
 import java.io.Serializable;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -50,42 +44,25 @@ import org.bco.cm.domain.course.event.NewCourseAddedToCatalog;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.util.Identifiable;
-import org.hibernate.annotations.NaturalId;
 
 /**
- * An unit of teaching that typically lasts one academic term. The course 
- * description consists of a title, summary, and separate components or modules 
- * that are taken in a sequential order by students.
+ * Describes a course. Consists of a title, summary, and separate components 
+ * ("modules"). It is created and maintained by a teacher.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Entity( name="CourseDescription" )
+@Entity( name = "CourseDescription" )
 @Table( name = "course_descriptions" )
-public class CourseDescription implements Eventful, Identifiable, Serializable {
-    
-    // For generating module identifiers that are unique to a given course.
-    private final static Random RANDOM;
-    
-    static {
-        RANDOM = new Random();
-        RANDOM.setSeed(Instant.now().toEpochMilli());
-    }
+public class CourseDescription 
+    extends AbstractCourse
+    implements Eventful, Identifiable, Serializable {
     
     private UUID id_;
-    private CourseId courseId_;
-    private String title_;
-    private String summary_;
-    private List<Module> modules_;
-    private TeacherId teacherId_;
     
     private final Collection<Event> events_;
     
     protected CourseDescription()
     {
-        courseId_ = null;
-        title_ = null;
-        summary_ = null;
-        modules_ = new ArrayList<>();
-        teacherId_ = null;
+        super();
         events_ = new HashSet<>();
     }
     
@@ -110,7 +87,7 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         if ( courseId == null ) {
             throw new NullPointerException("Missing course identifier.");
         }
-        courseId_ = courseId;
+        super.setCourseId(courseId);
     }
     
     /**
@@ -120,123 +97,38 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     @Transient
     public CourseId getIdentifier()
     {
-        return courseId_;
+        return super.getCourseId();
     }
     
-    private void setCourseId(CourseId courseId)
-    {
-        this.setIdentifier(courseId);
-    }
-    
-    /**
-     * Returns course identifier.
-     * @return Course identifier. Never null.
-     */
-    @NaturalId
-    @Embedded
-    public CourseId getCourseId()
-    {
-        return this.getIdentifier();
-    }
-
     @Override
     @Transient
     public String getIdentifierAsString() 
     {
-        return courseId_.stringValue();
+        return this.getIdentifier().stringValue();
     }
     
-    private void setTitle(String title)
-    {
-        if ( title == null ) {
-            throw new NullPointerException("Missing course title.");
-        }
-        if ( title.isEmpty() ) {
-            throw new IllegalArgumentException("Empty course title.");
-        }
-        title_ = title;
-    }
     
-    /**
-     * Returns course title.
-     * @return Title. Never null or empty.
+   /**
+     * Returns modules.
+     * @return Modules. May be empty.
      */
-    @Column( name = "title")
-    public String getTitle()
-    {
-        return title_;
-    }
-    
-    private void setSummary(String summary)
-    {
-        if ( summary == null ) {
-            throw new NullPointerException("Missing course summary.");
-        }
-        if ( summary.isEmpty() ) {
-            throw new IllegalArgumentException("Empty course summary.");
-        }
-        summary_ = summary;
-    }
-    
-    /**
-     * Returns course summary.
-     * @return Summary. Never null or empty.
-     */
-    @Column( name = "summary")
-    public String getSummary()
-    {
-        return summary_;
-    }
-    
-    private void setModules(List<Module> modules)
-    {        
-        if ( modules == null ) {
-            throw new NullPointerException("Missing course modules.");
-        }
-        modules_ = modules;
-        modules_.forEach(module -> {
-            module.setCourseDescription(this);
-        });
-    }
-
     @OneToMany( 
         mappedBy = "courseDescription", 
         cascade = CascadeType.ALL, 
         orphanRemoval = true
-    )
+    )    
     protected List<Module> getModules()
     {
-        return modules_;
+        return super.modules();
     }
     
-    /**
-     * Returns course modules.
-     * @return Unmodifiable list of modules. Never null. May be empty.
-     */
-    public List<Module> modules()
+    @Override
+    protected void setParent(Module module)
     {
-        return Collections.unmodifiableList(new ArrayList<>(modules_));
-    }
-        
-    private void setTeacherId(TeacherId teacherId)
-    {
-        if ( teacherId == null ) {
-            throw new NullPointerException("Missing teacher for course.");
-        }
-        teacherId_ = teacherId;
+        module.setCourseDescription(this);
     }
     
-    /**
-     * Returns identifier responsible teacher.
-     * @return Identifier.
-     */
-    @Embedded
-    protected TeacherId getTeacherId()
-    {
-        return teacherId_;
-    }
-    
-    /**
+   /**
      * Creates a new course description. Arguments must not be null.
      * @param teacher Responsible teacher.
      * @param courseId New course identifier.
@@ -289,32 +181,8 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     public CourseDescriptionDTO toDTO()
     {
         CourseDescriptionDTO dto = new CourseDescriptionDTO();
-        dto.setCourseId(courseId_.stringValue());
-        dto.setSummary(summary_);
-        dto.setTitle(title_);
-        dto.setModules(Module.toDTOs(modules_));
-        dto.setTeacherId(teacherId_.stringValue());
+        this.populate(dto);
         return dto;
-    }
-    
-    /**
-     * Adds new module to this course.
-     * @param spec New module specification. This module is appended to the last
-     * module.
-     */
-    public void addModule(ModuleDTO spec)
-    {
-        if ( spec == null ) {
-            throw new NullPointerException(
-                "Trying to add an undefined module to course."
-            );
-        }
-                
-        // Create new module according to specification.
-        int moduleId = this.generateModuleId();
-        Module next = Module.valueOf(moduleId, spec);
-        next.setCourseDescription(this);
-        modules_.add(next);
     }
     
     /**
@@ -336,58 +204,9 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
     {
         Module module = this.findModule(moduleId);
         module.setCourseDescription(null);
-        modules_.remove(module);
+        super.modules().remove(module);
    }
     
-    /**
-     * Is given teacher responsible for this course.
-     * @param teacher Teacher.
-     * @return Result.
-     */
-    public boolean isResponsibleTeacher(Teacher teacher)
-    {
-        return teacherId_.equals(teacher.getTeacherId());
-    }
-        
-    private boolean hasModules()
-    {
-        return !modules_.isEmpty();
-    }
-    
-    /**
-     * Finds module.
-     * @param moduleId Module identifier value.
-     * @return Module or null if nonexistent.
-     */
-    Module findModule(int moduleId)
-    {
-        if ( moduleId > 0 && !modules_.isEmpty() ) {
-            for (Module module : modules_) {
-                if (module.getModuleId() == moduleId ) {
-                    return module;
-                }
-            }
-            return null;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns new module identifier value that is unique in the context of 
-     * this course.
-     * @return Identifier, always > 0.
-     */
-    private int generateModuleId()
-    {
-        int bound = Integer.MAX_VALUE - 100;
-        int id = RANDOM.nextInt(bound);
-        while (this.containsModuleId(id) && id == 0) {
-            id = RANDOM.nextInt(bound);
-        }
-        return id;
-    }
-
     @Override
     @Transient
     public Collection<Event> getEvents() 
@@ -407,7 +226,10 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
         if ( this == other ) {
             return true;
         }
-        if ( other == null || this.getClass() != other.getClass() ) {
+        if ( other == null ) {
+            return false;
+        }
+        if ( !(other instanceof CourseDescription) ) {
             return false;
         }
         CourseDescription course = (CourseDescription)other;
@@ -416,40 +238,17 @@ public class CourseDescription implements Eventful, Identifiable, Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 47 * hash + Objects.hashCode(this.id_);
-        hash = 47 * hash + Objects.hashCode(this.courseId_);
-        hash = 47 * hash + Objects.hashCode(this.title_);
-        hash = 47 * hash + Objects.hashCode(this.summary_);
-        hash = 47 * hash + Objects.hashCode(this.modules_);
-        hash = 47 * hash + Objects.hashCode(this.teacherId_);
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.id_);
         return hash;
     }
-    
+
     /**
      * Signals that this course is newly added to the course catalog.
      */
     void addedToCourseCatalog()
     {
         this.events_.add(new NewCourseAddedToCatalog(this));
-    }
-    
-    private void clearModules()
-    {
-        modules_.forEach(module -> {
-            module.setCourseDescription(null);
-        });
-        modules_.clear();
-    }
-    
-    private boolean containsModuleId(int moduleId)
-    {
-        for (Module module : modules_) {
-            if ( module.getModuleId() == moduleId ) {
-                return true;
-            }
-        }
-        return false;
     }
     
 }

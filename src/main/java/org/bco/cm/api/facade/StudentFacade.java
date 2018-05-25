@@ -78,7 +78,7 @@ public class StudentFacade {
     @Transactional( readOnly=true )
     public StudentDTO getStudent(StudentId studentId)
     {
-        return readOnlyStudentRegistry_.getStudent(studentId);
+        return readOnlyStudentRegistry_.getOne(studentId);
     }
     
     /**
@@ -88,7 +88,7 @@ public class StudentFacade {
     @Transactional( readOnly=true )
     public List<StudentDTO> getAllStudents()
     {
-        return readOnlyStudentRegistry_.getAllStudents();
+        return readOnlyStudentRegistry_.getAll();
     }
     
     /**

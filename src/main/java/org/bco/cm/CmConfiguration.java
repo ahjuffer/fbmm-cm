@@ -26,9 +26,11 @@ package org.bco.cm;
 
 import com.tribc.cqrs.domain.command.CommandBus;
 import com.tribc.ddd.domain.event.EventBus;
+import org.bco.cm.api.facade.CourseCatalogFacade;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
+import org.bco.cm.application.command.handler.ActivateCourseHandler;
 import org.bco.cm.application.command.handler.AddCourseModuleHandler;
 import org.bco.cm.application.command.handler.CmCommandBus;
 import org.bco.cm.application.command.handler.DeleteCourseHandler;
@@ -59,6 +61,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.bco.cm.application.event.handler.NewCourseAddedToCatalogHandler;
+import org.bco.cm.application.query.ReadOnlyCourseRegistry;
+import org.bco.cm.domain.course.CourseRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateCourseRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyCourseRegistry;
 
 /**
  * Bean configuration.
@@ -112,13 +118,27 @@ public class CmConfiguration
         return new HibernateReadOnlyCourseCatalog();
     }
     
+    @Bean
+    @Primary
+    CourseRegistry courseRegistry()
+    {
+        return new HibernateCourseRegistry();
+    }
+    
+    @Bean
+    @Primary
+    ReadOnlyCourseRegistry readOnlyCourseRegistry()
+    {
+        return new HibernateReadOnlyCourseRegistry();
+    }
+    
     
     // Facades
     
     @Bean
-    CourseFacade courseFacade()
+    CourseCatalogFacade courseCatalogFacade()
     {
-        return new CourseFacade();
+        return new CourseCatalogFacade();
     }
     
     @Bean
@@ -131,6 +151,12 @@ public class CmConfiguration
     StudentFacade studentFacade()
     {
         return new StudentFacade();
+    }
+    
+    @Bean
+    CourseFacade courseFacade()
+    {
+        return new CourseFacade();
     }
     
     
@@ -212,6 +238,12 @@ public class CmConfiguration
     EnrolmentCreatedHandler enrolmentCreatedHandler()
     {
         return new EnrolmentCreatedHandler();
+    }
+    
+    @Bean
+    ActivateCourseHandler activateCourseHandler()
+    {
+        return new ActivateCourseHandler();
     }
     
     @Bean 

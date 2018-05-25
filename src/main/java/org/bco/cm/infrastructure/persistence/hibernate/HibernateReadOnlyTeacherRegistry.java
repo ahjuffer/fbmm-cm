@@ -44,19 +44,7 @@ public class HibernateReadOnlyTeacherRegistry
         "select teacher from " + TeacherDTO.class.getName() + " teacher ";
 
     @Override
-    public TeacherDTO forEntityId(TeacherId identifier) 
-    {
-        return this.getTeacher(identifier);
-    }
-
-    @Override
-    public List<TeacherDTO> getAllTeachers() 
-    {
-        return this.forMany(FROM);
-    }
-    
-    @Override
-    public TeacherDTO getTeacher(TeacherId teacherId)
+    public TeacherDTO getOne(TeacherId teacherId) 
     {
         String id = teacherId.stringValue();
         String hql = FROM +
@@ -67,4 +55,11 @@ public class HibernateReadOnlyTeacherRegistry
         }
         return teacher;        
     }
+
+    @Override
+    public List<TeacherDTO> getAll() 
+    {
+        return this.forMany(FROM);
+    }
+    
 }

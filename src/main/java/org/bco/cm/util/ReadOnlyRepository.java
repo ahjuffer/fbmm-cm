@@ -25,6 +25,8 @@
 
 package org.bco.cm.util;
 
+import java.util.List;
+
 /**
  * Holds entities of type T. One can read from the repository. Updating existing
  * or adding new entities is not possible.
@@ -40,6 +42,12 @@ public interface ReadOnlyRepository<T,ID> {
      * @return Entity.
      * @throws NullPointerException if nonexistent.
      */
-    T forEntityId(ID identifier);
+    T getOne(ID identifier);
+    
+    /**
+     * Returns all entities.
+     * @return All entities. May be empty.
+     */
+    List<T> getAll();
 
 }

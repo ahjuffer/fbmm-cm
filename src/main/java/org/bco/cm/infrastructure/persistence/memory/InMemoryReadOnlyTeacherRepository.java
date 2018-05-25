@@ -49,7 +49,7 @@ public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherRegistr
     }
 
     @Override
-    public List<TeacherDTO> getAllTeachers() 
+    public List<TeacherDTO> getAll() 
     {
         Collection<Teacher> teachers = teacherRepository_.forAll();
         List<TeacherDTO> dtos = new ArrayList<>();
@@ -61,9 +61,9 @@ public class InMemoryReadOnlyTeacherRepository implements ReadOnlyTeacherRegistr
     }
 
     @Override
-    public TeacherDTO getTeacher(TeacherId teacherId) 
+    public TeacherDTO getOne(TeacherId teacherId) 
     {
-        return teacherRepository_.forTeacherId(teacherId).toDTO();
+        return teacherRepository_.forOne(teacherId).toDTO();
     }
 
 }

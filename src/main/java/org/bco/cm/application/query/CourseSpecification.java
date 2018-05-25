@@ -92,7 +92,7 @@ public class CourseSpecification {
     public List<CourseDescriptionDTO> query(ReadOnlyCourseCatalog courseRepository)
     {
         if ( spec_.equals(ALL.spec_) ) {
-            return courseRepository.getAllCourses();
+            return courseRepository.getAll();
         }
         return new ArrayList<>();
     }

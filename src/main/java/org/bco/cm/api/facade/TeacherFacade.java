@@ -26,6 +26,7 @@ package org.bco.cm.api.facade;
 
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
+import org.bco.cm.application.command.ActivateCourse;
 import org.bco.cm.application.command.AddCourseModule;
 import org.bco.cm.application.command.DeleteCourse;
 import org.bco.cm.application.command.DeleteCourseModule;
@@ -41,6 +42,7 @@ import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.bco.cm.application.command.UpdateCourseModule;
+import org.bco.cm.dto.CourseDTO;
 
 /**
  * Simplified interface for teachers.
@@ -162,7 +164,7 @@ public class TeacherFacade {
     @Transactional( readOnly=true )
     public List<TeacherDTO> getAllTeachers()
     {
-        return readOnlyTeacherRepository_.getAllTeachers();
+        return readOnlyTeacherRepository_.getAll();
     }
     
     /**
@@ -173,7 +175,7 @@ public class TeacherFacade {
     @Transactional( readOnly=true )
     public TeacherDTO getTeacher(TeacherId teacherId)
     {
-        return readOnlyTeacherRepository_.getTeacher(teacherId);
+        return readOnlyTeacherRepository_.getOne(teacherId);
     }
     
     /**
@@ -184,6 +186,18 @@ public class TeacherFacade {
     public void register(TeacherId teacherId, TeacherDTO spec)
     {
         RegisterNewTeacher command = new RegisterNewTeacher(teacherId, spec);
+        commandBus_.handle(command);
+    }
+
+    /**
+     * 
+     * @param teacherId Identifier teacher activating course.
+     * @param courseId Course identifier.
+     * @param spec Activation specification.
+     */
+    public void activateCourse(TeacherId teacherId, CourseId courseId, CourseDTO spec)
+    {
+        ActivateCourse command = new ActivateCourse(teacherId, courseId, spec);
         commandBus_.handle(command);
     }
 

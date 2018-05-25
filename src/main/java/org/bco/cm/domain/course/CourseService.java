@@ -22,31 +22,40 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.domain.course;
 
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.dto.CourseDTO;
 
 /**
- * Stores courses in memory.
+ * Domain service for managing activated courses.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryCourseCatalog 
-    extends InMemoryMapRepository<CourseDescription> 
-    implements CourseCatalog {
-    
-    @Override
-    public CourseDescription forOne(CourseId courseId) 
-    {
-        return this.forIdentifierAsString(courseId.stringValue());
-    }
+public class CourseService {
 
-    @Override
-    public boolean contains(CourseId identifier) 
-    {
-        return this.forOne(identifier) != null;
+    private CourseService()
+    {        
     }
     
-
+    /**
+     * Activates a course.
+     * @param teacher Teacher activating course.
+     * @param courseDescription Course description.
+     * @param spec Activation specification.
+     * @return Activated course.
+     */
+    public static Course activate(Teacher teacher, 
+                                  CourseDescription courseDescription,
+                                  CourseDTO spec)
+    {
+        if ( !courseDescription.isResponsibleTeacher(teacher) ) {
+            throw new IllegalArgumentException(
+                "Teacher is not responsible for course '" + 
+                courseDescription.getTitle() + "'."
+            );
+        }
+        Course course = Course.activate(courseDescription, spec);
+        
+        return course;
+    }
+    
 }

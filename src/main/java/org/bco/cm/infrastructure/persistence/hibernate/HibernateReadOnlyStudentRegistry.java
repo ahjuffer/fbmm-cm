@@ -49,13 +49,13 @@ public class HibernateReadOnlyStudentRegistry
     }
     
     @Override
-    public List<StudentDTO> getAllStudents() 
+    public List<StudentDTO> getAll() 
     {
         return this.forMany(FROM);
     }
 
     @Override
-    public StudentDTO getStudent(StudentId studentId) 
+    public StudentDTO getOne(StudentId studentId) 
     {
         String id = studentId.stringValue();
         String hql = FROM +
@@ -65,12 +65,6 @@ public class HibernateReadOnlyStudentRegistry
             throw new NullPointerException(id + ": No such student.");
         }
         return student;
-    }
-
-    @Override
-    public StudentDTO forEntityId(StudentId identifier) 
-    {
-        return this.getStudent(identifier);
     }
 
 }

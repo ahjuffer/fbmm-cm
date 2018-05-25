@@ -25,18 +25,15 @@
 package org.bco.cm.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.hibernate.annotations.NaturalId;
 
 /**
  * DTO for CourseDescription.
@@ -44,22 +41,14 @@ import org.hibernate.annotations.NaturalId;
  */
 @Entity( name = "CourseDescriptionDTO" )
 @Table( name = "course_descriptions" )
-public class CourseDescriptionDTO implements Serializable {
-    
+public class CourseDescriptionDTO extends AbstractCourseDTO implements Serializable 
+{    
     private UUID id_;
-    private String courseId_;
-    private String title_;
-    private String summary_;
-    private List<ModuleDTO> modules_;
-    private String teacherId_;
     
     public CourseDescriptionDTO()
     {
-        courseId_ = null;
-        title_ = null;
-        summary_ = null;
-        modules_ = new ArrayList<>();
-        teacherId_ = null;
+        super();
+        id_ = null;
     }
     
     private void setId(UUID id)
@@ -78,50 +67,6 @@ public class CourseDescriptionDTO implements Serializable {
         return id_;
     }
     
-    public void setCourseId(String courseId)
-    {
-        courseId_ = courseId;
-    }
-    
-    @Column( name = "course_id" )
-    @NaturalId
-    public String getCourseId()
-    {
-        return courseId_;
-    }
-    
-    public void setTitle(String title)
-    {
-        title_ = title;
-    }
-    
-    @Column( name="title" )
-    public String getTitle()
-    {
-        return title_;
-    }
-    
-    public void setSummary(String summary)
-    {
-        summary_ = summary;
-    }
-    
-    @Column( name = "summary" )
-    public String getSummary()
-    {
-        return summary_;
-    }
-    
-    public void setModules(List<ModuleDTO> modules)
-    {
-        if ( modules != null ) {
-            modules_ = modules;
-            modules_.forEach(module -> {
-                module.setCourseDescription(this);
-            });
-        }   
-    }
-    
     @OneToMany(
         mappedBy = "courseDescription",
         cascade = CascadeType.ALL, 
@@ -129,30 +74,22 @@ public class CourseDescriptionDTO implements Serializable {
     )
     public List<ModuleDTO> getModules()
     {
-        return modules_;
-    }
-    
-    public void setTeacherId(String teacherId)
-    {
-        teacherId_ = teacherId;
-    }
-    
-    @Column( name="teacher_id" )
-    public String getTeacherId()
-    {
-        return teacherId_;
+        return super.modules();
     }
 
+    @Override
+    public void setParent(ModuleDTO module)
+    {
+        module.setCourseDescription(this);
+    }
+    
     @Override
     public String toString()
     {
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("CourseDescriptionDTO : {").append(newline);
-        s.append("courseId - ").append(courseId_).append(newline);
-        s.append("title - ").append(title_).append(newline);
-        s.append("summary - ").append(summary_).append(newline);
-        s.append("modules - ").append(modules_).append(newline);
-        s.append("teacherId - ").append(teacherId_).append(newline);
+        s.append("id - ").append(id_).append(newline);
+        s.append(super.toString()).append(newline);
         s.append("}");
         return s.toString();
     }
@@ -163,7 +100,10 @@ public class CourseDescriptionDTO implements Serializable {
         if ( this == other ) {
             return true;
         }
-        if ( other == null || this.getClass() != other.getClass() ) {
+        if ( other == null ) {
+            return false;
+        }
+        if ( !(other instanceof CourseDescriptionDTO) ) {
             return false;
         }
         CourseDescriptionDTO course = (CourseDescriptionDTO)other;
@@ -172,16 +112,9 @@ public class CourseDescriptionDTO implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 19 * hash + Objects.hashCode(this.id_);
-        hash = 19 * hash + Objects.hashCode(this.courseId_);
-        hash = 19 * hash + Objects.hashCode(this.title_);
-        hash = 19 * hash + Objects.hashCode(this.summary_);
-        hash = 19 * hash + Objects.hashCode(this.modules_);
-        hash = 19 * hash + Objects.hashCode(this.teacherId_);
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.id_);
         return hash;
     }
-    
-    
 
 }

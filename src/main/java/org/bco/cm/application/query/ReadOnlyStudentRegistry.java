@@ -25,7 +25,6 @@
 
 package org.bco.cm.application.query;
 
-import java.util.List;
 import org.bco.cm.domain.course.StudentId;
 import org.bco.cm.dto.StudentDTO;
 import org.bco.cm.util.ReadOnlyRepository;
@@ -36,18 +35,5 @@ import org.bco.cm.util.ReadOnlyRepository;
  */
 public interface ReadOnlyStudentRegistry 
     extends ReadOnlyRepository<StudentDTO, StudentId> {
-    
-    /**
-     * Returns all students.
-     * @return Students. May be empty.
-     */
-    List<StudentDTO> getAllStudents();
-    
-    /**
-     * Returns student with given identifier.
-     * @param studentId Identifier.
-     * @return Student.
-     */
-    StudentDTO getStudent(StudentId studentId);
 
 }

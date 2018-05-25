@@ -50,7 +50,7 @@ public class HibernateCourseCatalog
     }
 
     @Override
-    public CourseDescription forCourseId(CourseId courseId) 
+    public CourseDescription forOne(CourseId courseId) 
     {
         String id = courseId.stringValue();
         String hql =
@@ -59,10 +59,4 @@ public class HibernateCourseCatalog
         return this.forSingle(hql);
     }
     
-    @Override
-    public CourseDescription forEntityId(CourseId identifier)
-    {
-        return this.forCourseId(identifier);
-    }
-
 }

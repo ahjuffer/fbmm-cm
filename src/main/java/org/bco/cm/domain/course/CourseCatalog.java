@@ -32,11 +32,4 @@ import org.bco.cm.util.Repository;
  */
 public interface CourseCatalog extends Repository<CourseDescription, CourseId> {
     
-    /**
-     * Queries for specific course.
-     * @param courseId Course identifier.
-     * @return Course, or null if nonexistent.
-     */
-    CourseDescription forCourseId(CourseId courseId);
-    
 }

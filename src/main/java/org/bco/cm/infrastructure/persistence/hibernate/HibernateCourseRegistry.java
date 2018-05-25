@@ -22,31 +22,39 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.infrastructure.persistence.hibernate;
 
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescription;
+import java.util.List;
+import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.CourseRegistry;
+import org.bco.cm.util.HibernateRepository;
 
 /**
- * Stores courses in memory.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryCourseCatalog 
-    extends InMemoryMapRepository<CourseDescription> 
-    implements CourseCatalog {
-    
+public class HibernateCourseRegistry 
+    extends HibernateRepository<Course, CourseId>
+    implements CourseRegistry
+{
+    private static final String FROM = 
+        "select course from " + Course.class.getName() + " course ";
+
     @Override
-    public CourseDescription forOne(CourseId courseId) 
+    public Course forOne(CourseId courseId) 
     {
-        return this.forIdentifierAsString(courseId.stringValue());
+        String id = courseId.stringValue();
+        String hql =
+            FROM +
+            "where course.courseId.id = '" + id + "'";
+        return this.forSingle(hql);
     }
 
     @Override
-    public boolean contains(CourseId identifier) 
+    public List<Course> forAll() 
     {
-        return this.forOne(identifier) != null;
+        return this.forMany(FROM);
     }
-    
 
 }

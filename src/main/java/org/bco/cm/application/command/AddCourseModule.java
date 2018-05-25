@@ -30,7 +30,7 @@ import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.ModuleDTO;
 
 /**
- * Command for adding a module to an existing course.
+ * Command for adding a module to an existing course description.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 public class AddCourseModule extends AbstractCommand {
