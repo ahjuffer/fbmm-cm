@@ -39,6 +39,7 @@ import org.bco.cm.application.command.handler.EnrolStudentHandler;
 import org.bco.cm.application.command.handler.PostNewCourseHandler;
 import org.bco.cm.application.command.handler.RegisterNewStudentHandler;
 import org.bco.cm.application.command.handler.RegisterNewTeacherHandler;
+import org.bco.cm.application.command.handler.StartCourseHandler;
 import org.bco.cm.application.command.handler.UpdateCourseHandler;
 import org.bco.cm.application.command.handler.UpdateCourseModuleHandler;
 import org.bco.cm.application.event.handler.CmEventBus;
@@ -244,6 +245,12 @@ public class CmConfiguration
     ActivateCourseHandler activateCourseHandler()
     {
         return new ActivateCourseHandler();
+    }
+    
+    @Bean
+    StartCourseHandler startCourseHandler()
+    {
+        return new StartCourseHandler();
     }
     
     @Bean 

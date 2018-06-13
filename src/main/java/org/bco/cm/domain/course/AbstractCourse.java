@@ -33,7 +33,6 @@ import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import org.bco.cm.dto.AbstractCourseDTO;
 import org.bco.cm.dto.ModuleDTO;
-import org.hibernate.annotations.NaturalId;
 
 /**
  * Serves as a base class for all course types.
@@ -51,7 +50,6 @@ public abstract class AbstractCourse
         RANDOM.setSeed(Instant.now().toEpochMilli());
     }
     
-    private CourseId courseId_;
     private String title_;
     private String summary_;
     private List<Module> modules_;
@@ -59,34 +57,10 @@ public abstract class AbstractCourse
     
     protected AbstractCourse()
     {
-        courseId_ = null;
         title_ = null;
         summary_ = null;
         modules_ = new ArrayList<>();
         teacherId_ = null;
-    }
-
-    /**
-     * Sets course identifier.
-     * @param courseId Identifier. Must not be null.
-     */
-    protected void setCourseId(CourseId courseId)
-    {
-        if ( courseId == null ) {
-            throw new NullPointerException("Missing course identifier.");
-        }
-        courseId_ = courseId;
-    }
-    
-    /**
-     * Returns course identifier.
-     * @return Course identifier. Never null.
-     */
-    @NaturalId
-    @Embedded
-    public CourseId getCourseId()
-    {
-        return courseId_;
     }
 
     /**
@@ -278,7 +252,6 @@ public abstract class AbstractCourse
      */
     protected void populate(AbstractCourseDTO dto)
     {
-        dto.setCourseId(courseId_.stringValue());
         dto.setSummary(summary_);
         dto.setTitle(title_);
         List<ModuleDTO> modules = Module.toDTOs(modules_);

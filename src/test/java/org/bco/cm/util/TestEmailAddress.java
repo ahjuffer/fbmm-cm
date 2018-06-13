@@ -24,9 +24,6 @@ package org.bco.cm.util;
  * THE SOFTWARE.
  */
 
-
-import org.bco.cm.util.EmailAddress;
-
 /**
  *
  * @author ajuffer

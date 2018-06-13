@@ -28,9 +28,9 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,6 +39,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.hibernate.annotations.NaturalId;
 
 /**
  * DTO for Course.
@@ -49,6 +50,8 @@ import javax.persistence.Transient;
 public class CourseDTO extends AbstractCourseDTO implements Serializable 
 {
     private UUID id_;
+    private String courseId_;
+    private String courseDescriptionId_;
     private Instant startDate_;
     private Instant endDate_;
     private int numberOfSeats_;
@@ -59,6 +62,8 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
     {
         super();
         id_ = null;
+        courseId_ = null;
+        courseDescriptionId_ = null;
         ongoing_ = false;
         startDate_ = Instant.now();
         endDate_ = Instant.now();
@@ -80,6 +85,29 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
     protected UUID getId()
     {
         return id_;
+    }
+    
+    public void setCourseId(String courseId)
+    {
+        courseId_ = courseId;
+    }
+    
+    @Column( name = "course_id" )
+    @NaturalId
+    public String getCourseId()
+    {
+        return courseId_;
+    }
+    
+    public void setCourseDescriptionId(String courseDescriptionId)
+    {
+        courseDescriptionId_ = courseDescriptionId;
+    }
+    
+    @Column( name = "course_description_id" )
+    public String getCourseDescriptionId()
+    {
+        return courseDescriptionId_;
     }
     
     public void setOngoing(boolean ongoing)
@@ -182,6 +210,7 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("CourseDTO : {").append(newline);
         s.append(super.toString()).append(newline);
+        s.append("courseId - ").append(courseId_).append(newline);
         s.append("ongoing - ").append(ongoing_).append(newline);
         s.append("endDate - ").append(endDate_).append(newline);
         s.append("startDate - ").append(startDate_).append(newline);

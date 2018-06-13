@@ -26,6 +26,7 @@ package org.bco.cm.infrastructure.persistence.hibernate;
 
 import java.util.List;
 import org.bco.cm.domain.course.Course;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
 import org.bco.cm.util.HibernateRepository;
@@ -55,6 +56,16 @@ public class HibernateCourseRegistry
     public List<Course> forAll() 
     {
         return this.forMany(FROM);
+    }
+    
+    @Override
+    public List<Course> getCourses(CourseDescriptionId courseId)
+    {
+        String id = courseId.stringValue();
+        String hql = 
+            FROM +
+            "where course.courseDescriptionId.id = '" + id + "'";
+        return this.forMany(hql);
     }
 
 }

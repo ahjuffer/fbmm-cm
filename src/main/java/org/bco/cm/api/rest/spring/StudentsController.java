@@ -54,8 +54,10 @@ public class StudentsController {
      * student identifier, and email address.
      * @return New student.
      */
-    @PostMapping(consumes = "application/json;charset=UTF-8", 
-                 produces = "application/json;charset=UTF-8")
+    @PostMapping(
+        consumes = "application/json;charset=UTF-8", 
+        produces = "application/json;charset=UTF-8"
+    )
     @ResponseStatus(HttpStatus.CREATED)
     public StudentDTO register(@RequestBody StudentDTO spec)
     {
@@ -68,7 +70,9 @@ public class StudentsController {
      * Returns all student resources.
      * @return Students.
      */
-    @GetMapping(produces = "application/json;charset=UTF-8")
+    @GetMapping(
+        produces = "application/json;charset=UTF-8"
+    )
     public List<StudentDTO> getAllStudents()
     {
         return studentFacade_.getAllStudents();

@@ -24,10 +24,12 @@
 
 package org.bco.cm.domain.course;
 
+import java.time.Instant;
 import org.bco.cm.dto.CourseDTO;
+import java.util.List;
 
 /**
- * Domain service for managing activated courses.
+ * Domain service for managing courses.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class CourseService {
@@ -37,15 +39,20 @@ public class CourseService {
     }
     
     /**
-     * Activates a course.
+     * Activates a course. Activated course is added to course registry.
      * @param teacher Teacher activating course.
      * @param courseDescription Course description.
-     * @param spec Activation specification.
+     * @param courseId Identifier of newly activated course.
+     * @param spec Activation specification. Must hold start and end date plus
+     * the number of seats.
+     * @param courseRegistry Course registry.
      * @return Activated course.
      */
     public static Course activate(Teacher teacher, 
                                   CourseDescription courseDescription,
-                                  CourseDTO spec)
+                                  CourseId courseId,
+                                  CourseDTO spec,
+                                  CourseRegistry courseRegistry)
     {
         if ( !courseDescription.isResponsibleTeacher(teacher) ) {
             throw new IllegalArgumentException(
@@ -53,9 +60,27 @@ public class CourseService {
                 courseDescription.getTitle() + "'."
             );
         }
-        Course course = Course.activate(courseDescription, spec);
-        
+        CourseDescriptionId courseDescriptionId = 
+            courseDescription.getCourseDescriptionId();
+        List<Course> courses = courseRegistry.getCourses(courseDescriptionId);
+        if ( CourseService.isStillActive(courses) ) {
+            throw new IllegalStateException(
+                "An activated course is still available."
+            );            
+        }
+        Course course = Course.activate(courseId, courseDescription, spec);
+        courseRegistry.add(course);
         return course;
+    }
+    
+    private static boolean isStillActive(List<Course> courses)
+    {
+        for (Course course : courses) {
+            if ( course.isActive() ) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }

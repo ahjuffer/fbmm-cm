@@ -47,7 +47,7 @@ public class CourseCatalogService {
      * @throws IllegalArgumentException if courseId is already in use.
      */
     public static CourseDescription add(Teacher teacher,
-                                        CourseId courseId, 
+                                        CourseDescriptionId courseId, 
                                         CourseDescriptionDTO spec, 
                                         CourseCatalog courseCatalog)
     {

@@ -25,7 +25,7 @@
 package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.TeacherId;
 
 /**
@@ -35,10 +35,10 @@ import org.bco.cm.domain.course.TeacherId;
 public class DeleteCourseModule extends AbstractCommand {
     
     private final TeacherId teacherId_;
-    private final CourseId courseId_;
+    private final CourseDescriptionId courseId_;
     private final int moduleId_;
     
-    public DeleteCourseModule(TeacherId teacherId, CourseId courseId, int moduleId)
+    public DeleteCourseModule(TeacherId teacherId, CourseDescriptionId courseId, int moduleId)
     {
         super(DeleteCourseModule.class);
         teacherId_ = teacherId;
@@ -59,7 +59,7 @@ public class DeleteCourseModule extends AbstractCommand {
      * Returns course identifier.
      * @return Identifier.
      */
-    public CourseId getCourseId()
+    public CourseDescriptionId getCourseId()
     {
         return courseId_;
     }

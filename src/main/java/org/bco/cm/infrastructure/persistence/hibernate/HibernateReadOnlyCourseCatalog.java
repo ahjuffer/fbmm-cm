@@ -27,7 +27,7 @@ package org.bco.cm.infrastructure.persistence.hibernate;
 import java.util.List;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.util.ReadOnlyHibernateRepository;
@@ -39,19 +39,19 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class HibernateReadOnlyCourseCatalog 
-    extends ReadOnlyHibernateRepository<CourseDescriptionDTO, CourseId> 
+    extends ReadOnlyHibernateRepository<CourseDescriptionDTO, CourseDescriptionId> 
     implements ReadOnlyCourseCatalog
 {
     private static final String FROM = 
         "select course from " + CourseDescriptionDTO.class.getName() + " course ";
 
     @Override
-    public CourseDescriptionDTO getOne(CourseId courseId) 
+    public CourseDescriptionDTO getOne(CourseDescriptionId courseId) 
     {
         String id = courseId.stringValue();
         String hql = 
             FROM +
-            "where course.courseId = '" + id + "'";
+            "where course.courseDescriptionId = '" + id + "'";
         CourseDescriptionDTO course = this.forSingle(hql);
         if (course == null ) {
             throw new NullPointerException(id + ": No such course.");

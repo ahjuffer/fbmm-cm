@@ -52,7 +52,7 @@ create table modules
 create table course_descriptions
 (
     id                      UUID not null primary key,
-    course_id               varchar(200),
+    course_description_id   varchar(200),
     title                   varchar(200),
     summary                 varchar(2000),
     teacher_id              varchar(200)
@@ -62,6 +62,7 @@ create table courses
 (
     id                      UUID not null primary key,
     course_id               varchar(200),
+    course_description_id   varchar(200),
     title                   varchar(200),
     summary                 varchar(2000),
     teacher_id              varchar(200),

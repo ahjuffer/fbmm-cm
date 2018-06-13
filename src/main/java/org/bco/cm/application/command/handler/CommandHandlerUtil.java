@@ -24,14 +24,17 @@
 
 package org.bco.cm.application.command.handler;
 
+import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.CourseRegistry;
 import org.bco.cm.domain.course.Student;
-import org.bco.cm.domain.course.StudentRegistry;
 import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.course.StudentRegistry;
 import org.bco.cm.domain.course.Teacher;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.domain.course.TeacherRegistry;
 
 /**
@@ -87,7 +90,7 @@ public class CommandHandlerUtil {
      * @return Course description.
      * @throws NullPointerException if requested course description cannot be found.
      */
-    public static CourseDescription findCourseDescription(CourseId courseId, 
+    public static CourseDescription findCourseDescription(CourseDescriptionId courseId, 
                                                           CourseCatalog courseCatalog)
     {
         CourseDescription course = courseCatalog.forOne(courseId);
@@ -95,6 +98,22 @@ public class CommandHandlerUtil {
             throw new NullPointerException(
                 courseId.stringValue() + ": No such course."
             );
+        }
+        return course;
+    }
+    
+    /**
+     * Returns active course.
+     * @param courseId Course identifier.
+     * @param courseRegistry Course registry.
+     * @return Course.
+     * @throws NullPointerException if requested course cannot be found.
+     */
+    public static Course findCourse(CourseId courseId, CourseRegistry courseRegistry)
+    {
+        Course course = courseRegistry.forOne(courseId);
+        if ( course == null ) {
+            throw new NullPointerException(courseId.stringValue() + ": No such course.");
         }
         return course;
     }

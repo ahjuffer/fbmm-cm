@@ -22,31 +22,53 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.domain.course;
 
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.CourseId;
+import java.io.Serializable;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import org.bco.cm.util.Id;
 
 /**
- * Stores courses in memory.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryCourseCatalog 
-    extends InMemoryMapRepository<CourseDescription> 
-    implements CourseCatalog {
+@Embeddable
+public class CourseDescriptionId extends Id<String> implements Serializable {
     
-    @Override
-    public CourseDescription forOne(CourseId courseId) 
+    protected CourseDescriptionId()
     {
-        return this.forIdentifierAsString(courseId.stringValue());
-    }
-
-    @Override
-    public boolean contains(CourseId identifier) 
-    {
-        return this.forOne(identifier) != null;
+        super();
     }
     
+    public CourseDescriptionId(String id)
+    {
+        super(id);
+    }
+    
+    private void setId(String id)
+    {
+        this.setValue(id);
+    }
+    
+    /**
+     * Returns identifier value.
+     * @return Value.
+     */
+    @Column(name="course_description_id")
+    protected String getId()
+    {
+        return this.getValue();
+    }
 
+    /**
+     * Returns new identifier.
+     * @return Identifier.
+     */
+    public static CourseDescriptionId generate()
+    {
+        UUID uuid = UUID.randomUUID();
+        return new CourseDescriptionId(uuid.toString());
+    }
 }

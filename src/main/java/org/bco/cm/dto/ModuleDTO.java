@@ -167,7 +167,7 @@ public class ModuleDTO implements Serializable {
     public String getCourseDescriptionId()
     {
         if ( courseDescription_ != null ) {
-            return courseDescription_.getCourseId();
+            return courseDescription_.getCourseDescriptionId();
         } else {
             return courseDescriptionId_;
         }

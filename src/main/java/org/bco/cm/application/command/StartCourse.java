@@ -22,37 +22,44 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.application.command;
 
-package org.bco.cm.application.query;
-
-import java.util.List;
+import com.tribc.cqrs.domain.command.AbstractCommand;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
-import org.bco.cm.util.ReadOnlyRepository;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface ReadOnlyCourseRegistry extends ReadOnlyRepository<CourseDTO, CourseId> {
+public class StartCourse extends AbstractCommand {
+    
+    private final TeacherId teacherId_;
+    private final CourseId courseId_;
+    
+    public StartCourse(TeacherId teacherId, CourseId courseId)
+    {
+        super(StartCourse.class);
+        teacherId_ = teacherId;
+        courseId_ = courseId;
+    }
     
     /**
-     * Returns all courses the given teacher is responsible for.
-     * @param teacherId Teacher identifier.
-     * @return Courses. May be empty.
+     * Returns identifier course to be started.
+     * @return Course identifier.
      */
-    List<CourseDTO> getTeachersCourses(TeacherId teacherId);
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
     
     /**
-     * Returns active courses.
-     * @return Active courses. May be empty,
+     * Returns identifier teacher starting course.
+     * @return Teacher identifier.
      */
-    List<CourseDTO> getActive();
-    
-    /**
-     * Returns ongoing courses.
-     * @return Ongoing courses. may be empty,
-     */
-    List<CourseDTO> getOngoing();
+    public TeacherId getTeacherId()
+    {
+        return teacherId_;
+    }
+
 }

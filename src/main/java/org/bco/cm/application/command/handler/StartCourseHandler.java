@@ -22,37 +22,44 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.application.command.handler;
 
-package org.bco.cm.application.query;
-
-import java.util.List;
+import org.bco.cm.application.command.StartCourse;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.Course;
+import org.bco.cm.domain.course.CourseRegistry;
+import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
-import org.bco.cm.util.ReadOnlyRepository;
+import org.bco.cm.domain.course.TeacherRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface ReadOnlyCourseRegistry extends ReadOnlyRepository<CourseDTO, CourseId> {
+public class StartCourseHandler extends CmCommandHandler<StartCourse> {
     
-    /**
-     * Returns all courses the given teacher is responsible for.
-     * @param teacherId Teacher identifier.
-     * @return Courses. May be empty.
-     */
-    List<CourseDTO> getTeachersCourses(TeacherId teacherId);
+    @Autowired
+    private CourseRegistry courseRegistry_;
     
-    /**
-     * Returns active courses.
-     * @return Active courses. May be empty,
-     */
-    List<CourseDTO> getActive();
+    @Autowired
+    private TeacherRegistry teacherRegistry_;
     
-    /**
-     * Returns ongoing courses.
-     * @return Ongoing courses. may be empty,
-     */
-    List<CourseDTO> getOngoing();
+    @Override
+    public void handle(StartCourse command) 
+    {
+        CourseId courseId = command.getCourseId();
+        Course course = CommandHandlerUtil.findCourse(courseId, courseRegistry_);
+        TeacherId teacherId = command.getTeacherId();
+        Teacher teacher = CommandHandlerUtil.findTeacher(teacherId, teacherRegistry_);
+        
+        // Start the course.
+        teacher.startCourse(course);        
+        courseRegistry_.update(course);
+        
+        // Handle possible domain events.
+        this.handleEvents(course);
+        
+    }
+
 }

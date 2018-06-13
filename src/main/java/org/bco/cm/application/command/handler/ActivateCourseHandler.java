@@ -28,6 +28,7 @@ import org.bco.cm.application.command.ActivateCourse;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
 import org.bco.cm.domain.course.CourseService;
@@ -58,14 +59,19 @@ public class ActivateCourseHandler extends CmCommandHandler<ActivateCourse> {
         TeacherId teacherId = command.getTeacherId();
         Teacher teacher = 
             CommandHandlerUtil.findTeacher(teacherId, teacherRepository_);
+        CourseDescriptionId courseDescriptionId = command.getCourseDescriptionId();
         CourseId courseId = command.getCourseId();
         CourseDescription courseDescription = 
-            CommandHandlerUtil.findCourseDescription(courseId, courseCatalog_);
+            CommandHandlerUtil.findCourseDescription(courseDescriptionId, courseCatalog_);
         CourseDTO spec = command.getSpecification();
         
         // Activate course.
-        Course course = CourseService.activate(teacher, courseDescription, spec);
-        courseRegistry_.add(course);
+        Course course = 
+            CourseService.activate(teacher, 
+                                   courseDescription, 
+                                   courseId, 
+                                   spec, 
+                                   courseRegistry_);
         
         // Handle possible domain events.
         this.handleEvents(course);       

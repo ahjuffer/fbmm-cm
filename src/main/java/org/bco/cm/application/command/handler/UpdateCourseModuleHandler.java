@@ -26,14 +26,14 @@ package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.UpdateCourseModule;
 import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.TeacherRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.CourseCatalogService;
+import org.bco.cm.domain.course.CourseDescription;
+import org.bco.cm.domain.course.CourseDescriptionId;
+import org.bco.cm.domain.course.Teacher;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.course.TeacherRegistry;
 import org.bco.cm.dto.ModuleDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 
@@ -53,7 +53,7 @@ public class UpdateCourseModuleHandler extends CmCommandHandler<UpdateCourseModu
         TeacherId teacherId = command.getTeacherId();
         Teacher teacher = 
             CommandHandlerUtil.findTeacher(teacherId, teacherRepository_);
-        CourseId courseId = command.getCourseId();
+        CourseDescriptionId courseId = command.getCourseId();
         CourseDescription course = 
             CommandHandlerUtil.findCourseDescription(courseId, courseCatalog_);
         int moduleId = command.getModuleId();

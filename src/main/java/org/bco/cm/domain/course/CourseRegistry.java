@@ -25,11 +25,19 @@
 package org.bco.cm.domain.course;
 
 import org.bco.cm.util.Repository;
+import java.util.List;
 
 /**
  * Holds courses
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public interface CourseRegistry extends Repository<Course, CourseId> {
-
+    
+    /**
+     * Returns course associated with course description.
+     * @param courseId Course description identifier.
+     * @return Course, or null if nonexistent.
+     */
+    List<Course> getCourses(CourseDescriptionId courseId);
+    
 }

@@ -24,6 +24,7 @@
 
 package org.bco.cm.infrastructure.persistence.hibernate;
 
+import java.time.Instant;
 import java.util.List;
 import org.bco.cm.application.query.ReadOnlyCourseRegistry;
 import org.bco.cm.domain.course.CourseId;
@@ -69,6 +70,27 @@ public class HibernateReadOnlyCourseRegistry
         String hql =
             FROM + 
             "where course.teacherId = '" + id + "'";
+        return this.forMany(hql);
+    }
+
+    @Override
+    public List<CourseDTO> getActive() 
+    {
+        Instant now = Instant.now();
+        long timestamp = now.toEpochMilli();
+        String hql = 
+            FROM +
+            "where course.startDataTimestamp <= " + timestamp + " and " +
+            "course.endDateTimestamp >= " + timestamp;
+        return this.forMany(hql);
+    }
+
+    @Override
+    public List<CourseDTO> getOngoing() 
+    {
+        String hql =
+            FROM + 
+            "where course.ongoing = true";
         return this.forMany(hql);
     }
 

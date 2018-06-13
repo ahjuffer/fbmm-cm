@@ -305,7 +305,9 @@ public class Module implements Serializable {
             dto.setQuiz(quiz);
         }
         if ( courseDescription_ != null ) {
-            dto.setCourseDescriptionId(courseDescription_.getCourseId().stringValue());
+            dto.setCourseDescriptionId(
+                courseDescription_.getCourseDescriptionId().stringValue()
+            );
         }
         if ( course_ != null ) {
             dto.setCourseId(course_.getCourseId().stringValue());

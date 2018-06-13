@@ -25,6 +25,7 @@
 package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDTO;
@@ -36,15 +37,18 @@ import org.bco.cm.dto.CourseDTO;
 public class ActivateCourse extends AbstractCommand {
     
     private final TeacherId teacherId_;
+    private final CourseDescriptionId courseDescriptionId_;
     private final CourseId courseId_;
     private final CourseDTO spec_;
         
     public ActivateCourse(TeacherId teacherId,
+                          CourseDescriptionId courseDescriptionId,
                           CourseId courseId,
                           CourseDTO spec)
     {
         super(ActivateCourse.class);
         teacherId_ = teacherId;
+        courseDescriptionId_ = courseDescriptionId;
         courseId_ = courseId;
         spec_ = spec;
     }
@@ -57,6 +61,11 @@ public class ActivateCourse extends AbstractCommand {
     public CourseId getCourseId()
     {
         return courseId_;
+    }
+    
+    public CourseDescriptionId getCourseDescriptionId()
+    {
+        return courseDescriptionId_;
     }
     
     public CourseDTO getSpecification()

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -44,6 +45,7 @@ import org.bco.cm.domain.course.event.NewCourseAddedToCatalog;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.util.Identifiable;
+import org.hibernate.annotations.NaturalId;
 
 /**
  * Describes a course. Consists of a title, summary, and separate components 
@@ -57,7 +59,7 @@ public class CourseDescription
     implements Eventful, Identifiable, Serializable {
     
     private UUID id_;
-    
+    private CourseDescriptionId courseDescriptionId_;
     private final Collection<Event> events_;
     
     protected CourseDescription()
@@ -82,12 +84,9 @@ public class CourseDescription
         return id_;
     }
     
-    private void setIdentifier(CourseId courseId)
+    private void setIdentifier(CourseDescriptionId courseId)
     {
-        if ( courseId == null ) {
-            throw new NullPointerException("Missing course identifier.");
-        }
-        super.setCourseId(courseId);
+        this.setCourseDescriptionId(courseId);
     }
     
     /**
@@ -95,9 +94,9 @@ public class CourseDescription
      * @return Identifier. Never null.
      */
     @Transient
-    public CourseId getIdentifier()
+    public CourseDescriptionId getIdentifier()
     {
-        return super.getCourseId();
+        return courseDescriptionId_;
     }
     
     @Override
@@ -107,7 +106,25 @@ public class CourseDescription
         return this.getIdentifier().stringValue();
     }
     
+    private void setCourseDescriptionId(CourseDescriptionId id)
+    {
+        if ( id == null ) {
+            throw new NullPointerException("Missing course identifier.");
+        }
+        courseDescriptionId_ = id;
+    }
     
+    /**
+     * Returns course identifier.
+     * @return Identifier. Never null.
+     */
+    @NaturalId
+    @Embedded
+    public CourseDescriptionId getCourseDescriptionId()
+    {
+        return courseDescriptionId_;
+    }
+        
    /**
      * Returns modules.
      * @return Modules. May be empty.
@@ -131,14 +148,14 @@ public class CourseDescription
    /**
      * Creates a new course description. Arguments must not be null.
      * @param teacher Responsible teacher.
-     * @param courseId New course identifier.
+     * @param courseDescriptionId New course identifier.
      * @param spec New course specification. Must include title and summary, no
      * modules.
      * @return New course description.
      * @see #addModule(org.bco.cm.dto.ModuleDTO) 
      */
     public static CourseDescription valueOf(Teacher teacher, 
-                                            CourseId courseId,
+                                            CourseDescriptionId courseDescriptionId,
                                             CourseDescriptionDTO spec)
     {
         if ( teacher == null ) {
@@ -148,7 +165,7 @@ public class CourseDescription
             throw new NullPointerException("Missing new course specification.");
         }
         CourseDescription course = new CourseDescription();
-        course.setCourseId(courseId);
+        course.setCourseDescriptionId(courseDescriptionId);
         course.setTeacherId(teacher.getTeacherId());
         course.setSummary(spec.getSummary());
         course.setTitle(spec.getTitle());
@@ -182,6 +199,7 @@ public class CourseDescription
     {
         CourseDescriptionDTO dto = new CourseDescriptionDTO();
         this.populate(dto);
+        dto.setCourseDescriptionId(courseDescriptionId_.stringValue());
         return dto;
     }
     
@@ -233,7 +251,7 @@ public class CourseDescription
             return false;
         }
         CourseDescription course = (CourseDescription)other;
-        return this.getCourseId().equals(course.getCourseId());
+        return this.getCourseDescriptionId().equals(course.getCourseDescriptionId());
     }
 
     @Override

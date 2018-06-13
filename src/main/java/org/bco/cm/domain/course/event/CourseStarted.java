@@ -22,37 +22,29 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.domain.course.event;
 
-package org.bco.cm.application.query;
-
-import java.util.List;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
-import org.bco.cm.util.ReadOnlyRepository;
+import com.tribc.ddd.domain.event.AbstractEvent;
+import org.bco.cm.domain.course.Course;
 
 /**
- *
+ * A course was started by a teacher.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface ReadOnlyCourseRegistry extends ReadOnlyRepository<CourseDTO, CourseId> {
+public class CourseStarted extends AbstractEvent {
     
-    /**
-     * Returns all courses the given teacher is responsible for.
-     * @param teacherId Teacher identifier.
-     * @return Courses. May be empty.
-     */
-    List<CourseDTO> getTeachersCourses(TeacherId teacherId);
+    private Course course_;
     
-    /**
-     * Returns active courses.
-     * @return Active courses. May be empty,
-     */
-    List<CourseDTO> getActive();
+    public CourseStarted(Course course)
+    {
+        super(CourseStarted.class);
+        course_ = course;
+        
+    }
     
-    /**
-     * Returns ongoing courses.
-     * @return Ongoing courses. may be empty,
-     */
-    List<CourseDTO> getOngoing();
+    public Course getCourse()
+    {
+        return course_;
+    }
+
 }

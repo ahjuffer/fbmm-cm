@@ -24,12 +24,18 @@
 
 package org.bco.cm.api.facade;
 
-import org.springframework.transaction.annotation.Transactional;
+import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
+import org.bco.cm.application.command.ActivateCourse;
+import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.application.query.ReadOnlyCourseRegistry;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 /**
  * Simplified interface for handling active courses.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
@@ -39,6 +45,9 @@ public class CourseFacade {
     
     @Autowired
     private ReadOnlyCourseRegistry readOnlyCourseRegistry_;
+    
+    @Autowired
+    private CommandBus commandBus_;
     
     /**
      * Returns all courses, whether or not they are active.
@@ -59,6 +68,35 @@ public class CourseFacade {
     public CourseDTO getCourse(CourseId courseId)
     {
         return readOnlyCourseRegistry_.getOne(courseId);
+    }
+    
+    /**
+     * Returns specified courses.
+     * @param spec Specification.
+     * @return Courses. May be empty.
+     */
+    @Transactional( readOnly = true )
+    public List<CourseDTO> getSpecified(CourseSpecification spec)
+    {
+        return spec.query(readOnlyCourseRegistry_);
+    }
+
+    /**
+     * Activates courses.
+     * @param teacherId Identifier of teacher who activates course.
+     * @param courseDescriptionId Identifier of course to be activated.
+     * @param courseId Identifier of newly activated course.
+     * @param spec Activation specification. Must hold start and end date plus
+     * the number of seats.
+     */
+    public void activate(TeacherId teacherId, 
+                               CourseDescriptionId courseDescriptionId,
+                               CourseId courseId, 
+                               CourseDTO spec)
+    {
+        ActivateCourse command = 
+            new ActivateCourse(teacherId, courseDescriptionId, courseId, spec);
+        commandBus_.handle(command);
     }
 
 }

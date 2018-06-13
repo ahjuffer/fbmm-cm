@@ -95,6 +95,15 @@ public class Teacher extends Person<TeacherId> implements Eventful, Serializable
     }
     
     /**
+     * Starts given course.
+     * @param course Course.
+     */
+    public void startCourse(Course course)
+    {
+        course.start();
+    }
+    
+    /**
      * Creates new teacher.
      * @param teacherId Identifier. Must not be null.
      * @param spec New teacher specification. Must hold first name and surname.
@@ -139,6 +148,6 @@ public class Teacher extends Person<TeacherId> implements Eventful, Serializable
     void registered()
     {
         events_.add(new NewTeacherRegistered(this));
-    }        
+    }      
         
 }

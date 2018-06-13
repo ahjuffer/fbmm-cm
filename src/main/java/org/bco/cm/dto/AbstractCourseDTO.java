@@ -26,10 +26,8 @@ package org.bco.cm.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import org.hibernate.annotations.NaturalId;
 
 /**
  *
@@ -38,7 +36,6 @@ import org.hibernate.annotations.NaturalId;
 @MappedSuperclass
 public abstract class AbstractCourseDTO {
     
-    private String courseId_;
     private String title_;
     private String summary_;
     private List<ModuleDTO> modules_;
@@ -46,23 +43,10 @@ public abstract class AbstractCourseDTO {
 
     public AbstractCourseDTO()
     {
-        courseId_ = null;
         title_ = null;
         summary_ = null;
         modules_ = new ArrayList<>();
         teacherId_ = null;
-    }
-    
-    public void setCourseId(String courseId)
-    {
-        courseId_ = courseId;
-    }
-    
-    @Column( name = "course_id" )
-    @NaturalId
-    public String getCourseId()
-    {
-        return courseId_;
     }
     
     public void setTitle(String title)
@@ -120,7 +104,6 @@ public abstract class AbstractCourseDTO {
     {
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("AbstractCourseDTO : {").append(newline);
-        s.append("courseId - ").append(courseId_).append(newline);
         s.append("title - ").append(title_).append(newline);
         s.append("summary - ").append(summary_).append(newline);
         s.append("modules - ").append(modules_).append(newline);

@@ -27,22 +27,15 @@ package org.bco.cm.api.facade;
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
 import org.bco.cm.application.command.ActivateCourse;
-import org.bco.cm.application.command.AddCourseModule;
-import org.bco.cm.application.command.DeleteCourse;
-import org.bco.cm.application.command.DeleteCourseModule;
-import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.command.RegisterNewTeacher;
-import org.bco.cm.application.command.UpdateCourse;
 import org.bco.cm.application.query.ReadOnlyTeacherRegistry;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDescriptionDTO;
-import org.bco.cm.dto.ModuleDTO;
+import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.bco.cm.application.command.UpdateCourseModule;
-import org.bco.cm.dto.CourseDTO;
 
 /**
  * Simplified interface for teachers.
@@ -68,96 +61,6 @@ public class TeacherFacade {
     }
 
     /**
-     * Posts new course to course catalog.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId New course identifier.
-     * @param spec New course specification. Must hold title and summary and may 
-     * hold modules.
-     */
-    public void postNewCourse(TeacherId teacherId, 
-                              CourseId courseId, 
-                              CourseDescriptionDTO spec)
-    {
-        PostNewCourse command = new PostNewCourse(teacherId, courseId, spec);
-        commandBus_.handle(command);
-    }
-    
-    /**
-     * Updates course description.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId Course identifier.
-     * @param spec Update course specification. Must hold title and summary and 
-     * may hold modules.
-     */
-    public void updateCourse(TeacherId teacherId,
-                             CourseId courseId,
-                             CourseDescriptionDTO spec)
-    {
-        UpdateCourse command = new UpdateCourse(teacherId, courseId, spec);
-        commandBus_.handle(command);
-    }
-    
-    /**
-     * Deletes course description in course catalog.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId Course identifier.
-     */
-    public void deleteCourse(TeacherId teacherId, CourseId courseId)
-    {
-        DeleteCourse command = new DeleteCourse(teacherId, courseId);
-        commandBus_.handle(command);
-    }
-    
-    /**
-     * Adds module to course.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId Course identifier.
-     * @param spec Module specification. This module is appended to the last 
-     * module.
-     * @see #updateCourse(org.bco.cm.domain.course.TeacherId, org.bco.cm.domain.course.CourseId, org.bco.cm.dto.CourseDescriptionDTO) 
-     */
-    public void addCourseModule(TeacherId teacherId,
-                                CourseId courseId,
-                                ModuleDTO spec)
-    {
-        AddCourseModule command = new AddCourseModule(teacherId, courseId, spec);
-        commandBus_.handle(command);
-    }
-    
-    /**
-     * Updates module in course description. 
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId Course identifier.
-     * @param moduleId Module identifier.
-     * @param spec Update specification.
-     * @see #updateCourse(org.bco.cm.domain.course.TeacherId, org.bco.cm.domain.course.CourseId, org.bco.cm.dto.CourseDescriptionDTO) 
-     */
-    public void updateCourseModule(TeacherId teacherId,
-                                   CourseId courseId,
-                                   int moduleId,
-                                   ModuleDTO spec)
-    {
-        UpdateCourseModule command = 
-            new UpdateCourseModule(teacherId, courseId, moduleId, spec);
-        commandBus_.handle(command);
-    }
-    
-    /**
-     * Remove module from course description.
-     * @param teacherId Identifier of responsible teacher.
-     * @param courseId Course identifier.
-     * @param moduleId Module identifier.
-     */
-    public void deleteCourseModule(TeacherId teacherId,
-                                   CourseId courseId,
-                                   int moduleId)
-    {
-        DeleteCourseModule command =
-            new DeleteCourseModule(teacherId, courseId, moduleId);
-        commandBus_.handle(command);
-    }
-    
-    /**
      * Returns all teachers.
      * @return Teachers. May be empty.
      */
@@ -179,25 +82,13 @@ public class TeacherFacade {
     }
     
     /**
-     * Adds new teacher to teacher registry.
+     * Adds new teacher to the teacher registry.
      * @param teacherId New teacher identifier.
      * @param spec New teacher specification.
      */
     public void register(TeacherId teacherId, TeacherDTO spec)
     {
         RegisterNewTeacher command = new RegisterNewTeacher(teacherId, spec);
-        commandBus_.handle(command);
-    }
-
-    /**
-     * 
-     * @param teacherId Identifier teacher activating course.
-     * @param courseId Course identifier.
-     * @param spec Activation specification.
-     */
-    public void activateCourse(TeacherId teacherId, CourseId courseId, CourseDTO spec)
-    {
-        ActivateCourse command = new ActivateCourse(teacherId, courseId, spec);
         commandBus_.handle(command);
     }
 

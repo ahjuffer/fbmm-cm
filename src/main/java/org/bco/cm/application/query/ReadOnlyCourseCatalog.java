@@ -25,7 +25,7 @@
 package org.bco.cm.application.query;
 
 import java.util.List;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.util.ReadOnlyRepository;
@@ -35,7 +35,7 @@ import org.bco.cm.util.ReadOnlyRepository;
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 public interface ReadOnlyCourseCatalog 
-    extends ReadOnlyRepository<CourseDescriptionDTO, CourseId>{
+    extends ReadOnlyRepository<CourseDescriptionDTO, CourseDescriptionId>{
     
     /**
      * Finds course according to a specification.

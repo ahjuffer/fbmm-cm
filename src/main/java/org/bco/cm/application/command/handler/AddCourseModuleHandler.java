@@ -25,10 +25,10 @@
 package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.AddCourseModule;
-import org.bco.cm.domain.course.CourseCatalogService;
 import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.domain.course.CourseCatalogService;
 import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.Teacher;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.domain.course.TeacherRegistry;
@@ -54,7 +54,7 @@ public class AddCourseModuleHandler extends CmCommandHandler<AddCourseModule> {
         // Get teacher, course description and new module specification.
         TeacherId teacherId = command.getTeacherId();
         Teacher teacher = CommandHandlerUtil.findTeacher(teacherId, teacherRegistry_);
-        CourseId courseId = command.getCourseId();
+        CourseDescriptionId courseId = command.getCourseId();
         CourseDescription course = 
             CommandHandlerUtil.findCourseDescription(courseId, courseCatalog_);
         ModuleDTO spec = command.getSpec();

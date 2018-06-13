@@ -30,6 +30,7 @@ import org.bco.cm.util.Repository;
  * A catalog of all available courses.
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public interface CourseCatalog extends Repository<CourseDescription, CourseId> {
+public interface CourseCatalog extends Repository<CourseDescription, 
+                                                  CourseDescriptionId> {
     
 }

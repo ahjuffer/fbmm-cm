@@ -26,75 +26,112 @@ package org.bco.cm.application.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.CourseDescriptionDTO;
 
 /**
- *
+ * Specifies a particular set of courses.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class CourseSpecification {
     
-    private static final CourseSpecification ALL;
+    private String teacherId_;
+    private boolean all_;
+    private boolean ongoing_;
+    private boolean active_;
     
-    static {
-        ALL = new CourseSpecification("all");
+    // If false, all attributes have their default values.
+    private boolean specified_;
+    
+    public CourseSpecification()
+    {
+        teacherId_ = null;
+        all_ = false;
+        ongoing_ = false;
+        active_ = false;
+        specified_ = false;
     }
     
-    private final String spec_;
-    
-    private CourseSpecification()
+    public void setTeacherId(String teacherId)
     {
-        spec_ = "all";
+        teacherId_ = teacherId;
+        this.markSpecified();
+    }
+
+    public void setAll(boolean all)
+    {
+        all_ = all;
+        this.markSpecified();
     }
     
-    private CourseSpecification(String spec)
+    public void setOngoing(boolean ongoing)
     {
-        spec_ = "all";
+        ongoing_ = ongoing;
+        this.markSpecified();
+    }
+    
+    public void setActive(boolean active)
+    {
+        active_ = active;
+        this.markSpecified();
     }
     
     /**
-     * Specification for all courses.
-     * @return Specification.
-     */
-    public static CourseSpecification all()
-    {
-        return ALL; 
-    }
-    
-    /**
-     * Returns course specification.
-     * @param spec Specification.
-     * @return Course specification.
-     * @throws NullPointerException if spec is null.
-     * @throws IllegalArgumentException is spec is empty or if spec holds an 
-     * invalid value.
-     */
-    public static CourseSpecification valueOf(String spec)
-    {
-        if ( spec == null ) {
-            throw new NullPointerException("No course specification provided.");
-        }
-        if ( spec.isEmpty() ) {
-            throw new IllegalArgumentException("No course specification provided.");
-        }
-        if ( spec.equals(ALL.spec_) ) {
-            return CourseSpecification.all();
-        } else {
-            throw new IllegalArgumentException(spec + ": Illegal course specification.");
-        }
-    }
-    
-    /**
-     * Queries for courses in the repository that satisfy this specification.
-     * @param courseRepository Course repository.
+     * Queries for courses in the catalog according to the specification.
+     * @param readOnlyCourseCatalog Course catalog.
      * @return Courses. May be empty.
      */
-    public List<CourseDescriptionDTO> query(ReadOnlyCourseCatalog courseRepository)
+    public List<CourseDescriptionDTO> query(ReadOnlyCourseCatalog readOnlyCourseCatalog)
     {
-        if ( spec_.equals(ALL.spec_) ) {
-            return courseRepository.getAll();
+        if ( teacherId_ != null ) {
+            TeacherId teacherId = new TeacherId(teacherId_);
+            return readOnlyCourseCatalog.getTeachersCourses(teacherId);
         }
-        return new ArrayList<>();
+        List<CourseDescriptionDTO> courses = new ArrayList<>();
+        if ( all_ ) {
+            courses.addAll(readOnlyCourseCatalog.getAll());
+        }
+        return courses;
+    }
+    
+    /**
+     * Queries for active courses in the registry according to the specification.
+     * @param readOnlyCourseRegistry Course registry.
+     * @return Courses. May be empty.
+     */
+    public List<CourseDTO> query(ReadOnlyCourseRegistry readOnlyCourseRegistry)
+    {
+        if ( teacherId_ != null ) {
+            TeacherId teacherId = new TeacherId(teacherId_);
+            return readOnlyCourseRegistry.getTeachersCourses(teacherId);
+        }
+        if ( all_ ) {
+            return readOnlyCourseRegistry.getAll();
+        }
+        List<CourseDTO> courses = new ArrayList<>();
+        if ( active_ ) {
+            courses.addAll(readOnlyCourseRegistry.getActive());
+        }
+        if ( ongoing_ ) {
+            courses.addAll(readOnlyCourseRegistry.getOngoing());
+        }
+        return courses;
+    }
+    
+    private void markSpecified()
+    {
+        specified_ = true;
+    }
+    
+    /**
+     * Any of the attributes were specified? That is, are -not- having their default
+     * values.
+     * @return Result
+     */
+    public boolean isSpecified()
+    {
+        return specified_;
     }
 
 }

@@ -22,37 +22,23 @@
  * THE SOFTWARE.
  */
 
+package org.bco.cm.util;
 
-package org.bco.cm.application.query;
-
-import java.util.List;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.dto.CourseDTO;
-import org.bco.cm.util.ReadOnlyRepository;
+import java.time.Instant;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface ReadOnlyCourseRegistry extends ReadOnlyRepository<CourseDTO, CourseId> {
-    
-    /**
-     * Returns all courses the given teacher is responsible for.
-     * @param teacherId Teacher identifier.
-     * @return Courses. May be empty.
-     */
-    List<CourseDTO> getTeachersCourses(TeacherId teacherId);
-    
-    /**
-     * Returns active courses.
-     * @return Active courses. May be empty,
-     */
-    List<CourseDTO> getActive();
-    
-    /**
-     * Returns ongoing courses.
-     * @return Ongoing courses. may be empty,
-     */
-    List<CourseDTO> getOngoing();
+public class TestInstant {
+
+    public static void main(String[] args) {
+        Instant now = Instant.now();    
+        int seconds = 50 * 7 * 24 * 60 * 60;  // 50 weeks.
+        Instant later = now.plusSeconds(seconds);
+        System.out.println("Now - " + now);
+        System.out.println("Later - " + later);
+        System.out.println("Now timestamp - " + now.toEpochMilli());
+        System.out.println("Later timestamp - " + later.toEpochMilli());
+    }   
 }

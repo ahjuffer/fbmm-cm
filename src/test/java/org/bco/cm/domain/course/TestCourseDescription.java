@@ -53,11 +53,12 @@ public class TestCourseDescription {
         
         // Create a course.
         CourseDescriptionDTO sspec = new CourseDescriptionDTO();
-        CourseId courseId = new CourseId("123456");
+        CourseDescriptionId courseDescriptionId = new CourseDescriptionId("123456");
         // Leaving out any of the next two statements causes an exception.
         sspec.setSummary("This is a test description.");
         sspec.setTitle("This is a test title.");
-        CourseDescription course = CourseDescription.valueOf(teacher, courseId, sspec);
+        CourseDescription course = 
+            CourseDescription.valueOf(teacher, courseDescriptionId, sspec);
         Logger.getLogger("TestCourseDescription")
               .info("Created course: " + course.toDTO());
         Logger.getLogger("TestCourseDescription").info("--------------------------------");
@@ -101,7 +102,8 @@ public class TestCourseDescription {
         int number = 7 * 24 * 60 * 60; // One week in seconds.
         Instant endDate = startDate.plusSeconds(number);
         spec.setEndDate(endDate);
-        Course crs = Course.activate(course, spec);
+        CourseId courseId = CourseId.generate();
+        Course crs = Course.activate(courseId, course, spec);
         Logger.getLogger("TestCourseDescription").info("Activated Course: " + crs.toDTO());
     }
     

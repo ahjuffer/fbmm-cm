@@ -25,7 +25,7 @@
 package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.TeacherId;
 import org.bco.cm.dto.ModuleDTO;
 
@@ -36,13 +36,13 @@ import org.bco.cm.dto.ModuleDTO;
 public class UpdateCourseModule extends AbstractCommand {
     
     private final TeacherId teacherId_;
-    private final CourseId courseId_;
+    private final CourseDescriptionId courseId_;
     private final int moduleId_;
     private final ModuleDTO spec_;
     
     
     public UpdateCourseModule(TeacherId teacherId, 
-                              CourseId courseId, 
+                              CourseDescriptionId courseId, 
                               int moduleId, 
                               ModuleDTO spec)
     {
@@ -66,7 +66,7 @@ public class UpdateCourseModule extends AbstractCommand {
      * Returns course identifier.
      * @return Identifier.
      */
-    public CourseId getCourseId()
+    public CourseDescriptionId getCourseId()
     {
         return courseId_;
     }

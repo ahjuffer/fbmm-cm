@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -44,11 +45,13 @@ import javax.persistence.Table;
 public class CourseDescriptionDTO extends AbstractCourseDTO implements Serializable 
 {    
     private UUID id_;
+    private String courseDescriptionId_;
     
     public CourseDescriptionDTO()
     {
         super();
         id_ = null;
+        courseDescriptionId_ = null;
     }
     
     private void setId(UUID id)
@@ -65,6 +68,17 @@ public class CourseDescriptionDTO extends AbstractCourseDTO implements Serializa
     protected UUID getId()
     {
         return id_;
+    }
+    
+    public void setCourseDescriptionId(String courseDesctriptionId)
+    {
+        courseDescriptionId_ = courseDesctriptionId;
+    }
+    
+    @Column( name = "course_description_id" )
+    public String getCourseDescriptionId()
+    {
+        return courseDescriptionId_;
     }
     
     @OneToMany(
@@ -89,6 +103,7 @@ public class CourseDescriptionDTO extends AbstractCourseDTO implements Serializa
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("CourseDescriptionDTO : {").append(newline);
         s.append("id - ").append(id_).append(newline);
+        s.append("courseDescriptionId - ").append(courseDescriptionId_).append(newline);
         s.append(super.toString()).append(newline);
         s.append("}");
         return s.toString();
@@ -107,7 +122,7 @@ public class CourseDescriptionDTO extends AbstractCourseDTO implements Serializa
             return false;
         }
         CourseDescriptionDTO course = (CourseDescriptionDTO)other;
-        return this.getCourseId().equals(course.getCourseId());
+        return this.getCourseDescriptionId().equals(course.getCourseDescriptionId());
     }
 
     @Override
