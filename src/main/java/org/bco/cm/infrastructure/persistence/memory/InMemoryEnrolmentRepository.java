@@ -30,7 +30,7 @@ import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.Enrolment;
 import org.bco.cm.domain.course.EnrolmentNumber;
 import org.bco.cm.domain.course.EnrolmentRepository;
-import org.bco.cm.domain.course.Student;
+import org.bco.cm.domain.student.Student;
 
 /**
  *

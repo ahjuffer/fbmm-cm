@@ -26,10 +26,10 @@ package org.bco.cm.application.event.handler;
 
 import com.tribc.ddd.domain.event.EventBus;
 import com.tribc.ddd.domain.event.EventHandler;
-import org.bco.cm.domain.course.event.NewStudentRegistered;
+import org.bco.cm.domain.student.event.NewStudentRegistered;
 import org.bco.cm.domain.course.event.EnrolmentCreated;
 import org.bco.cm.domain.course.event.NewCourseAddedToCatalog;
-import org.bco.cm.domain.course.event.NewTeacherRegistered;
+import org.bco.cm.domain.teacher.event.NewTeacherRegistered;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

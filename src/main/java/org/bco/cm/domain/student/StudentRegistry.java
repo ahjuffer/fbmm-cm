@@ -22,41 +22,18 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.domain.student;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import org.bco.cm.domain.student.Student;
 import org.bco.cm.domain.student.StudentId;
-import org.bco.cm.domain.student.StudentRegistry;
+import org.bco.cm.domain.student.Student;
+import org.bco.cm.util.Repository;
+//import org.springframework.data.jpa.repository.JpaRepository;
+//import org.springframework.data.repository.CrudRepository;
 
 /**
- *
+ * Holds students.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryStudentRepository 
-//    extends InMemoryMapRepository<Student>
-//    implements StudentRegistry
-{
-
-    //@Override
-    public Student forStudentId(StudentId studentId) 
-    {
-        return null;
-        //return this.forIdentifierAsString(studentId.stringValue());
-    }
-
-    //@Override
-    public Student forEntityId(StudentId identifier) 
-    {
-        return this.forStudentId(identifier);
-    }
-
-    //@Override
-    public boolean contains(StudentId identifier) 
-    {
-        return this.forEntityId(identifier) != null;
-    }
-
+public interface StudentRegistry extends Repository<Student, StudentId> {
+    
 }

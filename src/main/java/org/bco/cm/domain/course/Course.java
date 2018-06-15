@@ -24,6 +24,8 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.domain.student.Student;
 import com.tribc.cqrs.util.EventUtil;
 import com.tribc.ddd.domain.event.Event;
 import com.tribc.ddd.domain.event.Eventful;

@@ -22,31 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course.event;
-
-import com.tribc.ddd.domain.event.AbstractEvent;
-import org.bco.cm.domain.course.Teacher;
 /**
- *
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Teachers.
  */
-public class NewTeacherRegistered extends AbstractEvent {
-    
-    private final Teacher teacher_;
-    
-    public NewTeacherRegistered(Teacher teacher)
-    {
-        super(NewTeacherRegistered.class);
-        teacher_ = teacher;
-    }
-    
-    /**
-     * Returns newly registered teacher.
-     * @return Teacher.
-     */
-    public Teacher getTeacher()
-    {
-        return teacher_;
-    }
-
-}
+package org.bco.cm.domain.teacher;

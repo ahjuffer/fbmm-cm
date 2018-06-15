@@ -24,6 +24,8 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.domain.student.Student;
 import java.util.Collection;
 import java.util.HashSet;
 import org.bco.cm.dto.StudentMonitorDTO;

@@ -31,7 +31,7 @@ import org.bco.cm.application.command.RegisterNewTeacher;
 import org.bco.cm.application.query.ReadOnlyTeacherRegistry;
 import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;

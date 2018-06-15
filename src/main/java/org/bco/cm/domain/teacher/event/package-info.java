@@ -22,16 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
-
-import org.bco.cm.util.Repository;
-//import org.springframework.data.jpa.repository.JpaRepository;
-//import org.springframework.data.repository.CrudRepository;
-
 /**
- * Holds students.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Teacher domain events.
  */
-public interface StudentRegistry extends Repository<Student, StudentId> {
-    
-}
+package org.bco.cm.domain.teacher.event;

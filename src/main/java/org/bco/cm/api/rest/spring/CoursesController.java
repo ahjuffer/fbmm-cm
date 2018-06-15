@@ -30,7 +30,7 @@ import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -113,7 +113,7 @@ public class CoursesController {
     
     /**
      * Activates a course.
-     * @param cId Course description identifier of course to be activated.
+     * @param cdId Course description identifier of course to be activated.
      * @param tId Identifier of teacher activating the course.
      * @param spec Activation specification. Must hold start and end date plus
      * the number of seats.
@@ -123,15 +123,17 @@ public class CoursesController {
         consumes = "application/json;charset=UTF-8",
         produces = "application/json;charset=UTF-8"
     )
-    public CourseDTO activate(@RequestParam("courseId") String cId,
+    public CourseDTO activate(@RequestParam("courseDescriptionId") String cdId,
                               @RequestParam("teacherId") String tId,
                               @RequestBody CourseDTO spec)
     {
         TeacherId teacherId = new TeacherId(tId);
-        CourseDescriptionId courseDescriptionId = new CourseDescriptionId(cId);
+        CourseDescriptionId courseDescriptionId = new CourseDescriptionId(cdId);
         CourseId courseId = CourseId.generate();
         courseFacade_.activate(teacherId, courseDescriptionId, courseId, spec);
         return courseFacade_.getCourse(courseId);
     }
+    
+    
     
 }   

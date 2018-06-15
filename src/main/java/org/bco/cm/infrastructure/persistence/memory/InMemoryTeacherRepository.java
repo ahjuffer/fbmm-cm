@@ -24,9 +24,9 @@
 
 package org.bco.cm.infrastructure.persistence.memory;
 
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.domain.teacher.Teacher;
+import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.domain.teacher.TeacherRegistry;
 import org.springframework.stereotype.Repository;
 
 /**

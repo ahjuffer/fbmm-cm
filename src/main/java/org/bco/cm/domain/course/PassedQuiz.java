@@ -24,6 +24,8 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.domain.student.StudentId;
+
 /**
  * Domain event signaling that a student passed a course module quiz.
  * @author Andr&#233; H. Juffer, Biocenter Oulu

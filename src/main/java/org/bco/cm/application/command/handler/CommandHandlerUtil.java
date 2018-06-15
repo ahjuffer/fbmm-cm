@@ -30,12 +30,12 @@ import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.course.Student;
-import org.bco.cm.domain.course.StudentId;
-import org.bco.cm.domain.course.StudentRegistry;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.domain.student.Student;
+import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.domain.student.StudentRegistry;
+import org.bco.cm.domain.teacher.Teacher;
+import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.domain.teacher.TeacherRegistry;
 
 /**
  *

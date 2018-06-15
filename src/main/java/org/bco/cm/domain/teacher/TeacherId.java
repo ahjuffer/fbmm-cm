@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,41 +22,53 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.domain.teacher;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 import java.util.UUID;
-import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
-import org.bco.cm.domain.student.StudentRegistry;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import org.bco.cm.util.Id;
 
 /**
- *
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Identifies teacher.
+ * @author Andr&#233; Juffer, Triacle Biocomputing
  */
-public class InMemoryStudentRepository 
-//    extends InMemoryMapRepository<Student>
-//    implements StudentRegistry
-{
-
-    //@Override
-    public Student forStudentId(StudentId studentId) 
+@Embeddable
+public class TeacherId extends Id<String> implements Serializable {
+    
+    protected TeacherId()
     {
-        return null;
-        //return this.forIdentifierAsString(studentId.stringValue());
+        super();
     }
-
-    //@Override
-    public Student forEntityId(StudentId identifier) 
+    
+    public TeacherId(String value)
     {
-        return this.forStudentId(identifier);
+        super(value);
     }
-
-    //@Override
-    public boolean contains(StudentId identifier) 
+    
+    private void setId(String id)
     {
-        return this.forEntityId(identifier) != null;
+        this.setValue(id);
     }
-
+    
+    /**
+     * Returns identifier value.
+     * @return Value.
+     */
+    @Column(name="teacher_id")
+    protected String getId()
+    {
+        return this.getValue();
+    }
+    
+    /**
+     * Generates new teacher identifier.
+     * @return Identifier.
+     */
+    public static TeacherId generateId()
+    {
+        UUID uuid = UUID.randomUUID();
+        return new TeacherId(uuid.toString());
+    }
 }

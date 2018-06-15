@@ -24,6 +24,7 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.domain.teacher.Teacher;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
 

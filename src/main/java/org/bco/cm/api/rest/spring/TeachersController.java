@@ -26,7 +26,7 @@ package org.bco.cm.api.rest.spring;
 
 import java.util.List;
 import org.bco.cm.api.facade.TeacherFacade;
-import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -88,7 +88,7 @@ public class TeachersController {
     @GetMapping( 
         produces = "application/json;charset=UTF-8" 
     )
-    public List<TeacherDTO> getAllTeachers()
+    public List<TeacherDTO> getTeachers()
     {
         return teacherFacade_.getAllTeachers();
     }

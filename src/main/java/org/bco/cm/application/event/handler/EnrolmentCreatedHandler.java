@@ -28,11 +28,11 @@ import com.tribc.ddd.domain.event.EventHandler;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.Student;
-import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.student.Student;
+import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.domain.course.event.EnrolmentCreated;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.course.StudentRegistry;
+import org.bco.cm.domain.student.StudentRegistry;
 
 /**
  * Adds student to course roster.

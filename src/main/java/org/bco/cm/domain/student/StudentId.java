@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2017 André H. Juffer, Biocenter Oulu.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,41 +22,54 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.domain.student;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import org.bco.cm.util.Id;
 import java.util.UUID;
-import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
-import org.bco.cm.domain.student.StudentRegistry;
 
 /**
- *
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Identifies student.
+ * @author André H. Juffer, Biocenter Oulu
  */
-public class InMemoryStudentRepository 
-//    extends InMemoryMapRepository<Student>
-//    implements StudentRegistry
-{
-
-    //@Override
-    public Student forStudentId(StudentId studentId) 
+@Embeddable
+public class StudentId extends Id<String> implements Serializable {
+    
+    protected StudentId()
     {
-        return null;
-        //return this.forIdentifierAsString(studentId.stringValue());
+        super();
+    }
+    
+    public StudentId(String value)
+    {
+        super(value);
     }
 
-    //@Override
-    public Student forEntityId(StudentId identifier) 
+    private void setId(String id)
     {
-        return this.forStudentId(identifier);
+        this.setValue(id);
     }
-
-    //@Override
-    public boolean contains(StudentId identifier) 
+    
+    /**
+     * Returns identifier value.
+     * @return Value.
+     */
+    @Column(name="student_id")
+    protected String getId()
     {
-        return this.forEntityId(identifier) != null;
+        return this.getValue();
     }
-
+    
+    /**
+     * Returns new identifier.
+     * @return Identifier.
+     */
+    public static StudentId generate()
+    {
+        UUID uuid = UUID.randomUUID();
+        return new StudentId(uuid.toString());
+    }
+    
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,53 +22,41 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.domain.student;
 
-import java.io.Serializable;
-import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import org.bco.cm.util.Id;
+import org.bco.cm.dto.StudentDTO;
 
 /**
- * Identifies teacher.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Domain service for registering a new student.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Embeddable
-public class TeacherId extends Id<String> implements Serializable {
+public class RegisterNewStudentService {
     
-    protected TeacherId()
-    {
-        super();
-    }
-    
-    public TeacherId(String value)
-    {
-        super(value);
-    }
-    
-    private void setId(String id)
-    {
-        this.setValue(id);
+    private RegisterNewStudentService()
+    {        
     }
     
     /**
-     * Returns identifier value.
-     * @return Value.
+     * Register new student. he new student is added to the student registry.
+     * @param studentId Student identifier.
+     * @param spec New student specification.
+     * @param studentRegistry Student registry.
+     * @return New student.
+     * @throws IllegalArgumentException if studentId is already in use.
      */
-    @Column(name="teacher_id")
-    protected String getId()
+    public static Student register(StudentId studentId,
+                                   StudentDTO spec,
+                                   StudentRegistry studentRegistry)
     {
-        return this.getValue();
+        if ( studentRegistry.contains(studentId) ) {
+            throw new IllegalArgumentException(
+                studentId.stringValue() + ": Identifier already in use."
+            );
+        }
+        Student student = Student.valueOf(studentId, spec);
+        studentRegistry.add(student);
+        student.registered();
+        return student;
     }
-    
-    /**
-     * Generates new teacher identifier.
-     * @return Identifier.
-     */
-    public static TeacherId generateId()
-    {
-        UUID uuid = UUID.randomUUID();
-        return new TeacherId(uuid.toString());
-    }
+
 }

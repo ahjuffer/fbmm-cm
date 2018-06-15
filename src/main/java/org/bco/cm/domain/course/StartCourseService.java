@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer, Biocenter Oulu.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,52 +24,34 @@
 
 package org.bco.cm.domain.course;
 
-import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import org.bco.cm.util.Id;
-import java.util.UUID;
+import org.bco.cm.domain.teacher.Teacher;
 
 /**
- * Identifies student.
- * @author André H. Juffer, Biocenter Oulu
+ * Domain service for starting a course.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Embeddable
-public class StudentId extends Id<String> implements Serializable {
+public class StartCourseService {
     
-    protected StudentId()
-    {
-        super();
+    private StartCourseService()
+    {        
     }
     
-    public StudentId(String value)
+    /**
+     * Starts course.
+     * @param course Course.
+     * @param teacher Teacher. Must be the responsible teacher.
+     */
+    public static void start(Course course, Teacher teacher)
     {
-        super(value);
+        if ( !StartCourseService.isTeacher(course, teacher) ) {
+            throw new IllegalStateException("Teacher is not responsible for course.");
+        }
+        course.start();
+    }
+    
+    private static boolean isTeacher(Course course, Teacher teacher)
+    {
+        return course.getTeacherId().equals(teacher.getTeacherId());
     }
 
-    private void setId(String id)
-    {
-        this.setValue(id);
-    }
-    
-    /**
-     * Returns identifier value.
-     * @return Value.
-     */
-    @Column(name="student_id")
-    protected String getId()
-    {
-        return this.getValue();
-    }
-    
-    /**
-     * Returns new identifier.
-     * @return Identifier.
-     */
-    public static StudentId generate()
-    {
-        UUID uuid = UUID.randomUUID();
-        return new StudentId(uuid.toString());
-    }
-    
 }

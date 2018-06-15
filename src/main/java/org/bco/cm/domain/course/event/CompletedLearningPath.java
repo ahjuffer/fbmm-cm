@@ -26,7 +26,7 @@ package org.bco.cm.domain.course.event;
 
 import com.tribc.ddd.domain.event.AbstractEvent;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.student.StudentId;
 
 /**
  * Domain event signaling that a student has completed a course 

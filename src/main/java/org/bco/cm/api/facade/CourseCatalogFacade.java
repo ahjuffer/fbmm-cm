@@ -35,7 +35,7 @@ import org.bco.cm.application.command.UpdateCourseModule;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,7 +154,6 @@ public class CourseCatalogFacade {
      * @param teacherId Identifier of responsible teacher.
      * @param spec Module specification. This module is appended to the last 
      * module.
-     * @see #updateCourse(org.bco.cm.domain.course.TeacherId, org.bco.cm.domain.course.CourseId, org.bco.cm.dto.CourseDescriptionDTO) 
      */
     public void addCourseModule(CourseDescriptionId courseId,
                                 TeacherId teacherId,
@@ -170,7 +169,6 @@ public class CourseCatalogFacade {
      * @param teacherId Identifier of responsible teacher.
      * @param moduleId Module identifier.
      * @param spec Update specification.
-     * @see #updateCourse(org.bco.cm.domain.course.TeacherId, org.bco.cm.domain.course.CourseId, org.bco.cm.dto.CourseDescriptionDTO) 
      */
     public void updateCourseModule(CourseDescriptionId courseId,
                                    TeacherId teacherId,

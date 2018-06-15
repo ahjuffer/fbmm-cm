@@ -22,32 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course.event;
-
-import com.tribc.ddd.domain.event.AbstractEvent;
-import org.bco.cm.domain.course.Student;
-
 /**
- * Student registered with application.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Student domain events.
  */
-public class NewStudentRegistered extends AbstractEvent {
-    
-    private final Student student_;
-    
-    public NewStudentRegistered(Student student)
-    {
-        super(NewStudentRegistered.class);
-        student_ = student;
-    }
-    
-    /**
-     * Returns newly registered student.
-     * @return Student.
-     */
-    public Student getStudent()
-    {
-        return student_;
-    }
-
-}
+package org.bco.cm.domain.student.event;

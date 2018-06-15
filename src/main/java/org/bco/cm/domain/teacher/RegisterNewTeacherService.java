@@ -22,41 +22,45 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.domain.teacher;
 
-import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.dto.TeacherDTO;
 
 /**
- * Domain service for registering a new student.
+ * Domain service for registering a new teacher.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class RegisterNewStudentService {
+public class RegisterNewTeacherService {
     
-    private RegisterNewStudentService()
-    {        
+    private RegisterNewTeacherService()
+    { 
     }
     
     /**
-     * Register new student. he new student is added to the student registry.
-     * @param studentId Student identifier.
-     * @param spec New student specification.
-     * @param studentRegistry Student registry.
-     * @return New student.
-     * @throws IllegalArgumentException if studentId is already in use.
+     * Creates new teacher and adds teacher to teacher registry.
+     * @param teacherId New teacher identifier.
+     * @param spec New teacher specification.
+     * @param teacherRegistry Teacher registry.
+     * @return Registered teacher.
      */
-    public static Student register(StudentId studentId,
-                                   StudentDTO spec,
-                                   StudentRegistry studentRegistry)
+    public static Teacher register(TeacherId teacherId, 
+                                   TeacherDTO spec, 
+                                   TeacherRegistry teacherRegistry)
     {
-        if ( studentRegistry.contains(studentId) ) {
+        if (teacherId == null || spec == null || teacherRegistry == null ) {
+            throw new NullPointerException("Missing arguments.");
+        }
+        if ( teacherRegistry.contains(teacherId) ) {
             throw new IllegalArgumentException(
-                studentId.stringValue() + ": Identifier already in use."
+                teacherId.stringValue() + ": Identifier already in use."
             );
         }
-        Student student = Student.valueOf(studentId, spec);
-        studentRegistry.add(student);
-        student.registered();
-        return student;
+        
+        Teacher teacher = Teacher.valueOf(teacherId, spec);
+        teacherRegistry.add(teacher);        
+        teacher.registered();
+        
+        return teacher;
     }
 
 }

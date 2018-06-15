@@ -29,9 +29,9 @@ import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseCatalogService;
 import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.course.Teacher;
-import org.bco.cm.domain.course.TeacherId;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.domain.teacher.Teacher;
+import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.domain.teacher.TeacherRegistry;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 

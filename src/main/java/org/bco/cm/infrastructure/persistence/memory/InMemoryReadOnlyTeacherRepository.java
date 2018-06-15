@@ -27,12 +27,12 @@ package org.bco.cm.infrastructure.persistence.memory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.bco.cm.domain.course.Teacher;
+import org.bco.cm.domain.teacher.Teacher;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.course.TeacherRegistry;
+import org.bco.cm.domain.teacher.TeacherRegistry;
 import org.bco.cm.application.query.ReadOnlyTeacherRegistry;
-import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.teacher.TeacherId;
 
 /**
  *

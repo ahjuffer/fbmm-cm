@@ -27,8 +27,8 @@ package org.bco.cm.application.event.handler;
 import com.tribc.ddd.domain.event.EventHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bco.cm.domain.course.Student;
-import org.bco.cm.domain.course.event.NewStudentRegistered;
+import org.bco.cm.domain.student.Student;
+import org.bco.cm.domain.student.event.NewStudentRegistered;
 
 /**
  * Creates new account for student.

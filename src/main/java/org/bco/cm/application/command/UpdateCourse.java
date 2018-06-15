@@ -26,7 +26,7 @@ package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
 import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 
 /**

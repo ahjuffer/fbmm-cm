@@ -28,7 +28,7 @@ import java.time.Instant;
 import java.util.List;
 import org.bco.cm.application.query.ReadOnlyCourseRegistry;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.TeacherId;
+import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.util.ReadOnlyHibernateRepository;
 

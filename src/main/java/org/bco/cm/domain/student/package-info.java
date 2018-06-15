@@ -22,14 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
-
-import org.bco.cm.util.Repository;
-
 /**
- * Holds teachers.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Students
  */
-public interface TeacherRegistry extends Repository<Teacher, TeacherId> {
-    
-}
+package org.bco.cm.domain.student;

@@ -22,41 +22,32 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.domain.student.event;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.tribc.ddd.domain.event.AbstractEvent;
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
-import org.bco.cm.domain.student.StudentRegistry;
 
 /**
- *
+ * Student registered with application.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryStudentRepository 
-//    extends InMemoryMapRepository<Student>
-//    implements StudentRegistry
-{
-
-    //@Override
-    public Student forStudentId(StudentId studentId) 
+public class NewStudentRegistered extends AbstractEvent {
+    
+    private final Student student_;
+    
+    public NewStudentRegistered(Student student)
     {
-        return null;
-        //return this.forIdentifierAsString(studentId.stringValue());
+        super(NewStudentRegistered.class);
+        student_ = student;
     }
-
-    //@Override
-    public Student forEntityId(StudentId identifier) 
+    
+    /**
+     * Returns newly registered student.
+     * @return Student.
+     */
+    public Student getStudent()
     {
-        return this.forStudentId(identifier);
-    }
-
-    //@Override
-    public boolean contains(StudentId identifier) 
-    {
-        return this.forEntityId(identifier) != null;
+        return student_;
     }
 
 }

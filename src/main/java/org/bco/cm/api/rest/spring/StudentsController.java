@@ -26,11 +26,12 @@ package org.bco.cm.api.rest.spring;
 
 import java.util.List;
 import org.bco.cm.api.facade.StudentFacade;
-import org.bco.cm.domain.course.StudentId;
+import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +50,7 @@ public class StudentsController {
     private StudentFacade studentFacade_;
     
     /**
-     * Adds new student resource.
+     * Registers new student.
      * @param spec New student specification. Must hold first name, surname,
      * student identifier, and email address.
      * @return New student.
@@ -67,13 +68,28 @@ public class StudentsController {
     }
     
     /**
-     * Returns all student resources.
+     * Returns student.
+     * @param sId Student identifier.
+     * @return Student.
+     */
+    @GetMapping(
+        path = "/{studentId}",
+        produces = "application/json;charset=UTF-8"
+    )
+    public StudentDTO getStudent(@PathVariable("studentId") String sId)
+    {
+        StudentId studentId = new StudentId(sId);
+        return studentFacade_.getStudent(studentId);
+    }
+    
+    /**
+     * Returns all students.
      * @return Students.
      */
     @GetMapping(
         produces = "application/json;charset=UTF-8"
     )
-    public List<StudentDTO> getAllStudents()
+    public List<StudentDTO> getStudents()
     {
         return studentFacade_.getAllStudents();
     }

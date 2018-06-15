@@ -26,9 +26,9 @@ package org.bco.cm.application.event.handler;
 
 import com.tribc.ddd.domain.event.EventHandler;
 import org.apache.logging.log4j.LogManager;
-import org.bco.cm.domain.course.event.NewTeacherRegistered;
+import org.bco.cm.domain.teacher.event.NewTeacherRegistered;
 import org.apache.logging.log4j.Logger;
-import org.bco.cm.domain.course.Teacher;
+import org.bco.cm.domain.teacher.Teacher;
 
 /**
  *
