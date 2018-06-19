@@ -22,14 +22,52 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.student;
+package org.bco.cm.domain.enrolment;
 
-import org.bco.cm.util.Repository;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import org.bco.cm.util.Id;
 
 /**
- * Holds students.
+ * Identifies enrolment.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface StudentRegistry extends Repository<Student, StudentId> {
+@Embeddable
+public class EnrolmentNumber extends Id<String> {
     
+    protected EnrolmentNumber()
+    {
+        super();
+    }
+
+    public EnrolmentNumber(String value)
+    {
+        super(value);
+    }
+    
+    private void setId(String value)
+    {
+        this.setValue(value);
+    }
+    
+    /**
+     * Returns enrolment number value.
+     * @return Value.
+     */
+    @Column( name = "enrolment_number" )
+    protected String getId()
+    {
+        return this.getValue();
+    }
+    
+    /**
+     * Generates new number.
+     * @return Number.
+     */
+    public static EnrolmentNumber generate()
+    {
+        UUID uuid = UUID.randomUUID();
+        return new EnrolmentNumber(uuid.toString());
+    }
 }

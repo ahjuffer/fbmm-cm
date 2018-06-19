@@ -30,7 +30,7 @@ import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.application.command.RegisterNewStudent;
 import org.bco.cm.application.query.ReadOnlyStudentRegistry;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.EnrolmentNumber;
+import org.bco.cm.domain.enrolment.EnrolmentNumber;
 import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;

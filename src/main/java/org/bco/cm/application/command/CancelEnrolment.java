@@ -22,14 +22,31 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.student;
+package org.bco.cm.application.command;
 
-import org.bco.cm.util.Repository;
+import com.tribc.cqrs.domain.command.AbstractCommand;
+import org.bco.cm.domain.enrolment.EnrolmentNumber;
 
 /**
- * Holds students.
+ * Command to cancel an enrolment in a course.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface StudentRegistry extends Repository<Student, StudentId> {
+public class CancelEnrolment extends AbstractCommand {
+
+    private final EnrolmentNumber enrolmentNumber_;
     
+    public CancelEnrolment(EnrolmentNumber enrolmentNumber)
+    {
+        super(CancelEnrolment.class);
+        enrolmentNumber_ = enrolmentNumber;
+    }
+    
+    /**
+     * Returns enrolment number.
+     * @return Enrolment number.
+     */
+    public EnrolmentNumber getEnrolmentNumber()
+    {
+        return enrolmentNumber_;
+    }
 }

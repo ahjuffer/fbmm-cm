@@ -40,6 +40,7 @@ import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
 /**
  * Simplified interface for accessing course catalog.
  * @author Andr&#233; H. Juffer, Biocenter Oulu

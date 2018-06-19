@@ -53,11 +53,6 @@ public class HibernateStudentRegistry
         return this.forSingle(hql);
     }
 
-    /**
-     * Returns an UUID valued identifier.
-     * @return Student identifier.
-     */
-
     @Override
     public List<Student> forAll() 
     {

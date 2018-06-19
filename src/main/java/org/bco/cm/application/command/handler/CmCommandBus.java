@@ -36,6 +36,7 @@ import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.command.StartCourse;
 import org.bco.cm.application.command.UpdateCourse;
 import org.bco.cm.application.command.UpdateCourseModule;
+import org.bco.cm.application.command.CancelEnrolment;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -109,6 +110,12 @@ public class CmCommandBus extends CommandBus {
     public void setStartCourseHandler(StartCourseHandler handler)
     {
         this.setHandler(StartCourse.class, handler);
+    }
+    
+    @Autowired
+    public void setCancelEnrolmentHandler(CancelEnrolmentHandler handler)
+    {
+        this.setHandler(CancelEnrolment.class, handler);
     }
     
     private void setHandler(Class clazz, CmCommandHandler handler)

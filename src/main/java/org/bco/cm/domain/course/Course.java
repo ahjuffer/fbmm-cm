@@ -24,8 +24,6 @@
 
 package org.bco.cm.domain.course;
 
-import org.bco.cm.domain.student.StudentId;
-import org.bco.cm.domain.student.Student;
 import com.tribc.cqrs.util.EventUtil;
 import com.tribc.ddd.domain.event.Event;
 import com.tribc.ddd.domain.event.Eventful;
@@ -46,10 +44,15 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.bco.cm.domain.course.event.CourseStarted;
+import org.bco.cm.domain.student.Student;
+import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.util.Identifiable;
@@ -286,7 +289,13 @@ public class Course
      * Returns students.
      * @return Students. May be empty.
      */
-    @Transient
+    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true )
+    @JoinTable(
+        name = "rosters",
+        joinColumns = @JoinColumn(name = "course_id"),
+        inverseJoinColumns = @JoinColumn(name = "monitor_id")
+    )
+    @MapKey( name = "studentId" )
     protected Map<StudentId, StudentMonitor> getRoster()
     {
         return roster_;
@@ -359,18 +368,23 @@ public class Course
      * Notification of course enrolment. If the course is 
      * ongoing, the student gains access to the first module.
      * @param student Student.
-     * @throws IllegalStateException if no more seats are available in the course.
+     * @throws IllegalStateException if registration is not yet open, student 
+     * is already enrolled in course, or no more seats are available in the course.
      */
     public void enrolled(Student student)
     {
         if ( !this.isActive() ) {
             throw new IllegalStateException("Registration is not yet open.");
         }
+        if ( this.isEnrolled(student) ) {
+            throw new IllegalStateException("Student already enrolled in course.");
+        }
         if ( !this.hasSeatsAvailable() ) {
             throw new IllegalStateException("No more seats available in course.");
         }
-        StudentMonitor monitor = new StudentMonitor(student);        
-        roster_.put(student.getIdentifier(), monitor);
+        int monitorId = this.generateMonitorId();
+        StudentMonitor monitor = new StudentMonitor(monitorId, student);        
+        roster_.put(student.getStudentId(), monitor);
         
         // Give access to first module if the course is already ongoing.
         if ( this.isOngoing() ) {
@@ -380,27 +394,12 @@ public class Course
     }
     
     /**
-     * Notification of module completion. Student is allowed to transfer to 
-     * the next module.
-     * @param student Student.
-     * @throws IllegalStateException if this course is not ongoing.
-     */
-    public void completedModule(Student student)
-    {
-        if ( !this.isOngoing() ) {
-            throw new IllegalStateException("Course is currently not ongoing.");
-        }
-        StudentMonitor monitor = roster_.get(student.getIdentifier());
-        monitor.toNextModule();
-    }
-    
-    /**
      * Notification of canceling of enrolment.
      * @param student Student.
      */
     public void enrolmentCanceled(Student student)
     {
-        roster_.remove(student.getIdentifier());
+        roster_.remove(student.getStudentId());
     }
     
     /**
@@ -470,7 +469,22 @@ public class Course
         Instant now = Instant.now();
         return now.isAfter((endDate_));
     }
-    
+        
+    /**
+     * Notification of module completion. Student is allowed to transfer to 
+     * the next module.
+     * @param student Student.
+     * @throws IllegalStateException if this course is not ongoing.
+     */
+    public void moduleCompleted(Student student)
+    {
+        if ( !this.isOngoing() ) {
+            throw new IllegalStateException("Course is currently not ongoing.");
+        }
+        StudentMonitor monitor = roster_.get(student.getStudentId());
+        
+        //monitor.toNextModule();
+    }
     
     /**
      * Returns a data transfer object.
@@ -555,6 +569,31 @@ public class Course
     private void started()
     {
         events_.add(new CourseStarted(this));
+    }
+    
+    private boolean isEnrolled(Student student)
+    {
+        return roster_.containsKey(student.getStudentId());
+    }
+    
+    private boolean containsStudentMonitor(int monitorId)
+    {
+        for (StudentMonitor monitor: this.roster() ) {
+            if ( monitor.getMonitorId() == monitorId ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private int generateMonitorId()
+    {
+        int bound = Integer.MAX_VALUE - 100;
+        int id = RANDOM.nextInt(bound);
+        while (this.containsStudentMonitor(id) && id == 0) {
+            id = RANDOM.nextInt(bound);
+        }
+        return id;
     }
 
 }

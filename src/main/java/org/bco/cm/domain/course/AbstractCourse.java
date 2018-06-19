@@ -45,7 +45,7 @@ import org.bco.cm.dto.ModuleDTO;
 public abstract class AbstractCourse 
 {    
     // For generating module identifiers that are unique to a given course.
-    private final static Random RANDOM;
+    static final Random RANDOM;
     
     static {
         RANDOM = new Random();

@@ -32,7 +32,6 @@ import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
 import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.EnrolmentRepository;
 import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
@@ -46,6 +45,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.bco.cm.domain.enrolment.EnrolmentRegistry;
 /**
  *
  * @author Andr&#233; Juffer, Biocenter Oulu
@@ -65,13 +65,6 @@ public class TestApplication implements ApplicationRunner {
     @Autowired
     private CourseCatalogFacade courseFacade_;
         
-    @Bean
-    @Primary    
-    EnrolmentRepository enrolmentRepository()
-    {
-        return new InMemoryEnrolmentRepository();
-    }
-
     /**
      * @param args the command line arguments
      */

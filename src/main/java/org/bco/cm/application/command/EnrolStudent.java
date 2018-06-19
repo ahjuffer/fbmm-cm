@@ -26,7 +26,7 @@ package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.EnrolmentNumber;
+import org.bco.cm.domain.enrolment.EnrolmentNumber;
 import org.bco.cm.domain.student.StudentId;
 
 /**

@@ -22,14 +22,25 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.student;
 
+package org.bco.cm.domain.enrolment;
+
+import org.bco.cm.domain.course.Course;
+import org.bco.cm.domain.student.Student;
 import org.bco.cm.util.Repository;
 
 /**
- * Holds students.
+ * Holds course enrolments.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface StudentRegistry extends Repository<Student, StudentId> {
+public interface EnrolmentRegistry extends Repository<Enrolment,EnrolmentNumber> {
+    
+    /**
+     * Returns enrolment of student in course.
+     * @param course Course.
+     * @param student Student.
+     * @return Enrolment, or null if nonexistent.
+     */
+    Enrolment forCourse(Course course, Student student);
     
 }

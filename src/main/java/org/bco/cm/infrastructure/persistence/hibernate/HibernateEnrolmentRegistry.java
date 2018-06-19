@@ -22,47 +22,53 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.infrastructure.persistence.hibernate;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.List;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.enrolment.Enrolment;
 import org.bco.cm.domain.enrolment.EnrolmentNumber;
-import org.bco.cm.domain.student.Student;
 import org.bco.cm.domain.enrolment.EnrolmentRegistry;
+import org.bco.cm.domain.student.Student;
+import org.bco.cm.util.HibernateRepository;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryEnrolmentRepository 
-    extends InMemoryMapRepository<Enrolment> 
-    implements EnrolmentRegistry {
+public class HibernateEnrolmentRegistry 
+    extends HibernateRepository<Enrolment,EnrolmentNumber>
+    implements EnrolmentRegistry
+{
+    private static final String FROM = 
+        "select enrolment from " + Enrolment.class.getName() + " enrolment ";
+
+    @Override
+    public Enrolment forOne(EnrolmentNumber enrolmentNumber) 
+    {
+        String number = enrolmentNumber.stringValue();
+        String hql = 
+            FROM +
+            "where enrolment.enrolmentNumber.id = '" + number + "'";
+        return this.forSingle(hql);
+    }
+
+    @Override
+    public List<Enrolment> forAll() 
+    {
+        throw new UnsupportedOperationException("Not supported.");
+    }
 
     @Override
     public Enrolment forCourse(Course course, Student student) 
     {
-        Collection<Enrolment> enrolments = this.forAll();
-        for (Enrolment enrolment : enrolments) {
-            if ( enrolment.getCourseId().equals(course.getIdentifier()) &&
-                 enrolment.getStudentId().equals(student.getIdentifier()) ) {
-                return enrolment;
-            }
-        }
-        return null;
-    }    
-
-    @Override
-    public boolean contains(EnrolmentNumber identifier) 
-    {
-        return this.forOne(identifier) != null;
-    }
-    
-    @Override
-    public Enrolment forOne(EnrolmentNumber identifier)
-    {
-        return this.forIdentifierAsString(identifier.stringValue());
+        String courseId = course.getIdentifierAsString();
+        String studentId = student.getIdentifierAsString();
+        String hql =
+            FROM + "where " +
+            "enrolment.courseId.id = '" + courseId + "' and " +
+            "enrolment.studentId.id = '" + studentId + "'";
+        return this.forSingle(hql);
     }
 
 }

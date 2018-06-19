@@ -22,18 +22,36 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.application.command.handler;
 
-import org.bco.cm.util.Id;
+import org.bco.cm.application.command.CancelEnrolment;
+import org.bco.cm.domain.enrolment.Enrolment;
+import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.domain.enrolment.EnrolmentRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Identifies enrolment.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class EnrolmentNumber extends Id<String> {
+public class CancelEnrolmentHandler extends CmCommandHandler<CancelEnrolment> {
 
-    public EnrolmentNumber(String value)
+    @Autowired
+    private EnrolmentRegistry enrolmentRegistry_;
+
+    @Override
+    public void handle(CancelEnrolment command) 
     {
-        super(value);
+        EnrolmentNumber enrolmentNumber = command.getEnrolmentNumber();
+        Enrolment enrolment = enrolmentRegistry_.forOne(enrolmentNumber);
+        
+        // Cancel.
+        enrolment.cancel();
+        enrolmentRegistry_.remove(enrolment);
+        
+        // Handle possible domain events.
+        this.handleEvents(enrolment);        
+        
     }
+
 }

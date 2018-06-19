@@ -58,6 +58,20 @@ create table course_descriptions
     teacher_id              varchar(200)
 );
 
+create table student_monitors
+(
+    id                      UUID not null primary key,
+    monitor_id              int,
+    student_id              varchar(200),
+    current_module_id       int
+);
+
+create table rosters
+(
+    monitor_id              UUID,
+    course_id               UUID
+);
+
 create table courses
 (
     id                      UUID not null primary key,
@@ -87,3 +101,14 @@ references modules (id);
 alter table online_materials
 add foreign key (learning_path_id) 
 references learning_paths (id);
+
+alter table rosters
+add primary key (monitor_id, course_id);
+
+alter table rosters
+add foreign key (monitor_id) 
+references student_monitors(id);
+
+alter table rosters
+add foreign key (course_id)
+references courses (id);

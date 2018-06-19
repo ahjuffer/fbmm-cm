@@ -28,10 +28,12 @@ import com.tribc.cqrs.domain.command.CommandBus;
 import com.tribc.ddd.domain.event.EventBus;
 import org.bco.cm.api.facade.CourseCatalogFacade;
 import org.bco.cm.api.facade.CourseFacade;
+import org.bco.cm.api.facade.EnrolmentFacade;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.application.command.handler.ActivateCourseHandler;
 import org.bco.cm.application.command.handler.AddCourseModuleHandler;
+import org.bco.cm.application.command.handler.CancelEnrolmentHandler;
 import org.bco.cm.application.command.handler.CmCommandBus;
 import org.bco.cm.application.command.handler.DeleteCourseHandler;
 import org.bco.cm.application.command.handler.DeleteCourseModuleHandler;
@@ -43,6 +45,7 @@ import org.bco.cm.application.command.handler.StartCourseHandler;
 import org.bco.cm.application.command.handler.UpdateCourseHandler;
 import org.bco.cm.application.command.handler.UpdateCourseModuleHandler;
 import org.bco.cm.application.event.handler.CmEventBus;
+import org.bco.cm.application.event.handler.EnrolmentCanceledHandler;
 import org.bco.cm.application.event.handler.EnrolmentCreatedHandler;
 import org.bco.cm.application.event.handler.NewStudentRegisteredHandler;
 import org.bco.cm.application.event.handler.NewTeacherRegisteredHandler;
@@ -63,9 +66,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.bco.cm.application.event.handler.NewCourseAddedToCatalogHandler;
 import org.bco.cm.application.query.ReadOnlyCourseRegistry;
+import org.bco.cm.application.query.ReadOnlyEnrolmentRegistry;
 import org.bco.cm.domain.course.CourseRegistry;
+import org.bco.cm.domain.enrolment.EnrolmentRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateCourseRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateEnrolmentRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyCourseRegistry;
+import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyEnrolmentRegistry;
 
 /**
  * Bean configuration.
@@ -133,6 +140,18 @@ public class CmConfiguration
         return new HibernateReadOnlyCourseRegistry();
     }
     
+    @Bean
+    ReadOnlyEnrolmentRegistry readOnlyEnrolmentRegistry()
+    {
+        return new HibernateReadOnlyEnrolmentRegistry();
+    }
+    
+    @Bean
+    EnrolmentRegistry enrolmentRegistry()
+    {
+        return new HibernateEnrolmentRegistry();
+    }
+    
     
     // Facades
     
@@ -160,6 +179,12 @@ public class CmConfiguration
         return new CourseFacade();
     }
     
+    @Bean
+    EnrolmentFacade enrolmentFacade()
+    {
+        return new EnrolmentFacade();
+    }
+    
     
     // Handlers
     
@@ -179,6 +204,12 @@ public class CmConfiguration
     EnrolStudentHandler enrolStudentHandler()
     {
         return new EnrolStudentHandler();
+    }
+    
+    @Bean
+    CancelEnrolmentHandler cancelEnrolmentHandler()
+    {
+        return new CancelEnrolmentHandler();
     }
     
     @Bean
@@ -239,6 +270,12 @@ public class CmConfiguration
     EnrolmentCreatedHandler enrolmentCreatedHandler()
     {
         return new EnrolmentCreatedHandler();
+    }
+    
+    @Bean
+    EnrolmentCanceledHandler enrolmentCanceledHandler()
+    {
+        return new EnrolmentCanceledHandler();
     }
     
     @Bean

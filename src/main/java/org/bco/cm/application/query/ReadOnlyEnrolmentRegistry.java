@@ -22,14 +22,26 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.student;
 
-import org.bco.cm.util.Repository;
+package org.bco.cm.application.query;
+
+import java.util.List;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.dto.EnrolmentDTO;
+import org.bco.cm.util.ReadOnlyRepository;
 
 /**
- * Holds students.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface StudentRegistry extends Repository<Student, StudentId> {
-    
+public interface ReadOnlyEnrolmentRegistry 
+    extends ReadOnlyRepository<EnrolmentDTO, EnrolmentNumber>
+{
+    /**
+     * Returns all enrolments for given course.
+     * @param courseId Course identifier.
+     * @return Course enrolments.
+     */
+    List<EnrolmentDTO> getCourseEnrolments(CourseId courseId);
 }

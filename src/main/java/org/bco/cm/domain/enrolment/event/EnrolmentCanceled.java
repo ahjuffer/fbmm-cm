@@ -22,14 +22,44 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.student;
+package org.bco.cm.domain.enrolment.event;
 
-import org.bco.cm.util.Repository;
+import com.tribc.ddd.domain.event.AbstractEvent;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.student.StudentId;
 
 /**
- * Holds students.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public interface StudentRegistry extends Repository<Student, StudentId> {
+public class EnrolmentCanceled extends AbstractEvent {
+
+    private final StudentId studentId_;
+    private final CourseId courseId_;
+
+    public EnrolmentCanceled(StudentId studentId, CourseId courseId)
+    {
+        super(EnrolmentCanceled.class);
+        studentId_ = studentId;
+        courseId_ = courseId;        
+    }
+    
+    /**
+     * Returns student identifier.
+     * @return Identifier.
+     */
+    public StudentId getStudentId()
+    {
+        return studentId_;
+    }
+    
+    /**
+     * Returns course identifier.
+     * @return Identifier.
+     */
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
     
 }

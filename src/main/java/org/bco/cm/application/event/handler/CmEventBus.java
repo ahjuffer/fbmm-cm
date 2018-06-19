@@ -27,10 +27,11 @@ package org.bco.cm.application.event.handler;
 import com.tribc.ddd.domain.event.EventBus;
 import com.tribc.ddd.domain.event.EventHandler;
 import org.bco.cm.domain.student.event.NewStudentRegistered;
-import org.bco.cm.domain.course.event.EnrolmentCreated;
+import org.bco.cm.domain.enrolment.event.EnrolmentCreated;
 import org.bco.cm.domain.course.event.NewCourseAddedToCatalog;
 import org.bco.cm.domain.teacher.event.NewTeacherRegistered;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.bco.cm.domain.enrolment.event.EnrolmentCanceled;
 
 /**
  * Simple event bus for matching events to event handlers.
@@ -42,6 +43,12 @@ public class CmEventBus extends EventBus {
     public void EnrolmentCreatedHandler(EnrolmentCreatedHandler handler)
     {
         this.setHandler(EnrolmentCreated.class, handler);
+    }
+    
+    @Autowired
+    public void setEnrolmentCanceledHandler(EnrolmentCanceledHandler handler)
+    {
+        this.setHandler(EnrolmentCanceled.class, handler);
     }
     
     @Autowired

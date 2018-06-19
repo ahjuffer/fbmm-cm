@@ -1,4 +1,4 @@
-/*
+/* 
  * The MIT License
  *
  * Copyright 2018 André H. Juffer, Biocenter Oulu
@@ -21,31 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-
-package org.bco.cm.domain.course;
-
-import org.bco.cm.domain.student.Student;
-import org.bco.cm.util.Repository;
-
 /**
- * Holds course enrolments.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Author:  ajuffer
+ * Created: Jun 18, 2018
  */
-public interface EnrolmentRepository extends Repository<Enrolment,EnrolmentNumber> {
-    
-    /**
-     * Returns enrolment of student in course.
-     * @param course Course.
-     * @param student Student.
-     * @return Enrolment, or null if nonexistent.
-     */
-    Enrolment forCourse(Course course, Student student);
-    
-    /**
-     * Returns an enrolment number.
-     * @return Identifier.
-     */
-    EnrolmentNumber generateId();
 
-}
+create table enrolments
+(
+    id                      UUID not null primary key,
+    enrolment_number        varchar(200),
+    course_id               varchar(200),
+    student_id              varchar(200),
+    date_of_registration    bigint
+);

@@ -22,42 +22,50 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.event.handler;
+package org.bco.cm.infrastructure.persistence.hibernate;
 
-import com.tribc.ddd.domain.event.EventHandler;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
+import java.util.List;
+import org.bco.cm.application.query.ReadOnlyEnrolmentRegistry;
 import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
-import org.bco.cm.domain.enrolment.event.EnrolmentCreated;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.student.StudentRegistry;
+import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.dto.EnrolmentDTO;
+import org.bco.cm.util.ReadOnlyHibernateRepository;
 
 /**
- * Adds student to course roster.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class EnrolmentCreatedHandler extends EventHandler<EnrolmentCreated> {
+public class HibernateReadOnlyEnrolmentRegistry 
+    extends ReadOnlyHibernateRepository<EnrolmentDTO, EnrolmentNumber> 
+    implements ReadOnlyEnrolmentRegistry
+{
+    private static final String FROM = 
+        "select enrolment from " + EnrolmentDTO.class.getName() + " enrolment ";  
     
-    @Autowired
-    private CourseRegistry courseRegistry_;
-    
-    @Autowired
-    private StudentRegistry studentRepository_;
+    @Override
+    public EnrolmentDTO getOne(EnrolmentNumber eid) 
+    {
+        String n = eid.stringValue();
+        String hql = 
+            FROM + 
+            "where enrolment.enrolmentNumber = '" + n + "'";
+        return this.forSingle(hql);
+    }
 
     @Override
-    public void handle(EnrolmentCreated event) 
+    public List<EnrolmentDTO> getAll() 
     {
-        CourseId courseId = event.getCourseId();
-        StudentId studentId = event.getStudentId();
-        
-        Course course = courseRegistry_.forOne(courseId);
-        Student student = studentRepository_.forOne(studentId);
-        course.enrolled(student);
-        
-        courseRegistry_.update(course);
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public List<EnrolmentDTO> getCourseEnrolments(CourseId courseId) 
+    {
+        String id = courseId.stringValue();
+        String hql =
+            FROM +
+            "where enrolment.courseId = '" + id + "'";
+        return this.forMany(hql);
     }
 
 }

@@ -56,7 +56,7 @@ public class StudentId extends Id<String> implements Serializable {
      * Returns identifier value.
      * @return Value.
      */
-    @Column(name="student_id")
+    @Column( name= "student_id" )
     protected String getId()
     {
         return this.getValue();

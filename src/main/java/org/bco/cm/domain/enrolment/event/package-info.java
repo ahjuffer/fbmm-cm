@@ -22,14 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.student;
-
-import org.bco.cm.util.Repository;
-
 /**
- * Holds students.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Enrolment domain events
  */
-public interface StudentRegistry extends Repository<Student, StudentId> {
-    
-}
+package org.bco.cm.domain.enrolment.event;

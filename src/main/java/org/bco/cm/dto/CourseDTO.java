@@ -27,8 +27,10 @@ package org.bco.cm.dto;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -40,6 +42,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.hibernate.annotations.NaturalId;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.MapKey;
 
 /**
  * DTO for Course.
@@ -56,7 +61,7 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
     private Instant endDate_;
     private int numberOfSeats_;
     private boolean ongoing_;
-    private final Collection<StudentMonitorDTO> roster_;
+    private Map<String, StudentMonitorDTO> roster_;
     
     public CourseDTO()
     {
@@ -68,7 +73,7 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
         startDate_ = Instant.now();
         endDate_ = Instant.now();
         numberOfSeats_ = 0;
-        roster_ = new HashSet<>();
+        roster_ = new HashMap<>();
     }
     
     private void setId(UUID id)
@@ -176,16 +181,26 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
         return numberOfSeats_;
     }
     
-    public void setRoster(Collection<StudentMonitorDTO> roster)
+    public void setRoster(Map<String, StudentMonitorDTO> roster)
     {
-        roster_.clear();
-        roster_.addAll(roster);
+        roster_ = roster;
     }
     
-    @Transient
-    public Collection<StudentMonitorDTO> getRoster()
+    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true )
+    @JoinTable(
+        name = "rosters",
+        joinColumns = @JoinColumn(name = "course_id"),
+        inverseJoinColumns = @JoinColumn(name = "monitor_id")
+    )
+    @MapKey( name = "studentId" )
+    public Map<String,StudentMonitorDTO> getRoster()
     {
         return roster_;
+    }
+    
+    public Collection<StudentMonitorDTO> roster()
+    {
+        return roster_.values();
     }
     
     @OneToMany(

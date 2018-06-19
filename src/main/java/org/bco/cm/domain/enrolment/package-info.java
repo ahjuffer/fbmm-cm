@@ -22,43 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course.event;
-
-import com.tribc.ddd.domain.event.AbstractEvent;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.student.StudentId;
-
 /**
- * Raised when a student enrolled in course.
- * @author Andr&#233; H. Juffer, Biocenter Oulu
+ * Enrolments.
  */
-public class EnrolmentCreated extends AbstractEvent {
-
-    private final StudentId studentId_;
-    private final CourseId courseId_;
-    
-    public EnrolmentCreated(StudentId studentId, CourseId courseId)
-    {
-        super(EnrolmentCreated.class);
-        studentId_ = studentId;
-        courseId_ = courseId;
-    }
-    
-    /**
-     * Returns student identifier.
-     * @return Identifier.
-     */
-    public StudentId getStudentId()
-    {
-        return studentId_;
-    }
-    
-    /**
-     * Returns course identifier.
-     * @return Identifier.
-     */
-    public CourseId getCourseId()
-    {
-        return courseId_;
-    }
-}
+package org.bco.cm.domain.enrolment;
