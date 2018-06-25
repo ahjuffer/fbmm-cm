@@ -37,6 +37,11 @@ public class Quiz {
     
     private Set<Question> questions_;
     
+    protected Quiz()
+    {
+        questions_ = new HashSet<>();
+    }
+    
     private Quiz(Set<Question> questions)
     {
         questions_ = questions;

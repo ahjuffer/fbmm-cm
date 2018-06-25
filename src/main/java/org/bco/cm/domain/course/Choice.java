@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer, Biocenter Oulu
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +27,14 @@ package org.bco.cm.domain.course;
 import java.util.Objects;
 
 /**
- * A sentence, phrase, or gesture that seeks information through a reply.
+ * One possible outcome of a multiple choice question.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class Question {
-    
+public class Choice {
+
     private String phrase_;
     
-    private Question()
+    protected Choice()
     {
         phrase_ = null;
     }
@@ -42,14 +42,10 @@ public class Question {
     private void setPhrase(String phrase)
     {
         if ( phrase == null ) {
-            throw new NullPointerException(
-                "Question: A phrase for a question must be provided."
-            );
+            throw new NullPointerException("Choice: A phrase must be provided.");
         }
         if ( phrase.isEmpty() ) {
-            throw new IllegalArgumentException(
-                "Question: A phrase for a question must be provided."
-            );
+            throw new IllegalArgumentException("Choice: A phrase must be provided.");
         }
         phrase_ = phrase;
     }
@@ -58,27 +54,27 @@ public class Question {
      * Returns phrase.
      * @return Phrase. Neither null nor empty.
      */
-    String getPhrase()
+    public String getPhrase()
     {
         return phrase_;
     }
     
     /**
-     * Formulates new question.
-     * @param phrase Question.
-     * @return New question.
+     * Returns a new choice.
+     * @param phrase Choice value.
+     * @return Choice.
      */
-    public static Question valueOf(String phrase)
+    public static Choice valueOf(String phrase)
     {
-        Question question = new Question();
-        question.setPhrase(phrase);
-        return question;                
+        Choice choice = new Choice();
+        choice.setPhrase(phrase);
+        return choice;
     }
-
+    
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.phrase_);
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.phrase_);
         return hash;
     }
     
@@ -94,8 +90,22 @@ public class Question {
         if ( !(this.getClass().equals(other.getClass())) ) {
             return false;
         }
-        final Question question = (Question)other;
-        return phrase_.equals(question.getPhrase());
+        final Choice choice = (Choice)other;
+        return phrase_.equals(choice.getPhrase());
     }
-
+    
+    /**
+     * Returns string value.
+     * @return String.
+     */
+    public String stringValue()
+    {
+        return phrase_;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return this.stringValue();
+    }
 }
