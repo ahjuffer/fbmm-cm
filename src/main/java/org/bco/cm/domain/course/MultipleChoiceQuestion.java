@@ -90,7 +90,7 @@ public class MultipleChoiceQuestion {
         if ( answer_ != null ) {
             if ( !choices_.contains(answer_) ) {
                 throw new IllegalArgumentException(
-                    "Answer is not amonng possible choices."
+                    answer_.stringValue() + ": This answer is not among possible choices."
                 );
             }
         }
@@ -109,7 +109,7 @@ public class MultipleChoiceQuestion {
         if ( !choices_.isEmpty() ) {
             if ( !choices_.contains(answer) ) {
                 throw new IllegalArgumentException(
-                    "Answer is not amonng possible choices."
+                    answer.stringValue() + ": This answer is not among possible choices."
                 );
             }
         }
@@ -145,6 +145,23 @@ public class MultipleChoiceQuestion {
         Choice answer = Choice.valueOf(spec.getAnswer());
         mcq.setAnswer(answer);
         return mcq;
+    }
+    
+    /**
+     * Returns DTO representation.
+     * @return DTO.
+     */
+    public MultipleChoiceQuestionDTO toDTO()
+    {
+        MultipleChoiceQuestionDTO dto = new MultipleChoiceQuestionDTO();
+        List<String> choices = new ArrayList<>();
+        dto.setAnswer(answer_.stringValue());
+        choices_.forEach((c) -> {
+            choices.add(c.stringValue());
+        });
+        dto.setChoices(choices);
+        dto.setQuestion(question_.getPhrase());
+        return dto;
     }
     
     /**

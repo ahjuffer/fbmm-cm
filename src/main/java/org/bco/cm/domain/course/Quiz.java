@@ -24,56 +24,83 @@
 
 package org.bco.cm.domain.course;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import org.bco.cm.dto.MultipleChoiceQuestionDTO;
 import org.bco.cm.dto.QuizDTO;
 
 /**
- * Any set of “quick” questions designed to test knowledge.
+ * List of “quick” multiple choice questions designed to test knowledge.
  * @author André H. Juffer, Biocenter Oulu
  */
 public class Quiz {
     
-    private Set<Question> questions_;
+    private UUID id_;
+    private List<MultipleChoiceQuestion> questions_;
     
     protected Quiz()
     {
-        questions_ = new HashSet<>();
+        id_ = null;
+        questions_ = new ArrayList<>();
     }
     
-    private Quiz(Set<Question> questions)
+    private void setId(UUID id)
     {
+        id_ = id;
+    }
+    
+    protected UUID getId()
+    {
+        return id_;
+    }
+    
+    private void setQuestions(List<MultipleChoiceQuestion> questions)
+    {
+        if ( questions == null ) {
+            throw new NullPointerException("Quiz: Questions must be provided.");
+        }
+        if ( questions.isEmpty() ) {
+            throw new IllegalArgumentException(
+                "Quiz: List of questions must not be empty."
+            );
+        }
         questions_ = questions;
+    }
+    
+    protected List<MultipleChoiceQuestion> getQuestions()
+    {
+        return questions_;
     }
     
     /**
      * Create a new quiz
-     * @param phrases Phrases for the questions that make up the quiz.
+     * @param spec New quiz specification. Must provide questions.
      * @return Quiz.
      */
-    public static Quiz create(Collection<String> phrases)
+    public static Quiz valueOf(QuizDTO spec)
     {
-        if ( phrases == null ) {
-            throw new NullPointerException("Questions for a quiz must be provided.");
-        }
-        Set<Question> questions = new HashSet<>();
-        phrases.forEach((phrase) -> {
-            questions.add(Question.valueOf(phrase));
+        Quiz quiz = new Quiz();
+        List<MultipleChoiceQuestion> questions = new ArrayList<>();
+        spec.getQuestions().forEach(q -> {
+            MultipleChoiceQuestion question = MultipleChoiceQuestion.valueOf(q);
+            questions.add(question);
         });
-        return new Quiz(questions);
+        quiz.setQuestions(questions);
+        return quiz;
     }
     
     /**
      * Returns data transfer object.
      * @return DTO.
      */
-    QuizDTO toDTO()
+    public QuizDTO toDTO()
     {
         QuizDTO dto = new QuizDTO();
-        Collection<String> questions = new HashSet<>();
+        List<MultipleChoiceQuestionDTO> questions = new ArrayList<>();
         questions_.forEach((question) -> {
-            questions.add(question.getPhrase());
+            MultipleChoiceQuestionDTO q = question.toDTO();            
+            questions.add(q);
         });
         dto.setQuestions(questions);
         return dto;

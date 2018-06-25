@@ -98,7 +98,7 @@ public class MultipleChoiceQuestionDTO {
         StringBuilder s = new StringBuilder("MultipleChoiceQuestionDTO : {").append(newline);
         s.append("question - ").append(question_).append(newline);
         s.append("choices - ").append(choices_).append(newline);
-        s.append("answer -").append(answer_).append(newline);
+        s.append("answer - ").append(answer_).append(newline);
         s.append("}");
         return s.toString();
     }

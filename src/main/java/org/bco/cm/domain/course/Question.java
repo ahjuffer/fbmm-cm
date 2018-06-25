@@ -58,7 +58,7 @@ public class Question {
      * Returns phrase.
      * @return Phrase. Neither null nor empty.
      */
-    String getPhrase()
+    public String getPhrase()
     {
         return phrase_;
     }

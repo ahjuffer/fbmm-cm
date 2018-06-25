@@ -24,33 +24,43 @@
 
 package org.bco.cm.dto;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * DTO for Quiz.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class QuizDTO {
-
-    private final Set<String> questions_;
+    
+    private UUID id_;
+    private List<MultipleChoiceQuestionDTO> questions_;
     
     public QuizDTO()
     {
-        questions_ = new HashSet<>();
+        id_ = null;
+        questions_ = new ArrayList<>();
     }
     
-    public void setQuestions(Collection<String> questions)
+    private void setId(UUID id)
     {
-        questions_.clear();
-        questions_.addAll(questions);
+        id_ = id;
     }
     
-    public Collection<String> getQuestions()
+    protected UUID getId()
     {
-        return Collections.unmodifiableSet(questions_);
+        return id_;
+    }    
+    
+    public void setQuestions(List<MultipleChoiceQuestionDTO> questions)
+    {
+        questions_ = questions;
+    }
+    
+    public List<MultipleChoiceQuestionDTO> getQuestions()
+    {
+        return questions_;
     }
     
     @Override
@@ -58,6 +68,7 @@ public class QuizDTO {
     {
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("QuizDTO: {").append(newline);
+        s.append("id - ").append(id_).append(newline);
         s.append("questions - ").append(questions_).append(newline);
         s.append("}");
         return s.toString();
