@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import org.bco.cm.dto.MultipleChoiceQuestionDTO;
+import org.bco.cm.dto.ChoiceDTO;
 
 /**
  *
@@ -41,13 +42,13 @@ public class TestMultipleChoiceQuestion {
     public static void main(String[] args) {
        MultipleChoiceQuestionDTO spec = new MultipleChoiceQuestionDTO();
        spec.setQuestion("Who will win the world cup?");
-       List<String> choices = new ArrayList<>();
-       choices.add("Germany");
-       choices.add("Brasil");
-       choices.add("Belgium");
-       choices.add("Columbia");
+       List<ChoiceDTO> choices = new ArrayList<>();
+       choices.add(new ChoiceDTO("Germany"));
+       choices.add(new ChoiceDTO("Brasil"));
+       choices.add(new ChoiceDTO("Belgium"));
+       choices.add(new ChoiceDTO("Columbia"));
        spec.setChoices(choices);
-       spec.setAnswer("Columbia");
+       spec.setAnswer(new ChoiceDTO("Columbia"));
        MultipleChoiceQuestion mcq = MultipleChoiceQuestion.valueOf(spec);
        
        Instant now = Instant.now();
@@ -55,15 +56,15 @@ public class TestMultipleChoiceQuestion {
        Random random = new Random(seed);
        int index = random.nextInt(4);
        Choice answer = Choice.valueOf(choices.get(index));
-       System.out.println("Selected choice is " + answer);
+       System.out.println("Selected choice is " + answer.stringValue());
        boolean correct = mcq.isAnswer(answer);
        while (!correct) {
            index = random.nextInt(4);
            answer = Choice.valueOf(choices.get(index));
-           System.out.println("Selected choice is " + answer);
+           System.out.println("Selected choice is " + answer.stringValue());
            correct = mcq.isAnswer(answer);
        }
-       System.out.println("Correct answer is " + answer);
+       System.out.println("Correct answer is " + answer.stringValue());
     }
     
 }

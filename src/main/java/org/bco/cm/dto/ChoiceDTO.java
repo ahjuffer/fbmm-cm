@@ -22,39 +22,44 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.dto;
 
+import java.util.UUID;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.UUID;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import org.bco.cm.dto.ChoiceDTO;
 
 /**
- * One possible outcome of a multiple choice question.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Entity( name = "Choice" )
+@Entity( name = "ChoiceDTO" )
 @Table( name = "choices" )
-public class Choice implements Serializable {
-
+public class ChoiceDTO implements Serializable {
+    
     private UUID id_;
     private String phrase_;
-    private MultipleChoiceQuestion parent_;
+    private MultipleChoiceQuestionDTO parent_;
     
-    protected Choice()
+    public ChoiceDTO()
     {
         id_ = null;
         phrase_ = null;
         parent_ = null;
     }
     
+    public ChoiceDTO(String phrase)
+    {
+        this();
+        phrase_ = phrase;
+    }
+
     private void setId(UUID id)
     {
         id_ = id;
@@ -71,75 +76,37 @@ public class Choice implements Serializable {
         return id_;
     }       
     
-    private void setPhrase(String phrase)
+    public void setPhrase(String phrase)
     {
-        if ( phrase == null ) {
-            throw new NullPointerException("Choice: A phrase must be provided.");
-        }
-        if ( phrase.isEmpty() ) {
-            throw new IllegalArgumentException("Choice: A phrase must be provided.");
-        }
         phrase_ = phrase;
     }
     
-    /**
-     * Returns phrase.
-     * @return Phrase. Neither null nor empty.
-     */
     @Column( name = "phrase" )
     public String getPhrase()
     {
         return phrase_;
     }
     
-    /**
-     * Sets the parent (or owning) multiple choice question.
-     * @param parent Parent.
-     */
-    protected void setParentMultipleChoiceQuestion(MultipleChoiceQuestion parent)
+    protected void setParentMultipleChoiceQuestion(MultipleChoiceQuestionDTO parent)
     {
         parent_ = parent;
     }
     
-    /**
-     * Returns the parent (or owning) multiple choice question.
-     * @return Parent. May be null.
-     */
     @ManyToOne()
     @JoinColumn( name = "multiple_choice_question_id" )
-    protected MultipleChoiceQuestion getParentMultipleChoiceQuestion()
+    protected MultipleChoiceQuestionDTO getParentMultipleChoiceQuestion()
     {
         return parent_;
     }
     
-    /**
-     * Returns a new choice.
-     * @param spec New choice specification.
-     * @return Choice.
-     */
-    public static Choice valueOf(ChoiceDTO spec)
-    {
-        Choice choice = new Choice();
-        choice.setPhrase(spec.getPhrase());
-        return choice;
-    }
-    
-    /**
-     * Returns DTO representation.
-     * @return DTO.
-     */
-    public ChoiceDTO toDTO()
-    {
-        ChoiceDTO dto = new ChoiceDTO();
-        dto.setPhrase(phrase_);
-        return dto;
-    }
-    
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.phrase_);
-        return hash;
+    public String toString()
+    {
+        String newline = System.getProperty("line.separator");
+        StringBuilder s = new StringBuilder("ChoiceDTO : {").append(newline);
+        s.append("phrase - ").append(phrase_).append(newline);
+        s.append("}");
+        return s.toString();
     }
     
     @Override
@@ -154,17 +121,15 @@ public class Choice implements Serializable {
         if ( !(this.getClass().equals(other.getClass())) ) {
             return false;
         }
-        final Choice choice = (Choice)other;
-        return phrase_.equals(choice.getPhrase());
+        final ChoiceDTO choice = (ChoiceDTO)other;
+        return phrase_.equals(choice.getPhrase());        
     }
-    
-    /**
-     * Returns string value.
-     * @return String.
-     */
-    public String stringValue()
-    {
-        return phrase_;
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 23 * hash + Objects.hashCode(this.phrase_);
+        return hash;
     }
     
 }

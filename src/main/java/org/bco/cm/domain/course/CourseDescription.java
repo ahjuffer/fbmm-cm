@@ -141,7 +141,7 @@ public class CourseDescription
     }
     
     @Override
-    protected void setParent(Module module)
+    protected void setParentCourse(Module module)
     {
         module.setCourseDescription(this);
     }
@@ -166,13 +166,11 @@ public class CourseDescription
             throw new NullPointerException("Missing new course specification.");
         }
         CourseDescription course = new CourseDescription();
-        course.setCourseDescriptionId(courseDescriptionId);
+        course.setCourseDescriptionId(courseDescriptionId);        
         course.setTeacherId(teacher.getTeacherId());
-        course.setSummary(spec.getSummary());
-        course.setTitle(spec.getTitle());
-        spec.getModules().forEach(module -> {
-            course.addModule(module);
-        });
+        
+        course.populate(spec);
+        
         return course;
     }
     
@@ -184,12 +182,7 @@ public class CourseDescription
      */
     public void update(CourseDescriptionDTO spec)
     {
-        this.setSummary(spec.getSummary());
-        this.setTitle(spec.getTitle());
-        this.clearModules();
-        spec.getModules().forEach(module -> {
-            this.addModule(module);
-        });
+        this.populate(spec);
     }
     
     /**
@@ -199,8 +192,8 @@ public class CourseDescription
     public CourseDescriptionDTO toDTO()
     {
         CourseDescriptionDTO dto = new CourseDescriptionDTO();
-        this.populate(dto);
         dto.setCourseDescriptionId(courseDescriptionId_.stringValue());
+        this.populateDTO(dto);
         return dto;
     }
     
@@ -212,6 +205,9 @@ public class CourseDescription
     public void updateModule(int moduleId, ModuleDTO spec)
     {
         Module module = this.findModule(moduleId);
+        if ( module == null ) {
+            throw new IllegalArgumentException(moduleId + ": No such module.");
+        }
         module.update(spec);
     }
     

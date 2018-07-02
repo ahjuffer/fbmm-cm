@@ -36,18 +36,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.bco.cm.dto.AssignmentDTO;
-import org.bco.cm.dto.LearningPathDTO;
 import org.bco.cm.dto.ModuleDTO;
-import org.bco.cm.dto.OnlineMaterialDTO;
-import org.bco.cm.dto.QuizDTO;
+import org.bco.cm.dto.ModuleItemDTO;
 import org.hibernate.annotations.NaturalId;
 
 /**
- * A component in a course. A valid module must consist of a non-empty 
- * learning path, and may include an assignment and/or quiz.
+ * A component in a course. A valid module should consist of one or more module 
+ * items, each of which may represent for instance an assignment or a quiz.
  * @author André H. Juffer, Biocenter Oulu
  */
 @Entity( name = "Module" )
@@ -57,11 +54,9 @@ public class Module implements Serializable {
     private UUID id_;
     private int moduleId_;
     private String name_;
-    private LearningPath learningPath_;
-    private final Assignment assignment_;
-    private final Quiz quiz_;
+    private List<ModuleItem> moduleItems_;
     
-    // Parents
+    // Parents. Only one is assigned.
     private CourseDescription courseDescription_;
     private Course course_;
     
@@ -69,10 +64,7 @@ public class Module implements Serializable {
     {
         moduleId_ = -1;
         name_ = null;
-        learningPath_ = null;
-        assignment_ = null;
-        quiz_ = null;
-        //parent_ = null;
+        moduleItems_ = new ArrayList<>();        
         courseDescription_ = null;
         course_ = null;
     }
@@ -135,26 +127,46 @@ public class Module implements Serializable {
         return name_;
     }
     
-    private void setLearningPath(LearningPath learningPath)
+    private void setModuleItems(List<ModuleItem> moduleItems)
     {
-        learningPath_ = learningPath;
-        if ( learningPath_ != null ) {
-            learningPath_.setModule(this);
+        if ( moduleItems != null ) {
+            moduleItems_ = moduleItems;
+            moduleItems_.forEach(item -> item.setParentModule(this));
         }
     }
     
     /**
-     * Returns learning path.
-     * @return Learning path. Returns null if not yet assigned.
+     * Returns the module items.
+     * @return Module items.
      */
-    @OneToOne(
-        mappedBy = "module", 
+    @OneToMany(
+        mappedBy = "parentModule",
         cascade = CascadeType.ALL, 
         orphanRemoval = true
-    )
-    protected LearningPath getLearningPath()
+    )        
+    protected List<ModuleItem> getModuleItems()
     {
-        return learningPath_;
+        return moduleItems_;
+    }
+    
+    /**
+     * Adds a quiz.
+     * @param quiz Quiz.
+     */
+    void addQuiz(Quiz quiz)
+    {
+        quiz.setParentModule(this);
+        moduleItems_.add(quiz);
+    }
+    
+    /**
+     * Adds an assignment.
+     * @param assignment Assignment.
+     */
+    void addAssignent(Assignment assignment)
+    {
+        assignment.setParentModule(this);
+        moduleItems_.add(assignment);
     }
     
     /**
@@ -201,86 +213,35 @@ public class Module implements Serializable {
     }
         
     /**
-     * Module includes a learning path?
-     * @return Result.
-     */
-    boolean hasLearningPath()
-    {
-        if ( learningPath_ != null ) {
-            return learningPath_.hasOnlineMaterial() == false;
-        }
-        return false;
-    }
-    
-    /**
-     * Module includes an assignment?
-     * @return Result.
-     */
-    public boolean hasAssignment()
-    {
-        return assignment_ != null;
-    }
-    
-    /**
-     * Module includes a quiz?
-     * @return Result.
-     */
-    public boolean hasQuiz()
-    {
-        return quiz_ != null;
-    }
-    
-    /**
-     * Adds new online material.
-     * @param spec New online material specification.
-     */
-    void addOnlineMaterialToLearningPath(OnlineMaterialDTO spec)
-    {
-        learningPath_.appendOnlineMaterial(spec);
-    }
-    
-    /**
      * Creates a new module.
      * @param moduleId New module identifier. Must be provided by the owning 
      * course (description).
-     * @param spec New module specification. Must include module name. May include
-     * learning path, assignment and/or quiz.
+     * @param spec New module specification. Must include module name. May 
+     * include module items (e.g. assignments and/or quizzes).
      * @return New module.
      */
     static Module valueOf(int moduleId, ModuleDTO spec)
     {
         Module module = new Module();
         module.setModuleId(moduleId);
-        module.setName(spec.getName());
-        
-        if ( spec.getLearningPath() != null ) {
-            LearningPath learningPath = LearningPath.valueOf(spec.getLearningPath());            
-            module.setLearningPath(learningPath);
-        } else {
-            module.setLearningPath(LearningPath.empty());
-        }
-        
-        // Set assignment and/or quiz.
-        
+        module.update(spec);
         return module;
     }
     
     /**
      * Updates this module.
-     * @param spec Module update specification. Must include module name. May include
-     * learning path, assignment and/or quiz.
+     * @param spec Module update specification. Must include module name. May 
+     * include module items (e.g. assignments and/or quizzes). Previously 
+     * assigned module items are 
      */
     void update(ModuleDTO spec)
     {
+        this.clearModuleItems();
         this.setName(spec.getName());
-        if ( spec.getLearningPath() != null ) {
-            LearningPath learningPath = LearningPath.valueOf(spec.getLearningPath());
-            this.setLearningPath(learningPath);
-        } else {
-            this.setLearningPath(LearningPath.empty());
-        }
-        
-        // Set assignment and/or quiz.
+        List<ModuleItemDTO> dtos = spec.getModuleItems();
+        dtos.forEach(dto -> {
+            ModuleItemFactory.addModuleItem(dto, this);
+        });
     }
     
     /**
@@ -292,18 +253,6 @@ public class Module implements Serializable {
         ModuleDTO dto = new ModuleDTO();
         dto.setModuleId(this.getModuleId());
         dto.setName(name_);
-        if ( this.hasLearningPath() ) {
-            LearningPathDTO learningPath = learningPath_.toDTO();
-            dto.setLearningPath(learningPath);
-        }
-        if ( this.hasAssignment() ) {
-            AssignmentDTO assignment = assignment_.toDTO();
-            dto.setAssignment(assignment);
-        }
-        if ( this.hasQuiz() ) {
-            QuizDTO quiz = new QuizDTO();
-            dto.setQuiz(quiz);
-        }
         if ( courseDescription_ != null ) {
             dto.setCourseDescriptionId(
                 courseDescription_.getCourseDescriptionId().stringValue()
@@ -312,11 +261,13 @@ public class Module implements Serializable {
         if ( course_ != null ) {
             dto.setCourseId(course_.getCourseId().stringValue());
         }
+        List<ModuleItemDTO> moduleItems = ModuleItem.toDTOs(moduleItems_);
+        dto.setModuleItems(moduleItems);
         return dto;
     }
     
     /**
-     * Returns list data transfer objects 
+     * Returns list of data transfer objects 
      * @param modules Modules.
      * @return List.
      */
@@ -354,12 +305,10 @@ public class Module implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + this.moduleId_;
-        hash = 97 * hash + Objects.hashCode(this.name_);
-        hash = 97 * hash + Objects.hashCode(this.learningPath_);
-        hash = 97 * hash + Objects.hashCode(this.assignment_);
-        hash = 97 * hash + Objects.hashCode(this.quiz_);
+        int hash = 3;
+        hash = 59 * hash + this.moduleId_;
+        hash = 59 * hash + Objects.hashCode(this.name_);
+        hash = 59 * hash + Objects.hashCode(this.moduleItems_);
         return hash;
     }
     
@@ -367,12 +316,18 @@ public class Module implements Serializable {
      * Returns a copy of the given module.
      * @param moduleId Module identifier as provided by the owning course.
      * @param original Module.
-     * @return Copy.
+     * @return Copy. Will not include courseId or courseDescriptionId.
      */
     static Module makeCopy(int moduleId, Module original)
     {
         ModuleDTO dto = original.toDTO();
         return Module.valueOf(moduleId, dto);        
+    }
+    
+    private void clearModuleItems()
+    {
+        moduleItems_.forEach(moduleItem -> moduleItem.setParentModule(null));
+        moduleItems_.clear();        
     }
         
 }

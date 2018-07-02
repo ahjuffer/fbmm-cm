@@ -26,18 +26,20 @@ package org.bco.cm.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.hibernate.annotations.NaturalId;
-import javax.persistence.CascadeType;
 
 /**
  * DTO for Module.
@@ -50,9 +52,7 @@ public class ModuleDTO implements Serializable {
     private UUID id_;
     private int moduleId_;
     private String name_;
-    private LearningPathDTO learningPath_;
-    private AssignmentDTO assignment_;
-    private QuizDTO quiz_;
+    private List<ModuleItemDTO> moduleItems_;
     
     private CourseDescriptionDTO courseDescription_;
     private CourseDTO course_;
@@ -64,9 +64,8 @@ public class ModuleDTO implements Serializable {
     {
         moduleId_ = -1;
         name_ = null;
-        learningPath_ = null;
-        assignment_ = null;
-        quiz_ = null;
+        moduleItems_ = new ArrayList<>();
+        
         courseDescription_ = null;
         course_ = null;
         courseDescriptionId_ = null;
@@ -116,47 +115,29 @@ public class ModuleDTO implements Serializable {
     {
         return name_;
     }
-    
-    public void setLearningPath(LearningPathDTO learningPath)
+
+    public void setModuleItems(List<ModuleItemDTO> moduleItems)
     {
-        learningPath_ = learningPath;
-        if ( learningPath_ != null ) {
-            learningPath_.setModule(this);
-        }
+        moduleItems_ = moduleItems;
+        moduleItems_.forEach(item -> item.setParentModule(this));
     }
     
-    @OneToOne(
-        mappedBy = "module", 
+    public void addModuleItem(ModuleItemDTO moduleItem)
+    {
+        moduleItem.setParentModule(this);
+        moduleItems_.add(moduleItem);
+    }
+    
+    @OneToMany(
+        mappedBy = "parentModule",
         cascade = CascadeType.ALL, 
         orphanRemoval = true
-    )
-    public LearningPathDTO getLearningPath()
+    )    
+    public List<ModuleItemDTO> getModuleItems()
     {
-        return learningPath_;
+        return moduleItems_;
     }
     
-    public void setAssignment(AssignmentDTO assignment)
-    {
-        assignment_ = assignment;
-    }
-    
-    @Transient
-    public AssignmentDTO getAssignment()
-    {
-        return assignment_;
-    }
-    
-    public void setQuiz(QuizDTO quiz)
-    {
-        quiz_ = quiz;
-    }
-    
-    @Transient
-    public QuizDTO getQuiz()
-    {
-        return quiz_;
-    }    
-        
     public void setCourseDescriptionId(String id)
     {
         courseDescriptionId_ = id;
@@ -223,15 +204,7 @@ public class ModuleDTO implements Serializable {
         s.append("id - ").append(id_).append(newline);
         s.append("moduleId - ").append(moduleId_).append(newline);
         s.append("name - ").append(name_).append(newline);
-        if ( learningPath_ != null ) {
-            s.append("learningPath - ").append(learningPath_).append(newline);
-        }
-        if ( assignment_ != null ) {
-            s.append("assignment - ").append(assignment_).append(newline);
-        }
-        if ( quiz_ != null ) {
-            s.append("quiz - ").append(quiz_).append(newline);
-        }
+        s.append("moduleItems - ").append(moduleItems_).append(newline);
         s.append("courseDescriptionId - ").append(this.getCourseDescriptionId())
                                           .append(newline);
         s.append("courseId - ").append(this.getCourseId()).append(newline);

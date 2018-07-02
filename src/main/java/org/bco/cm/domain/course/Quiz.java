@@ -24,9 +24,14 @@
 
 package org.bco.cm.domain.course;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import org.bco.cm.dto.MultipleChoiceQuestionDTO;
 import org.bco.cm.dto.QuizDTO;
 
@@ -34,25 +39,16 @@ import org.bco.cm.dto.QuizDTO;
  * List of “quick” multiple choice questions designed to test knowledge.
  * @author André H. Juffer, Biocenter Oulu
  */
-public class Quiz {
+@Entity( name = "Quiz" )
+@DiscriminatorValue( value = "Quiz" )
+public class Quiz extends ModuleItem implements Serializable {
     
-    private UUID id_;
     private List<MultipleChoiceQuestion> questions_;
     
     protected Quiz()
     {
-        id_ = null;
+        super();
         questions_ = new ArrayList<>();
-    }
-    
-    private void setId(UUID id)
-    {
-        id_ = id;
-    }
-    
-    protected UUID getId()
-    {
-        return id_;
     }
     
     private void setQuestions(List<MultipleChoiceQuestion> questions)
@@ -66,8 +62,19 @@ public class Quiz {
             );
         }
         questions_ = questions;
+        questions_.forEach(question -> question.setParentQuiz(this));
     }
     
+    /**
+     * Returns multiple choice questions.
+     * @return Questions. Neither null nor empty.
+     */
+    @OneToMany( 
+        mappedBy = "parentQuiz", 
+        cascade = CascadeType.ALL, 
+        orphanRemoval = true,
+        fetch = FetchType.EAGER
+    )
     protected List<MultipleChoiceQuestion> getQuestions()
     {
         return questions_;
@@ -81,6 +88,7 @@ public class Quiz {
     public static Quiz valueOf(QuizDTO spec)
     {
         Quiz quiz = new Quiz();
+        quiz.populate(spec);
         List<MultipleChoiceQuestion> questions = new ArrayList<>();
         spec.getQuestions().forEach(q -> {
             MultipleChoiceQuestion question = MultipleChoiceQuestion.valueOf(q);
@@ -94,9 +102,11 @@ public class Quiz {
      * Returns data transfer object.
      * @return DTO.
      */
+    @Override
     public QuizDTO toDTO()
     {
         QuizDTO dto = new QuizDTO();
+        this.populateDTO(dto);
         List<MultipleChoiceQuestionDTO> questions = new ArrayList<>();
         questions_.forEach((question) -> {
             MultipleChoiceQuestionDTO q = question.toDTO();            

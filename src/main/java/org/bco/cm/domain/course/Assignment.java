@@ -24,6 +24,11 @@
 
 package org.bco.cm.domain.course;
 
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import org.bco.cm.dto.AssignmentDTO;
 
 /**
@@ -31,11 +36,100 @@ import org.bco.cm.dto.AssignmentDTO;
  * report covering the assignment.
  * @author André H. Juffer, Biocenter Oulu
  */
-public class Assignment {
+@Entity( name = "Assignment" )
+@DiscriminatorValue( value = "Assignment" )
+public class Assignment extends ModuleItem implements Serializable {
     
-    AssignmentDTO toDTO()
+    private String content_;
+    private Simulator simulator_;
+    
+    protected Assignment()
     {
-        return new AssignmentDTO();
+        super();
+        content_ = null;
+        simulator_ = null;
+    }
+    
+    private void setContent(String content)
+    {
+        if ( content == null ) {
+            throw new NullPointerException("Assignment: Content must be provided.");
+        }
+        if ( content.isEmpty() ) {
+            throw new IllegalArgumentException("Assignment: Content must be provided.");
+        }
+        content_ = content;
+    }
+    
+    @Column( name = "content" )
+    public String getContent()
+    {
+        return content_;
+    }
+    
+    private void setSimulatorName(String name)
+    {
+        if ( name != null ) {
+            simulator_ = Simulator.valueOf(name);
+        } 
+    }
+    
+    /**
+     * Returns simulator name.
+     * @return Name. May be null if no simulator is required.
+     */
+    @Column( name = "simulator" )
+    protected String getSimulatorName()
+    {
+        if ( simulator_ != null ) {
+            return simulator_.getName();
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Returns simulator to be used for this assignment.
+     * @return Simulator. May be null.
+     */
+    @Transient
+    public Simulator getSimulator()
+    {
+        return simulator_;
+    }
+    
+    /**
+     * Assignments does require a simulator?
+     * @return Result.
+     */
+    public boolean requiresSimulator()
+    {
+        return simulator_ != null;
+    }
+    
+    /**
+     * Returns new assignment.
+     * @param spec New assignment specification. Must specify content and 
+     * simulator name.
+     * @return New assignment.
+     */
+    public static Assignment valueOf(AssignmentDTO spec)
+    {
+        Assignment assignment = new Assignment();
+        assignment.populate(spec);
+        assignment.setContent(spec.getContent());
+        assignment.setSimulatorName(spec.getSimulatorName());
+        return assignment;
+    }
+    
+    @Override
+    public AssignmentDTO toDTO() 
+    {
+        AssignmentDTO dto = new AssignmentDTO();
+        super.populateDTO(dto);
+        dto.setContent(content_);
+        dto.setSimulatorName(this.getSimulatorName());
+        return dto;
     }
     
 }

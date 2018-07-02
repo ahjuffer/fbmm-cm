@@ -194,7 +194,7 @@ public class Course
     }
     
     @Override
-    protected void setParent(Module module)
+    protected void setParentCourse(Module module)
     {
         module.setCourse(this);
     }
@@ -493,7 +493,7 @@ public class Course
     public CourseDTO toDTO()
     {
         CourseDTO dto = new CourseDTO();
-        this.populate(dto);
+        this.populateDTO(dto);
         dto.setCourseId(courseId_.stringValue());
         dto.setCourseDescriptionId(courseDescriptionId_.stringValue());
         dto.setRoster(StudentMonitor.toDTOs(roster_.values()));

@@ -151,8 +151,8 @@ public class CourseCatalogController {
      * Adds new module to course description.
      * @param tId Teacher identifier.
      * @param cId Course identifier.
-     * @param spec New module specification. Must include name, may include learning
-     * path, assignment and/or quiz.
+     * @param spec New module specification. Must include name, may include quizzes,
+     * assignments, etc.
      * @return Update course.
      */
     @PostMapping(

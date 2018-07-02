@@ -68,6 +68,7 @@ public class TestCourseDescription {
         // Add module #1.
         ModuleDTO m1 = new ModuleDTO();
         m1.setName("MODULE #1");
+        /*
         LearningPathDTO path1 = new LearningPathDTO();
         OnlineMaterialDTO mat11 = new OnlineMaterialDTO();
         mat11.setContent("Some content...");
@@ -76,6 +77,7 @@ public class TestCourseDescription {
         mat12.setContent("Some other content...");
         path1.addOnlineMaterial(mat12);        
         m1.setLearningPath(path1);
+        */
         course.addModule(m1);
         Logger.getLogger("TestCourseDescription")
               .info("Update #1: " + course.toDTO());

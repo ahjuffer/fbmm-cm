@@ -73,12 +73,14 @@ import org.bco.cm.infrastructure.persistence.hibernate.HibernateCourseRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateEnrolmentRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyCourseRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyEnrolmentRegistry;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Bean configuration.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 @Configuration
+@ComponentScan(basePackages = "org.bco.cm")
 public class CmConfiguration 
 {
     

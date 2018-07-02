@@ -22,46 +22,65 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.hibernate;
+package org.bco.cm.domain.course;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.util.HibernateRepository;
-import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Repository
-public class HibernateCourseCatalog 
-    extends HibernateRepository<CourseDescription, CourseDescriptionId>
-    implements CourseCatalog
-{
-    private static final String FROM = 
-        "select course from " + CourseDescription.class.getName() + " course ";
+public class Simulator {
     
-    public HibernateCourseCatalog()
-    {
-        super();
+    private static final Simulator MD;
+    private static final List<Simulator> SIMULATORS;
+    
+    static {
+        SIMULATORS = new ArrayList<>();
+        MD = new Simulator("md");
+        SIMULATORS.add(MD);
     }
     
-    @Override
-    public List<CourseDescription> forAll() 
+    private final String name_;
+    
+    private Simulator(String name)
+    {        
+        name_ = name;
+    }
+    
+    String getName()
     {
-        return this.forMany(FROM);
+        return name_;
     }
 
-    @Override
-    public CourseDescription forOne(CourseDescriptionId courseId) 
+    /**
+     * Returns simulator.
+     * @param name Simulator name. Must be a single work, no spaces.
+     * @return Simulator.
+     * @throws IllegalArgumentException if simulator cannot be identifier.
+     */
+    public static Simulator valueOf(String name)
     {
-        String id = courseId.stringValue();
-        String hql =
-            FROM +
-            "where course.courseDescriptionId.id = '" + id + "'";
-        return this.forSingle(hql);
+        for (Simulator sim : SIMULATORS) {
+            if ( sim.getName().equals(name) ) {
+                return sim;
+            }
+        }
+        throw new IllegalArgumentException(name + ": No such simulator.");
     }
     
+    /**
+     * Returns all allowed simulator names.
+     * @return Names.
+     */
+    public static List<String> getNames()
+    {
+        List<String> names = new ArrayList<>();
+        for (Simulator sim : SIMULATORS) {
+            names.add(sim.getName());
+        }
+        return names;
+    }
+
 }

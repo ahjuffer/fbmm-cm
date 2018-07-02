@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Random;
 import org.bco.cm.dto.MultipleChoiceQuestionDTO;
 import org.bco.cm.dto.QuizDTO;
-
+import org.bco.cm.dto.ChoiceDTO;
 /**
  *
  * @author ajuffer
@@ -41,26 +41,27 @@ public class TestQuiz {
      */
     public static void main(String[] args) {
         QuizDTO spec = new QuizDTO();
+        spec.setTitle("Test");
         
         MultipleChoiceQuestionDTO q1 = new MultipleChoiceQuestionDTO();
         q1.setQuestion("Who will win the world cup?");
-        List<String> choices1 = new ArrayList<>();
-        choices1.add("Germany");
-        choices1.add("Brasil");
-        choices1.add("Belgium");
-        choices1.add("Columbia");
+        List<ChoiceDTO> choices1 = new ArrayList<>();
+        choices1.add(new ChoiceDTO("Germany"));
+        choices1.add(new ChoiceDTO("Brasil"));
+        choices1.add(new ChoiceDTO("Belgium"));
+        choices1.add(new ChoiceDTO("Columbia"));
         q1.setChoices(choices1);
-        q1.setAnswer("Columbia");
+        q1.setAnswer(new ChoiceDTO("Columbia"));
        
         MultipleChoiceQuestionDTO q2 = new MultipleChoiceQuestionDTO();
         q2.setQuestion("Who will be third?");
-        List<String> choices2 = new ArrayList<>();
-        choices2.add("Spain");
-        choices2.add("Portugal");
-        choices2.add("Croatia");
-        choices2.add("Russia");
+        List<ChoiceDTO> choices2 = new ArrayList<>();
+        choices2.add(new ChoiceDTO("Spain"));
+        choices2.add(new ChoiceDTO("Portugal"));
+        choices2.add(new ChoiceDTO("Croatia"));
+        choices2.add(new ChoiceDTO("Russia"));
         q2.setChoices(choices2);
-        q2.setAnswer("Russia");
+        q2.setAnswer(new ChoiceDTO("Russia"));
        
         List<MultipleChoiceQuestionDTO> qs = new ArrayList<>();
         qs.add(q1);
@@ -69,23 +70,23 @@ public class TestQuiz {
         spec.setQuestions(qs);
         System.out.println(spec);
        
+        Instant now = Instant.now();
+        long seed = now.toEpochMilli();
+        Random random = new Random(seed);
         Quiz quiz = Quiz.valueOf(spec);
         quiz.getQuestions().forEach(question -> {
             System.out.println(question.getQuestion().getPhrase());
-            Instant now = Instant.now();
-            long seed = now.toEpochMilli();
-            Random random = new Random(seed);
             int index = random.nextInt(4);
             Choice answer = question.getChoices().get(index);
-            System.out.println("Selected choice is " + answer);
+            System.out.println("Selected choice is " + answer.stringValue());
             boolean correct = question.isAnswer(answer);
             while (!correct) {
                 index = random.nextInt(4);
                 answer = question.getChoices().get(index);
-                System.out.println("Selected choice is " + answer);
+                System.out.println("Selected choice is " + answer.stringValue());
                 correct = question.isAnswer(answer);
             }
-            System.out.println("Correct answer is " + answer);
+            System.out.println("Correct answer is " + answer.stringValue());
        });
     }
     

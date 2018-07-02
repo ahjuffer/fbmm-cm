@@ -26,6 +26,29 @@
  * Created: Mar 27, 2018
  */
 
+create table choices (
+    id                              UUID not null primary key,
+    phrase                          varchar(200),
+    multiple_choice_question_id     UUID
+);
+
+create table multiple_choice_questions (
+    id                      UUID not null primary key,
+    quiz_id                 UUID,
+    answer                  varchar(200),
+    question                varchar(200)
+);
+
+create table module_items (
+    id                      UUID not null primary key,
+    discriminator           varchar(200),
+    module_id               UUID,
+    title                   varchar(200),
+    content                 varchar(3000),
+    simulator               varchar(200)
+);
+
+/* DEPRECATED
 create table online_materials
 (
     id                      UUID not null primary key,
@@ -39,6 +62,7 @@ create table learning_paths
     id                      UUID not null primary key,
     module_id               UUID
 );
+*/
 
 create table modules
 (
@@ -86,6 +110,18 @@ create table courses
     end_date                bigint
 );
 
+alter table choices
+add foreign key (multiple_choice_question_id)
+references multiple_choice_questions (id);
+
+alter table multiple_choice_questions
+add foreign key (quiz_id)
+references module_items (id);
+
+alter table module_items
+add foreign key (module_id)
+references modules (id);
+
 alter table modules
 add foreign key (course_description_id)
 references course_descriptions (id);
@@ -94,6 +130,7 @@ alter table modules
 add foreign key (course_id)
 references courses (id);
 
+/* DEPRECATED
 alter table learning_paths
 add foreign key (module_id)
 references modules (id);
@@ -101,6 +138,7 @@ references modules (id);
 alter table online_materials
 add foreign key (learning_path_id) 
 references learning_paths (id);
+*/
 
 alter table rosters
 add primary key (monitor_id, course_id);

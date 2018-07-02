@@ -24,10 +24,73 @@
 
 package org.bco.cm.dto;
 
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 /**
  * DTO for Assignment.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class AssignmentDTO {
+@Entity( name = "AssignmentDTO" )
+@DiscriminatorValue( value = "Assignment" )
+public class AssignmentDTO extends ModuleItemDTO implements Serializable {
+    
+    private String content_;
+    private String simulatorName_;
+    
+    public AssignmentDTO()
+    {
+        super();
+        content_ = null;
+        simulatorName_ = null;
+    }
+
+    public void setContent(String content)
+    {
+        content_ = content;
+    }
+    
+    @Column( name = "content" )
+    public String getContent()
+    {
+        return content_;
+    }
+    
+    public void setSimulatorName(String simulatorName)
+    {
+        simulatorName_ = simulatorName;
+    }
+    
+    @Column( name = "simulator" )
+    public String getSimulatorName()
+    {
+        return simulatorName_;
+    }
+    
+    @Override
+    public String toString()
+    {
+        String newline = System.getProperty("line.separator");
+        StringBuilder s = new StringBuilder("AssignmentDTO : {").append(newline);
+        s.append(super.toString()).append(newline);
+        s.append("content - ").append(content_).append(newline);
+        s.append("}");
+        return s.toString();
+    }
+    
+    private void setName(String name)
+    {
+        // Ignore.
+    }
+
+    @Override
+    @Transient
+    public String getName() 
+    {
+        return "assignment";
+    }
 
 }

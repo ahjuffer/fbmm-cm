@@ -126,7 +126,7 @@ public abstract class AbstractCourse
         }
         modules_ = modules;
         modules_.forEach(module -> {
-            this.setParent(module);
+            this.setParentCourse(module);
         });
     }
     
@@ -143,7 +143,7 @@ public abstract class AbstractCourse
      * Sets the owning course.
      * @param module Module.
      */
-    protected abstract void setParent(Module module);
+    protected abstract void setParentCourse(Module module);
     
     /**
      * Creates and adds new module.
@@ -171,7 +171,7 @@ public abstract class AbstractCourse
      */
     protected void addModule(Module module)
     {
-        this.setParent(module);
+        this.setParentCourse(module);
         modules_.add(module);
     }
         
@@ -247,12 +247,26 @@ public abstract class AbstractCourse
         }
         return null;
     }
+
+    /**
+     * Sets summary, title, and modules.
+     * @param spec Course specification.
+     */
+    protected void populate(AbstractCourseDTO spec)
+    {
+        this.setSummary(spec.getSummary());
+        this.setTitle(spec.getTitle());
+        this.clearModules();
+        spec.modules().forEach(module -> {
+            this.addModule(module);
+        });
+    }
     
     /**
-     * Populates with data common to all course types.
+     * Populates DTO with summary, title, modules and teacher identifier.
      * @param dto DTO.
      */
-    protected void populate(AbstractCourseDTO dto)
+    protected void populateDTO(AbstractCourseDTO dto)
     {
         dto.setSummary(summary_);
         dto.setTitle(title_);

@@ -42,6 +42,11 @@ public class HibernateReadOnlyTeacherRegistry
 {
     private static final String FROM = 
         "select teacher from " + TeacherDTO.class.getName() + " teacher ";
+    
+    public HibernateReadOnlyTeacherRegistry()
+    {
+        super();
+    }
 
     @Override
     public TeacherDTO getOne(TeacherId teacherId) 

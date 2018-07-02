@@ -24,40 +24,43 @@
 
 package org.bco.cm.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
 
 /**
  * DTO for Quiz.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class QuizDTO {
+@Entity( name = "QuizDTO" )
+@DiscriminatorValue( value = "Quiz" )
+public class QuizDTO extends ModuleItemDTO implements Serializable {
     
-    private UUID id_;
     private List<MultipleChoiceQuestionDTO> questions_;
     
     public QuizDTO()
     {
-        id_ = null;
         questions_ = new ArrayList<>();
     }
-    
-    private void setId(UUID id)
-    {
-        id_ = id;
-    }
-    
-    protected UUID getId()
-    {
-        return id_;
-    }    
     
     public void setQuestions(List<MultipleChoiceQuestionDTO> questions)
     {
         questions_ = questions;
     }
     
+    @OneToMany(
+        mappedBy = "parentQuiz",
+        cascade = CascadeType.ALL, 
+        orphanRemoval = true,
+        fetch = FetchType.EAGER
+    )    
     public List<MultipleChoiceQuestionDTO> getQuestions()
     {
         return questions_;
@@ -68,9 +71,21 @@ public class QuizDTO {
     {
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("QuizDTO: {").append(newline);
-        s.append("id - ").append(id_).append(newline);
+        s.append(super.toString()).append(newline);
         s.append("questions - ").append(questions_).append(newline);
         s.append("}");
         return s.toString();
+    }
+    
+    private void setName(String name)
+    {
+        // Ignore.
+    }
+        
+    @Override
+    @Transient
+    public String getName()
+    {
+        return "quiz";
     }
 }

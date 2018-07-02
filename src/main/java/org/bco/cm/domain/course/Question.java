@@ -25,11 +25,14 @@
 package org.bco.cm.domain.course;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 /**
  * A sentence, phrase, or gesture that seeks information through a reply.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+@Embeddable
 public class Question {
     
     private String phrase_;
@@ -58,6 +61,7 @@ public class Question {
      * Returns phrase.
      * @return Phrase. Neither null nor empty.
      */
+    @Column( name = "question" )
     public String getPhrase()
     {
         return phrase_;

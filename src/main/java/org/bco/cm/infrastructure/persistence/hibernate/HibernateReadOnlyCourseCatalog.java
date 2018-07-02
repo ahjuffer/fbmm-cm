@@ -44,6 +44,11 @@ public class HibernateReadOnlyCourseCatalog
 {
     private static final String FROM = 
         "select course from " + CourseDescriptionDTO.class.getName() + " course ";
+    
+    public HibernateReadOnlyCourseCatalog()
+    {
+        super();
+    }
 
     @Override
     public CourseDescriptionDTO getOne(CourseDescriptionId courseId) 
