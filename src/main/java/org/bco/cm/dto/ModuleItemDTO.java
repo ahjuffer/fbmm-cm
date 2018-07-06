@@ -25,6 +25,9 @@
 package org.bco.cm.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -41,15 +44,24 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+
 /**
  * DTO of ModuleItem
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+@JsonTypeInfo(
+  use = JsonTypeInfo.Id.NAME, 
+  include = JsonTypeInfo.As.PROPERTY, 
+  property = "name")
+@JsonSubTypes({ 
+  @Type( value = QuizDTO.class, name = "quiz" ), 
+  @Type( value = AssignmentDTO.class, name = "assignment" ) 
+})
 @Entity( name = "ModuleItemDTO" )
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table( name= "module_items" )
+@Table( name = "module_items" )
 @DiscriminatorColumn( 
-    name="discriminator", 
+    name = "discriminator", 
     discriminatorType = STRING
 )
 @DiscriminatorValue( "null" )

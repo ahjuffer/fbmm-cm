@@ -198,8 +198,9 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
         return roster_;
     }
     
-    public Collection<StudentMonitorDTO> roster()
-    {
+    @Transient
+    public Collection<StudentMonitorDTO> getStudentMonitors()
+    {   
         return roster_.values();
     }
     

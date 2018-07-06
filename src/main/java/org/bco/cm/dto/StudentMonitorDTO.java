@@ -67,7 +67,7 @@ public class StudentMonitorDTO implements Serializable {
     }
     
     @Column( name = "monitor_id" )
-    protected int getMonitorId()
+    public int getMonitorId()
     {
         return monitorId_;
     }
@@ -99,7 +99,8 @@ public class StudentMonitorDTO implements Serializable {
     {
         String newline = System.getProperty("line.separator");
         StringBuilder s = new StringBuilder("StudentMonitorDTO : {").append(newline);
-        s.append("studentId - ").append(studentId_).append(newline);
+        s.append("monitorId - ").append(monitorId_).append(newline);
+        s.append("studentId - ").append(studentId_).append(newline);        
         s.append("currentModuleId - ").append(currentModuleId_).append(newline);
         s.append("}");
         return s.toString();
