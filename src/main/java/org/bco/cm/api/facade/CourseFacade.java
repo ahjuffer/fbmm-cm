@@ -29,6 +29,7 @@ import java.util.List;
 import org.bco.cm.application.command.ActivateCourse;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.application.query.ReadOnlyCourseRegistry;
+import org.bco.cm.application.query.ReadOnlyEnrolmentRegistry;
 import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.teacher.TeacherId;
@@ -47,7 +48,20 @@ public class CourseFacade {
     private ReadOnlyCourseRegistry readOnlyCourseRegistry_;
     
     @Autowired
+    private ReadOnlyEnrolmentRegistry readOnlyEnrolmentRegistry_;
+    
+    @Autowired
     private CommandBus commandBus_;
+    
+    /**
+     * Generates new course identifier.
+     * @return New course identifier.
+     */
+    @Transactional( readOnly = true )
+    public CourseId generate()
+    {
+        return CourseId.generate();
+    }
     
     /**
      * Returns all courses, whether or not they are active.
@@ -78,7 +92,7 @@ public class CourseFacade {
     @Transactional( readOnly = true )
     public List<CourseDTO> getSpecified(CourseSpecification spec)
     {
-        return spec.query(readOnlyCourseRegistry_);
+        return spec.query(readOnlyCourseRegistry_, readOnlyEnrolmentRegistry_);
     }
 
     /**
@@ -90,9 +104,9 @@ public class CourseFacade {
      * the number of seats.
      */
     public void activate(TeacherId teacherId, 
-                               CourseDescriptionId courseDescriptionId,
-                               CourseId courseId, 
-                               CourseDTO spec)
+                         CourseDescriptionId courseDescriptionId,
+                         CourseId courseId, 
+                         CourseDTO spec)
     {
         ActivateCourse command = 
             new ActivateCourse(teacherId, courseDescriptionId, courseId, spec);

@@ -42,6 +42,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -289,7 +290,11 @@ public class Course
      * Returns students.
      * @return Students. May be empty.
      */
-    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true )
+    @OneToMany( 
+        cascade = CascadeType.ALL, 
+        orphanRemoval = true,
+        fetch = FetchType.EAGER
+    )
     @JoinTable(
         name = "rosters",
         joinColumns = @JoinColumn(name = "course_id"),
@@ -339,7 +344,7 @@ public class Course
         // Validate.
         if ( !courseDescription.hasModules() ) {
             throw new IllegalArgumentException(
-                "Course must provide at least one module to be activated."
+                "An active course must include at least one module."
             );
         }        
         Course course = new Course();

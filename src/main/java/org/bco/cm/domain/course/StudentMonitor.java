@@ -36,6 +36,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.bco.cm.domain.enrolment.EnrolmentNumber;
 import org.bco.cm.domain.student.Student;
 import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.dto.StudentMonitorDTO;
@@ -52,6 +53,7 @@ public class StudentMonitor implements Serializable
     private UUID id_;
     private int monitorId_;
     private StudentId studentId_;
+    private EnrolmentNumber enrolmentNumber_;
     private int currentModuleId_;
     
     protected StudentMonitor()
@@ -132,6 +134,22 @@ public class StudentMonitor implements Serializable
     {
         return currentModuleId_;
     }
+    
+    private void setEnrolmentNumber(EnrolmentNumber enrolmentNumber)
+    {
+        if ( enrolmentNumber == null ) {
+            throw new NullPointerException(
+                "studentMonitor: enrolment number must be provided."
+            );
+        }
+        enrolmentNumber_ = enrolmentNumber;
+    }
+    
+    @Embedded
+    public EnrolmentNumber getEnrolmentNumber()
+    {
+        return enrolmentNumber_;
+    }
 
     /**
      * Transfers student to the first module.
@@ -161,6 +179,7 @@ public class StudentMonitor implements Serializable
         dto.setCurrentModuleId(currentModuleId_);
         dto.setMonitorId(monitorId_);
         dto.setStudentId(studentId_.stringValue());
+        dto.setEnrolmentNumber(enrolmentNumber_.stringValue());
         return dto;
     }
     

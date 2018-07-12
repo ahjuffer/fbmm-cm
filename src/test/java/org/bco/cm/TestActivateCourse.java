@@ -23,43 +23,51 @@
  */
 package org.bco.cm;
 
-import java.util.List;
+import java.time.Instant;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bco.cm.api.facade.CourseCatalogFacade;
+import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.domain.course.CourseDescriptionId;
+import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.teacher.TeacherId;
-import org.bco.cm.dto.CourseDescriptionDTO;
+import org.bco.cm.dto.CourseDTO;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  *
  * @author ajuffer
  */
-public class TestCreateCourseDecription {
-    
+public class TestActivateCourse {
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        Logger logger = LogManager.getLogger();
+    public static void main(String[] args) 
+    {
+        Logger logger = LogManager.getLogger("org.bco.cm");
         try {
             AnnotationConfigApplicationContext context = 
                 new AnnotationConfigApplicationContext();
             context.register(CmConfiguration.class);
             context.refresh();
             
-            CourseCatalogFacade ccf = context.getBean(CourseCatalogFacade.class);
+            CourseFacade cf = context.getBean(CourseFacade.class);
             
-            CourseDescriptionDTO spec = new CourseDescriptionDTO();
-            spec.setSummary("This is the summary.");
-            spec.setTitle("This is the title");
+            CourseDescriptionId courseDescriptionId = 
+                new CourseDescriptionId("12128b4e-938f-4196-b275-7279ec7610bd");
+            CourseDTO spec = new CourseDTO();
+            spec.setNumberOfSeats(15);
+            Instant now = Instant.now();
+            spec.setStartDate(now);
+            Instant later = now.plusSeconds(365*24*60*60);  // One year
+            spec.setEndDate(later);
+            CourseId courseId = cf.generate();
             TeacherId teacherId = new TeacherId("123");
-            CourseDescriptionId courseId = ccf.generate();
-            ccf.postNewCourse(courseId, teacherId, spec);
             
-            CourseDescriptionDTO created = ccf.getCourse(courseId);
-            logger.info("Newly creaed course : " + created);
+            cf.activate(teacherId, courseDescriptionId, courseId, spec);
+            
+            CourseDTO course = cf.getCourse(courseId);
+            logger.info("Activated course: " + course.toString());
             
         } catch (Exception exception) {
             logger.error(exception.getMessage(), exception);

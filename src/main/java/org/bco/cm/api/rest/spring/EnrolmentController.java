@@ -54,17 +54,20 @@ public class EnrolmentController {
     private EnrolmentFacade enrolmentFacade_;
     
     /**
-     * Queries for enrolments.
+     * Queries for an enrolment.
      * @param cId Course identifier.
-     * @return Enrolments. May be empty.
+     * @param sId Student identifier.
+     * @return Enrolment.
      */
-    @GetMapping( 
+    @GetMapping(
         produces = "application/json;charset=UTF-8" 
     )
-    public List<EnrolmentDTO> getEnrolments(@RequestParam("courseId") String cId)
+    public EnrolmentDTO getEnrolment(@RequestParam("courseId") String cId,
+                                     @RequestParam("studentId") String sId)
     {
         CourseId courseId = new CourseId(cId);
-        return enrolmentFacade_.getEnrolments(courseId);
+        StudentId studentId = new StudentId(sId);
+        return enrolmentFacade_.getEnrolment(courseId, studentId);
     }
     
     /**
@@ -77,9 +80,8 @@ public class EnrolmentController {
         produces = "application/json;charset=UTF-8" 
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public EnrolmentDTO register(
-        @RequestParam("courseId") String cId,
-        @RequestParam("studentId") String sId)
+    public EnrolmentDTO register(@RequestParam("courseId") String cId,
+                                 @RequestParam("studentId") String sId)
     {
         EnrolmentNumber eid = enrolmentFacade_.generateEnrolmentNumber();
         CourseId courseId = new CourseId(cId);

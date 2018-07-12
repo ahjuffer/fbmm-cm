@@ -119,7 +119,7 @@ public class CourseCatalogController {
                                               @RequestBody CourseDescriptionDTO spec)
     {
         TeacherId teacherId = new TeacherId(tId);
-        CourseDescriptionId courseId = courseCatalogFacade_.generateCourseId();
+        CourseDescriptionId courseId = courseCatalogFacade_.generate();
         courseCatalogFacade_.postNewCourse(courseId, teacherId, spec);
         return courseCatalogFacade_.getCourse(courseId);
     }

@@ -76,6 +76,18 @@ public class EnrolmentFacade {
     {
         return readOnlyEnrolmentRegistry_.getOne(enrolmentNumber);
     }
+    
+    /**
+     * Returns enrolment in course of student.
+     * @param courseId Course identifier.
+     * @param studentId Student identifier.
+     * @return Enrolment.
+     */
+    @Transactional( readOnly = true )
+    public EnrolmentDTO getEnrolment(CourseId courseId, StudentId studentId)
+    {
+        return readOnlyEnrolmentRegistry_.getCourseEnrolment(courseId, studentId);
+    }
 
     /**
      * Registers student for a course.

@@ -59,7 +59,7 @@ public class CourseCatalogFacade {
      * @return Identifier.
      */
     @Transactional( readOnly = true )
-    public CourseDescriptionId generateCourseId()
+    public CourseDescriptionId generate()
     {
         return CourseDescriptionId.generate();
     }

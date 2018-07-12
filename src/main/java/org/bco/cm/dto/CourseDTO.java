@@ -36,6 +36,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -186,7 +187,11 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
         roster_ = roster;
     }
     
-    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true )
+    @OneToMany( 
+        cascade = CascadeType.ALL, 
+        orphanRemoval = true,
+        fetch = FetchType.EAGER
+    )
     @JoinTable(
         name = "rosters",
         joinColumns = @JoinColumn(name = "course_id"),

@@ -26,6 +26,7 @@ package org.bco.cm.domain.enrolment.event;
 
 import com.tribc.ddd.domain.event.AbstractEvent;
 import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.enrolment.EnrolmentNumber;
 import org.bco.cm.domain.student.StudentId;
 
 /**
@@ -34,14 +35,27 @@ import org.bco.cm.domain.student.StudentId;
  */
 public class EnrolmentCreated extends AbstractEvent {
 
+    private final EnrolmentNumber enrolmentNumber_;
     private final StudentId studentId_;
     private final CourseId courseId_;
     
-    public EnrolmentCreated(StudentId studentId, CourseId courseId)
+    public EnrolmentCreated(EnrolmentNumber enrolmentNumber,
+                            StudentId studentId, 
+                            CourseId courseId)
     {
         super(EnrolmentCreated.class);
+        enrolmentNumber_ = enrolmentNumber;
         studentId_ = studentId;
         courseId_ = courseId;
+    }
+    
+    /**
+     * Returns enrolment number.
+     * @return Enrolment number.
+     */
+    public EnrolmentNumber getEnrolmentNumber()
+    {
+        return enrolmentNumber_;
     }
     
     /**

@@ -25,14 +25,12 @@ package org.bco.cm.domain.course;
  */
 
 
-import org.bco.cm.domain.teacher.TeacherId;
-import org.bco.cm.domain.teacher.Teacher;
 import java.time.Instant;
+import org.bco.cm.domain.teacher.Teacher;
+import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.CourseDescriptionDTO;
-import org.bco.cm.dto.LearningPathDTO;
 import org.bco.cm.dto.ModuleDTO;
-import org.bco.cm.dto.OnlineMaterialDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.jboss.logging.Logger;
 
@@ -68,16 +66,6 @@ public class TestCourseDescription {
         // Add module #1.
         ModuleDTO m1 = new ModuleDTO();
         m1.setName("MODULE #1");
-        /*
-        LearningPathDTO path1 = new LearningPathDTO();
-        OnlineMaterialDTO mat11 = new OnlineMaterialDTO();
-        mat11.setContent("Some content...");
-        path1.addOnlineMaterial(mat11);
-        OnlineMaterialDTO mat12 = new OnlineMaterialDTO();
-        mat12.setContent("Some other content...");
-        path1.addOnlineMaterial(mat12);        
-        m1.setLearningPath(path1);
-        */
         course.addModule(m1);
         Logger.getLogger("TestCourseDescription")
               .info("Update #1: " + course.toDTO());

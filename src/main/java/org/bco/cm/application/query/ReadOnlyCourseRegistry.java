@@ -42,7 +42,7 @@ public interface ReadOnlyCourseRegistry extends ReadOnlyRepository<CourseDTO, Co
      * @param teacherId Teacher identifier.
      * @return Courses. May be empty.
      */
-    List<CourseDTO> getTeachersCourses(TeacherId teacherId);
+    List<CourseDTO> getTeachersCourses(TeacherId teacherId);    
     
     /**
      * Returns active courses.

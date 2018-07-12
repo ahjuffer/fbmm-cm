@@ -28,6 +28,7 @@ import java.util.List;
 import org.bco.cm.application.query.ReadOnlyEnrolmentRegistry;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.dto.EnrolmentDTO;
 import org.bco.cm.util.ReadOnlyHibernateRepository;
 
@@ -43,12 +44,12 @@ public class HibernateReadOnlyEnrolmentRegistry
         "select enrolment from " + EnrolmentDTO.class.getName() + " enrolment ";  
     
     @Override
-    public EnrolmentDTO getOne(EnrolmentNumber eid) 
+    public EnrolmentDTO getOne(EnrolmentNumber enrolmentNumber) 
     {
-        String n = eid.stringValue();
+        String en = enrolmentNumber.stringValue();
         String hql = 
             FROM + 
-            "where enrolment.enrolmentNumber = '" + n + "'";
+            "where enrolment.enrolmentNumber = '" + en + "'";
         return this.forSingle(hql);
     }
 
@@ -65,6 +66,28 @@ public class HibernateReadOnlyEnrolmentRegistry
         String hql =
             FROM +
             "where enrolment.courseId = '" + id + "'";
+        return this.forMany(hql);
+    }
+
+    @Override
+    public EnrolmentDTO getCourseEnrolment(CourseId courseId, StudentId studentId) 
+    {
+        String cid = courseId.stringValue();
+        String sid = studentId.stringValue();
+        String hql = 
+            FROM + "where " +
+            "enrolment.courseId = '" + cid + "' and " +
+            "enrolment.studentId = '" + sid + "'";
+        return this.forSingle(hql);
+    }
+
+    @Override
+    public List<EnrolmentDTO> getStudentEnrolments(StudentId studentId) 
+    {
+        String sid = studentId.stringValue();
+        String hql =
+            FROM + "where " +
+            "enrolment.studentId = '" + sid + "'";
         return this.forMany(hql);
     }
 

@@ -60,11 +60,12 @@ public class CoursesController {
    /**
      * Queries for courses according to specification. If no argument
      * is provided, all courses are returned.
-     * @return Courses. May be empty.
+     * @param studentId Student identifier.
      * @param all If provided, include all courses.
      * @param teacherId If provided, include all teacher's courses. 
      * @param ongoing If provided, include ongoing courses.
      * @param active If provided, include all active courses.
+     * @return Courses. May be empty.
      */
     @GetMapping( 
         produces = "application/json;charset=UTF-8" 
@@ -72,6 +73,7 @@ public class CoursesController {
     public List<CourseDTO> getCourses(
         @RequestParam(name = "all", required = false ) String all,
         @RequestParam(name = "teacherId", required = false ) String teacherId,
+        @RequestParam(name = "studentId", required = false ) String studentId,
         @RequestParam(name = "ongoing", required = false ) String ongoing,
         @RequestParam(name = "active", required = false ) String active
     )
@@ -82,6 +84,9 @@ public class CoursesController {
         }
         if ( teacherId != null ) {
             spec.setTeacherId(teacherId);
+        }
+        if ( studentId != null ) {
+            spec.setStudentId(studentId);
         }
         if ( ongoing != null ) {
             spec.setOngoing(true);

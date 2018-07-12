@@ -28,6 +28,7 @@ package org.bco.cm.application.query;
 import java.util.List;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.dto.EnrolmentDTO;
 import org.bco.cm.util.ReadOnlyRepository;
 
@@ -44,4 +45,19 @@ public interface ReadOnlyEnrolmentRegistry
      * @return Course enrolments.
      */
     List<EnrolmentDTO> getCourseEnrolments(CourseId courseId);
+    
+    /**
+     * Returns student's enrolments.
+     * @param studentId Student identifier.
+     * @return Enrolments. May be empty.
+     */
+    List<EnrolmentDTO> getStudentEnrolments(StudentId studentId);
+    
+    /**
+     * Returns enrolment in course of student.
+     * @param courseId Course identifier.
+     * @param studentId Student identifier.
+     * @return Enrolment.
+     */
+    EnrolmentDTO getCourseEnrolment(CourseId courseId, StudentId studentId);
 }

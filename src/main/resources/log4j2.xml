@@ -30,9 +30,8 @@ THE SOFTWARE.
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="org.springframework.beans.factory" level="DEBUG"/>
-    <Logger name="org.springframework.transaction" level="INFO" />
-    <Logger name="com.bco.cm" level="WARN"/>
+    <Logger name="org.springframework" level="INFO"/>
+    <Logger name="com.bco.cm" level="DEBUG"/>
     <Root level="error">
       <AppenderRef ref="Console"/>
     </Root>

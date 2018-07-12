@@ -26,9 +26,12 @@ package org.bco.cm.application.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.CourseDescriptionDTO;
+import org.bco.cm.dto.EnrolmentDTO;
 
 /**
  * Specifies a particular set of courses.
@@ -37,6 +40,7 @@ import org.bco.cm.dto.CourseDescriptionDTO;
 public class CourseSpecification {
     
     private String teacherId_;
+    private String studentId_;
     private boolean all_;
     private boolean ongoing_;
     private boolean active_;
@@ -47,6 +51,7 @@ public class CourseSpecification {
     public CourseSpecification()
     {
         teacherId_ = null;
+        studentId_ = null;
         all_ = false;
         ongoing_ = false;
         active_ = false;
@@ -57,6 +62,11 @@ public class CourseSpecification {
     {
         teacherId_ = teacherId;
         this.markSpecified();
+    }
+    
+    public void setStudentId(String studentId)
+    {
+        studentId_ = studentId;
     }
 
     public void setAll(boolean all)
@@ -98,13 +108,21 @@ public class CourseSpecification {
     /**
      * Queries for active courses in the registry according to the specification.
      * @param readOnlyCourseRegistry Course registry.
+     * @param readOnlyEnrolmentRegistry
      * @return Courses. May be empty.
      */
-    public List<CourseDTO> query(ReadOnlyCourseRegistry readOnlyCourseRegistry)
+    public List<CourseDTO> query(ReadOnlyCourseRegistry readOnlyCourseRegistry,
+                                 ReadOnlyEnrolmentRegistry readOnlyEnrolmentRegistry)
     {
         if ( teacherId_ != null ) {
             TeacherId teacherId = new TeacherId(teacherId_);
             return readOnlyCourseRegistry.getTeachersCourses(teacherId);
+        }        
+        if ( studentId_ != null ) {
+            StudentId studentId = new StudentId(studentId_);
+            List<CourseId> courseIds = 
+                this.findEnrolments(studentId, readOnlyEnrolmentRegistry);
+            return this.findStudentsCourses(courseIds, readOnlyCourseRegistry);
         }
         if ( all_ ) {
             return readOnlyCourseRegistry.getAll();
@@ -132,6 +150,28 @@ public class CourseSpecification {
     public boolean isSpecified()
     {
         return specified_;
+    }
+    
+    private List<CourseId> findEnrolments(StudentId studentId,
+                                          ReadOnlyEnrolmentRegistry readOnlyEnrolmentRegistry)
+    {
+        List<EnrolmentDTO> enrolments = readOnlyEnrolmentRegistry.getStudentEnrolments(studentId);
+        List<CourseId> courseIds = new ArrayList<>();
+        enrolments.forEach(enrolment -> {
+            courseIds.add(new CourseId(enrolment.getCourseId()));
+        });
+        return courseIds;
+    }
+    
+    private List<CourseDTO> findStudentsCourses(List<CourseId> courseIds,
+                                                ReadOnlyCourseRegistry readOnlyCourseRegistry)
+    {
+        List<CourseDTO> courses = new ArrayList<>();
+        courseIds.forEach(courseId -> {
+            CourseDTO course = readOnlyCourseRegistry.getOne(courseId);
+            courses.add(course);
+        });
+        return courses;
     }
 
 }
