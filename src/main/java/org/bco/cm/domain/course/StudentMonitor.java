@@ -135,22 +135,6 @@ public class StudentMonitor implements Serializable
         return currentModuleId_;
     }
     
-    private void setEnrolmentNumber(EnrolmentNumber enrolmentNumber)
-    {
-        if ( enrolmentNumber == null ) {
-            throw new NullPointerException(
-                "studentMonitor: enrolment number must be provided."
-            );
-        }
-        enrolmentNumber_ = enrolmentNumber;
-    }
-    
-    @Embedded
-    public EnrolmentNumber getEnrolmentNumber()
-    {
-        return enrolmentNumber_;
-    }
-
     /**
      * Transfers student to the first module.
      * @param first First (or start) module. Must not be null.
@@ -179,7 +163,6 @@ public class StudentMonitor implements Serializable
         dto.setCurrentModuleId(currentModuleId_);
         dto.setMonitorId(monitorId_);
         dto.setStudentId(studentId_.stringValue());
-        dto.setEnrolmentNumber(enrolmentNumber_.stringValue());
         return dto;
     }
     

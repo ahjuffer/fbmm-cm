@@ -28,6 +28,9 @@ import com.tribc.ddd.domain.event.EventHandler;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
+import org.bco.cm.domain.enrolment.Enrolment;
+import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.domain.enrolment.EnrolmentRegistry;
 import org.bco.cm.domain.enrolment.event.EnrolmentCreated;
 import org.bco.cm.domain.student.Student;
 import org.bco.cm.domain.student.StudentId;
@@ -45,15 +48,21 @@ public class EnrolmentCreatedHandler extends EventHandler<EnrolmentCreated> {
     
     @Autowired
     private StudentRegistry studentRepository_;
+    
+    @Autowired
+    private EnrolmentRegistry enrolmentRegistry_;
 
     @Override
     public void handle(EnrolmentCreated event) 
     {
-        CourseId courseId = event.getCourseId();
-        StudentId studentId = event.getStudentId();
+        EnrolmentNumber enrolentNumber = event.getEnrolmentNumber();        
+        Enrolment enrolment = enrolmentRegistry_.forOne(enrolentNumber);
         
+        CourseId courseId = enrolment.getCourseId();
+        StudentId studentId = enrolment.getStudentId();                
         Course course = courseRegistry_.forOne(courseId);
         Student student = studentRepository_.forOne(studentId);
+        
         course.enrolled(student);
         
         courseRegistry_.update(course);

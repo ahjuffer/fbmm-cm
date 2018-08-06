@@ -24,6 +24,7 @@
 
 package org.bco.cm.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
@@ -138,13 +139,13 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
         return startDate_;
     }
     
-    public void setStartDataTimestamp(Long timestamp)
+    public void setStartDateTimestamp(Long timestamp)
     {
         startDate_ = Instant.ofEpochMilli(timestamp);
     }
     
     @Column ( name = "start_date" )
-    public Long getStartDataTimestamp()
+    public Long getStartDateTimestamp()
     {
         return startDate_.toEpochMilli();
     }
@@ -187,6 +188,7 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
         roster_ = roster;
     }
     
+    @JsonIgnore
     @OneToMany( 
         cascade = CascadeType.ALL, 
         orphanRemoval = true,
@@ -207,6 +209,15 @@ public class CourseDTO extends AbstractCourseDTO implements Serializable
     public Collection<StudentMonitorDTO> getStudentMonitors()
     {   
         return roster_.values();
+    }
+    
+    public void setStudentMonitors(Collection<StudentMonitorDTO> monitors)
+    {
+        roster_.clear();
+        monitors.forEach(monitor -> {
+            String studentId = monitor.getStudentId();
+            roster_.put(studentId, monitor);
+        });
     }
     
     @OneToMany(

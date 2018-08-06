@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2018 Andr�� H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -142,6 +143,19 @@ public class CoursesController {
         return courseFacade_.getCourse(courseId);
     }
     
-    
+    @PutMapping(
+        path = "/{courseId}",
+        consumes = "application/json;charset=UTF-8",
+        produces = "application/json;charset=UTF-8"    
+    )
+    public CourseDTO updateCourse(@PathVariable("courseId") String cId,
+                                  @RequestParam("teacherId") String tId,
+                                  @RequestBody CourseDTO spec)
+    {
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        courseFacade_.update(courseId, teacherId, spec);        
+        return courseFacade_.getCourse(courseId);
+    }
     
 }   

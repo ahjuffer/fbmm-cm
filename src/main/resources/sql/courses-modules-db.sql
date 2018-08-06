@@ -87,7 +87,6 @@ create table student_monitors
     id                      UUID not null primary key,
     monitor_id              int,
     student_id              varchar(200),
-    enrolment_number        varchar(200),
     current_module_id       int
 );
 

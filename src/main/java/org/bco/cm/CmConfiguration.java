@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2018 Andr�� H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,7 @@ import org.bco.cm.application.command.handler.PostNewCourseHandler;
 import org.bco.cm.application.command.handler.RegisterNewStudentHandler;
 import org.bco.cm.application.command.handler.RegisterNewTeacherHandler;
 import org.bco.cm.application.command.handler.StartCourseHandler;
+import org.bco.cm.application.command.handler.UpdateCourseDescriptionHandler;
 import org.bco.cm.application.command.handler.UpdateCourseHandler;
 import org.bco.cm.application.command.handler.UpdateCourseModuleHandler;
 import org.bco.cm.application.event.handler.CmEventBus;
@@ -218,6 +219,12 @@ public class CmConfiguration
     PostNewCourseHandler postNewCourseHandler()
     {
         return new PostNewCourseHandler();
+    }
+    
+    @Bean
+    UpdateCourseDescriptionHandler updateCourseDescriptionHandler()
+    {
+        return new UpdateCourseDescriptionHandler();
     }
     
     @Bean

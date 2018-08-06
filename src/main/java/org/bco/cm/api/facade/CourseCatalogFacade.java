@@ -30,7 +30,7 @@ import org.bco.cm.application.command.AddCourseModule;
 import org.bco.cm.application.command.DeleteCourse;
 import org.bco.cm.application.command.DeleteCourseModule;
 import org.bco.cm.application.command.PostNewCourse;
-import org.bco.cm.application.command.UpdateCourse;
+import org.bco.cm.application.command.UpdateCourseDescription;
 import org.bco.cm.application.command.UpdateCourseModule;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
@@ -134,7 +134,7 @@ public class CourseCatalogFacade {
                              TeacherId teacherId,
                              CourseDescriptionDTO spec)
     {
-        UpdateCourse command = new UpdateCourse(teacherId, courseId, spec);
+        UpdateCourseDescription command = new UpdateCourseDescription(teacherId, courseId, spec);
         commandBus_.handle(command);
     }
     

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2018 Andr�� H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,9 +34,10 @@ import org.bco.cm.application.command.RegisterNewTeacher;
 import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.command.StartCourse;
-import org.bco.cm.application.command.UpdateCourse;
+import org.bco.cm.application.command.UpdateCourseDescription;
 import org.bco.cm.application.command.UpdateCourseModule;
 import org.bco.cm.application.command.CancelEnrolment;
+import org.bco.cm.application.command.UpdateCourse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -77,9 +78,9 @@ public class CmCommandBus extends CommandBus {
     }
     
     @Autowired
-    public void setUpdateCourseHandler(UpdateCourseHandler handler)
+    public void setUpdateCourseDescriptionHandler(UpdateCourseDescriptionHandler handler)
     {
-        this.setHandler(UpdateCourse.class, handler);
+        this.setHandler(UpdateCourseDescription.class, handler);
     }
     
     @Autowired
@@ -104,6 +105,12 @@ public class CmCommandBus extends CommandBus {
     public void setActivateCourseHandler(ActivateCourseHandler handler)
     {
         this.setHandler(ActivateCourse.class, handler);
+    }
+    
+    @Autowired
+    public void setUpdateCourseHandler(UpdateCourseHandler handler)
+    {
+        this.setHandler(UpdateCourse.class, handler);
     }
     
     @Autowired

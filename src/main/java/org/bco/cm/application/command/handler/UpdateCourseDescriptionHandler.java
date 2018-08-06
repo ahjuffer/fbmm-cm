@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andr&#233; H. Juffer, Biocenter Oulu.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,45 +24,46 @@
 
 package org.bco.cm.application.command.handler;
 
-import org.bco.cm.application.command.UpdateCourse;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.course.CourseService;
+import org.bco.cm.application.command.UpdateCourseDescription;
+import org.bco.cm.domain.course.CourseCatalog;
+import org.bco.cm.domain.course.CourseDescription;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.teacher.Teacher;
 import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.domain.course.CourseCatalogService;
+import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class UpdateCourseHandler 
-    extends CmCommandHandler<UpdateCourse>
-{
+public class UpdateCourseDescriptionHandler 
+    extends CmCommandHandler<UpdateCourseDescription> {
+
     @Autowired
     private TeacherRegistry teacherRepository_;   
     
     @Autowired
-    private CourseRegistry courseRegistry_;
-
+    private CourseCatalog courseCatalog_;
+    
     @Override
-    public void handle(UpdateCourse command) 
+    public void handle(UpdateCourseDescription command) 
     {
         TeacherId teacherId = command.getTeacherId();
         Teacher teacher = 
             CommandHandlerUtil.findTeacher(teacherId, teacherRepository_);
-        CourseId courseId = command.getCourseId();
-        Course course = CommandHandlerUtil.findCourse(courseId, courseRegistry_);
-        CourseDTO spec = command.getSpecification();
+        CourseDescriptionId courseId = command.getCourseId();
+        CourseDescriptionDTO spec = command.getSpecification();        
+        CourseDescription course = 
+            CommandHandlerUtil.findCourseDescription(courseId, courseCatalog_);
         
-        Course updated = CourseService.update(teacher, 
-                                              course, 
-                                              spec, 
-                                              courseRegistry_);
+        // Update course.
+        CourseDescription updated = 
+            CourseCatalogService.update(teacher, course, spec, courseCatalog_);
         
+        // Handle possible domain events.
         this.handleEvents(updated);
     }
 

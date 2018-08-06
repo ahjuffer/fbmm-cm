@@ -43,7 +43,6 @@ public class StudentMonitorDTO implements Serializable {
     private UUID id_;
     private int monitorId_;    
     private String studentId_;
-    private String enrolmentNumber_;
     private int currentModuleId_;
     
     private void setId(UUID id)
@@ -95,17 +94,6 @@ public class StudentMonitorDTO implements Serializable {
         return currentModuleId_;
     }
     
-    public void setEnrolmentNumber(String enrolmentNumber)
-    {
-        enrolmentNumber_ = enrolmentNumber;
-    }
-    
-    @Column( name = "enrolment_number" )
-    public String getEnrolmentNumber()
-    {
-        return enrolmentNumber_;
-    }
-    
     @Override
     public String toString()
     {
@@ -113,7 +101,6 @@ public class StudentMonitorDTO implements Serializable {
         StringBuilder s = new StringBuilder("StudentMonitorDTO : {").append(newline);
         s.append("monitorId - ").append(monitorId_).append(newline);
         s.append("studentId - ").append(studentId_).append(newline);       
-        s.append("enrolmentNumber - ").append(enrolmentNumber_).append(newline);
         s.append("currentModuleId - ").append(currentModuleId_).append(newline);
         s.append("}");
         return s.toString();

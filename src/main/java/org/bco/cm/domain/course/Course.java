@@ -52,6 +52,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.bco.cm.domain.course.event.CourseStarted;
+import org.bco.cm.domain.enrolment.Enrolment;
 import org.bco.cm.domain.student.Student;
 import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.dto.CourseDTO;
@@ -363,10 +364,27 @@ public class Course
         // Specification.
         course.setStartDate(spec.getStartDate());
         course.setEndDate(spec.getEndDate());
+        if ( !course.isEndDateAfterStartDate() ) {
+            throw new IllegalStateException(
+                "Course start date must be -before- end date."
+            );
+        }
         course.setNumberOfSeats(spec.getNumberOfSeats());
         
         // Done.
         return course;
+    }
+    
+    public void update(CourseDTO spec)
+    {
+        this.setStartDate(spec.getStartDate());
+        this.setEndDate(spec.getEndDate());
+        if ( !this.isEndDateAfterStartDate() ) {
+            throw new IllegalStateException(
+                "Course start date must be -before- end date."
+            );
+        }
+        this.setNumberOfSeats(spec.getNumberOfSeats());
     }
     
     /**
@@ -459,7 +477,11 @@ public class Course
     public boolean isActive()
     {
         Instant now = Instant.now();
-        return ( now.isAfter(startDate_) && now.isBefore(endDate_) );
+        long timestamp = now.toEpochMilli();
+        long startTimestamp = startDate_.toEpochMilli();
+        long endTimestamp = endDate_.toEpochMilli();
+        return timestamp >= startTimestamp && timestamp <= endTimestamp;
+        //return ( now.isAfter(startDate_) && now.isBefore(endDate_) );
     }
     
     /**
@@ -599,6 +621,12 @@ public class Course
             id = RANDOM.nextInt(bound);
         }
         return id;
+    }
+    
+    @Transient
+    private boolean isEndDateAfterStartDate()
+    {
+        return this.getEndDate().isAfter(this.getStartDate());
     }
 
 }

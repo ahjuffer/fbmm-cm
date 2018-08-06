@@ -255,7 +255,7 @@ public class Enrolment implements Identifiable, Eventful, Serializable
      */
     private void raiseStudentEnrolledInCourseEvent()
     {
-        events_.add(new EnrolmentCreated(eid_, studentId_, courseId_));
+        events_.add(new EnrolmentCreated(eid_));
     }
     
     private void raiseCanceledEvent()

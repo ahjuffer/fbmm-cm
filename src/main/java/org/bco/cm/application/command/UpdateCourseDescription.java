@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andr&#233; H. Juffer, Biocenter Oulu.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,25 +25,25 @@
 package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.teacher.TeacherId;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.CourseDescriptionDTO;
 
 /**
- * Command for updating active course in course registry.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Command for updating a course description in course catalog.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class UpdateCourse extends AbstractCommand {
+public class UpdateCourseDescription extends AbstractCommand {
     
     private final TeacherId teacherId_;
-    private final CourseId courseId_;
-    private final CourseDTO spec_;
+    private final CourseDescriptionId courseId_;
+    private final CourseDescriptionDTO spec_;
     
-    public UpdateCourse(TeacherId teacherId,
-                        CourseId courseId,
-                        CourseDTO spec)
+    public UpdateCourseDescription(TeacherId teacherId,
+                                   CourseDescriptionId courseId,
+                                   CourseDescriptionDTO spec)
     {
-        super(UpdateCourse.class);
+        super(UpdateCourseDescription.class);
         teacherId_ = teacherId;
         courseId_ = courseId;
         spec_ = spec;
@@ -54,17 +54,18 @@ public class UpdateCourse extends AbstractCommand {
         return teacherId_;
     }
     
-    public CourseId getCourseId()
+    public CourseDescriptionId getCourseId()
     {
         return courseId_;
     }
     
     /**
-     * Return update specification.
+     * Returns update specification.
      * @return Specification.
      */
-    public CourseDTO getSpecification()
+    public CourseDescriptionDTO getSpecification()
     {
         return spec_;
     }
+
 }

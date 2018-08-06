@@ -74,6 +74,30 @@ public class CourseService {
         return course;
     }
     
+    /**
+     * Updates course in the course registry.
+     * @param teacher teacher updating course.
+     * @param course Course being updated.
+     * @param spec Update specification.
+     * @param courseRegistry
+     * @return 
+     */
+    public static Course update(Teacher teacher, 
+                                Course course,
+                                CourseDTO spec,
+                                CourseRegistry courseRegistry)
+    {
+        if ( !course.isResponsibleTeacher(teacher) ) {
+            throw new IllegalArgumentException(
+                "Teacher is not responsible for course '" + 
+                course.getTitle() + "'."
+            );
+        }
+        course.update(spec);
+        courseRegistry.update(course);
+        return course;
+    }
+    
     private static boolean isStillActive(List<Course> courses)
     {
         for (Course course : courses) {

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 André H. Juffer, Biocenter Oulu
+ * Copyright 2018 Andr�� H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ package org.bco.cm.api.facade;
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
 import org.bco.cm.application.command.ActivateCourse;
+import org.bco.cm.application.command.UpdateCourse;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.application.query.ReadOnlyCourseRegistry;
 import org.bco.cm.application.query.ReadOnlyEnrolmentRegistry;
@@ -97,7 +98,7 @@ public class CourseFacade {
 
     /**
      * Activates courses.
-     * @param teacherId Identifier of teacher who activates course.
+     * @param teacherId Identifier of teacher activating course.
      * @param courseDescriptionId Identifier of course to be activated.
      * @param courseId Identifier of newly activated course.
      * @param spec Activation specification. Must hold start and end date plus
@@ -110,6 +111,21 @@ public class CourseFacade {
     {
         ActivateCourse command = 
             new ActivateCourse(teacherId, courseDescriptionId, courseId, spec);
+        commandBus_.handle(command);
+    }
+    
+    /**
+     * Updates course.
+     * @param courseId Course identifier.
+     * @param teacherId Identifier of teacher updating course.
+     * @param spec Update specification. Must hold start and end date plus
+     * the number of seats.
+     */
+    public void update(CourseId courseId,
+                       TeacherId teacherId,
+                       CourseDTO spec)
+    {
+        UpdateCourse command = new UpdateCourse(teacherId, courseId, spec);
         commandBus_.handle(command);
     }
 
