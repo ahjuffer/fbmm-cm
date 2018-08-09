@@ -89,15 +89,11 @@ public class CourseCatalogController {
     {   
         CourseSpecification spec = new CourseSpecification();
         if ( all != null ) {
-            spec.setAll(true);
-        }
-        if ( teacherId != null ) {
+            spec.selectAll();
+        } else if ( teacherId != null ) {
             spec.setTeacherId(teacherId);
-        }
-        
-        // If no argument was provided, return all courses.
-        if ( !spec.isSpecified() ) {
-            spec.setAll(true);
+        } else {
+            spec.selectAll();
         }
         
         return courseCatalogFacade_.getSpecified(spec);

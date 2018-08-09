@@ -60,28 +60,39 @@ public class CoursesController {
     
    /**
      * Queries for courses according to specification. If no argument
-     * is provided, all courses are returned.
-     * @param studentId Student identifier.
-     * @param all If provided, include all courses.
-     * @param teacherId If provided, include all teacher's courses. 
+     * is provided, all courses with the end date later than today's are returned.
+     * @param studentId Student identifier. If provided, include all courses that 
+     * the student has enrolled in.
+     * @param all If provided, include courses with end dates later than todays date.
+     * @param past If provided, include -all- courses, where 'all' must be provided 
+     * as well.
+     * @param teacherId Teacher identifier. If provided, include all teacher's courses. 
      * @param ongoing If provided, include ongoing courses.
-     * @param active If provided, include all active courses.
-     * @return Courses. May be empty.
+     * @param active If provided, include courses that are active now.
+     * @param courseDescriptionId Course description identifier. If provided, all
+     * activated courses associated with course descriptions are returned. Past 
+     * courses are excluded.
+     * @return Courses. May be empty. Will be empty if no arguments were provided.
      */
     @GetMapping( 
         produces = "application/json;charset=UTF-8" 
     )    
     public List<CourseDTO> getCourses(
         @RequestParam(name = "all", required = false ) String all,
+        @RequestParam(name = "past", required = false ) String past,
         @RequestParam(name = "teacherId", required = false ) String teacherId,
         @RequestParam(name = "studentId", required = false ) String studentId,
         @RequestParam(name = "ongoing", required = false ) String ongoing,
-        @RequestParam(name = "active", required = false ) String active
+        @RequestParam(name = "active", required = false ) String active,
+        @RequestParam(name = "courseDescriptionId", required = false) String courseDescriptionId
     )
     {
         CourseSpecification spec = new CourseSpecification();
         if ( all != null ) {
-            spec.setAll(true);
+            spec.selectAll();
+            if (past != null ) {
+                spec.selectAll(true);
+            }
         }
         if ( teacherId != null ) {
             spec.setTeacherId(teacherId);
@@ -89,18 +100,16 @@ public class CoursesController {
         if ( studentId != null ) {
             spec.setStudentId(studentId);
         }
+        if ( courseDescriptionId != null ) {
+            spec.setCourseDescriptionId(courseDescriptionId);
+        }
         if ( ongoing != null ) {
-            spec.setOngoing(true);
+            spec.selectOngoing();
         }
         if ( active != null ) {
-            spec.setActive(true);
+            spec.selectActive();
         }
-        
-        // If no argument was provided, return all courses.
-        if ( !spec.isSpecified() ) {
-            spec.setAll(true);
-        }
-        
+                
         return courseFacade_.getSpecified(spec);
     }
 

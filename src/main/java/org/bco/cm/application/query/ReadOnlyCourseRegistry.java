@@ -26,6 +26,7 @@
 package org.bco.cm.application.query;
 
 import java.util.List;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDTO;
@@ -45,14 +46,37 @@ public interface ReadOnlyCourseRegistry extends ReadOnlyRepository<CourseDTO, Co
     List<CourseDTO> getTeachersCourses(TeacherId teacherId);    
     
     /**
-     * Returns active courses.
+     * Returns currently active courses (these are courses with their end date later
+     * than today's date).
      * @return Active courses. May be empty,
      */
     List<CourseDTO> getActive();
     
     /**
-     * Returns ongoing courses.
+     * Returns currently ongoing courses.
      * @return Ongoing courses. may be empty,
      */
     List<CourseDTO> getOngoing();
+    
+    /**
+     * Inquires whether activated courses associated with course description exists.
+     * @param courseDescriptionId Course description identifier.
+     * @return Result.
+     */
+    boolean exists(CourseDescriptionId courseDescriptionId);
+    
+    /**
+     * Returns activated courses associated with course description.
+     * @param courseDescriptionId Course description identifier.
+     * @return Course.
+     */
+    List<CourseDTO> getActivatedCourses(CourseDescriptionId courseDescriptionId);
+    
+    /**
+     * Queries for all courses.
+     * @param includePast If true, only courses with the end date later than today's
+     * date are selected.
+     * @return Courses. May be empty.
+     */
+    List<CourseDTO> getAll(boolean includePast);
 }

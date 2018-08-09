@@ -68,7 +68,7 @@ import org.hibernate.annotations.NaturalId;
  * During the active period, the teacher starts the course at a time of his 
  * choosing, after which enrolled students can begin with the first module. Students 
  * progress to the next module possibly conditioned on intermediate results 
- * obtained for assignments and/or quizzes.
+ * obtained for assignments and/or quizzes. 
  * @author André H. Juffer, Biocenter Oulu
  */
 @Entity( name = "Course" )

@@ -35,6 +35,7 @@ import org.bco.cm.dto.EnrolmentDTO;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.application.command.EnrolStudent;
+import org.bco.cm.application.query.EnrolmentSpecification;
 
 /**
  * Simplified interface for the enrolment registry.
@@ -87,6 +88,17 @@ public class EnrolmentFacade {
     public EnrolmentDTO getEnrolment(CourseId courseId, StudentId studentId)
     {
         return readOnlyEnrolmentRegistry_.getCourseEnrolment(courseId, studentId);
+    }
+    
+    /**
+     * Returns specified enrolments.
+     * @param spec Specification.
+     * @return Enrolments. May be empty. 
+     */
+    @Transactional( readOnly = true )
+    public List<EnrolmentDTO> getSpecified(EnrolmentSpecification spec)
+    {
+        return spec.query(readOnlyEnrolmentRegistry_);
     }
 
     /**

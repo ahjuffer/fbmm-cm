@@ -26,6 +26,7 @@ package org.bco.cm.api.rest.spring;
 
 import java.util.List;
 import org.bco.cm.api.facade.EnrolmentFacade;
+import org.bco.cm.application.query.EnrolmentSpecification;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.enrolment.EnrolmentNumber;
 import org.bco.cm.domain.student.StudentId;
@@ -54,20 +55,42 @@ public class EnrolmentController {
     private EnrolmentFacade enrolmentFacade_;
     
     /**
+     * Queries for enrolments.
+     * @param courseId Course identifier. 
+     * @param studentId Student identifier.
+     * @return Enrolments.
+     */
+    @GetMapping(
+        produces = "application/json;charset=UTF-8"
+    )
+    public List<EnrolmentDTO> getEnrolments(
+        @RequestParam(name = "courseId", required = false) String courseId,
+        @RequestParam(name = "studentId", required= false) String studentId
+    )
+    {
+        EnrolmentSpecification spec = new EnrolmentSpecification();
+        if ( courseId != null ) {
+            spec.setCourseId(courseId);
+        }
+        if ( studentId != null ) {
+            spec.setStudentId(studentId);
+        }
+        return enrolmentFacade_.getSpecified(spec);
+    }
+    
+    /**
      * Queries for an enrolment.
-     * @param cId Course identifier.
-     * @param sId Student identifier.
+     * @param number Enrolment number.
      * @return Enrolment.
      */
     @GetMapping(
-        produces = "application/json;charset=UTF-8" 
+        path = "/{enrolmentNumber}",
+        produces = "application/json;charset=UTF-8"        
     )
-    public EnrolmentDTO getEnrolment(@RequestParam("courseId") String cId,
-                                     @RequestParam("studentId") String sId)
+    public EnrolmentDTO getEnrolment(@PathVariable("enrolmentNumber") String number)
     {
-        CourseId courseId = new CourseId(cId);
-        StudentId studentId = new StudentId(sId);
-        return enrolmentFacade_.getEnrolment(courseId, studentId);
+        EnrolmentNumber enrolmentNumber = new EnrolmentNumber(number);
+        return enrolmentFacade_.getEnrolment(enrolmentNumber);
     }
     
     /**

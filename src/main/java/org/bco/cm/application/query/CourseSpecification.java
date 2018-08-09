@@ -24,8 +24,10 @@
 
 package org.bco.cm.application.query;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.domain.teacher.TeacherId;
@@ -39,64 +41,110 @@ import org.bco.cm.dto.EnrolmentDTO;
  */
 public class CourseSpecification {
     
-    private String teacherId_;
-    private String studentId_;
+    private TeacherId teacherId_;
+    private StudentId studentId_;
+    private CourseDescriptionId courseDescriptionId_;
     private boolean all_;
+    private boolean excludePast_;
     private boolean ongoing_;
     private boolean active_;
-    
-    // If false, all attributes have their default values.
-    private boolean specified_;
     
     public CourseSpecification()
     {
         teacherId_ = null;
         studentId_ = null;
+        courseDescriptionId_ = null;
         all_ = false;
+        excludePast_ = true;
         ongoing_ = false;
         active_ = false;
-        specified_ = false;
-    }
-    
-    public void setTeacherId(String teacherId)
-    {
-        teacherId_ = teacherId;
-        this.markSpecified();
-    }
-    
-    public void setStudentId(String studentId)
-    {
-        studentId_ = studentId;
-    }
-
-    public void setAll(boolean all)
-    {
-        all_ = all;
-        this.markSpecified();
-    }
-    
-    public void setOngoing(boolean ongoing)
-    {
-        ongoing_ = ongoing;
-        this.markSpecified();
-    }
-    
-    public void setActive(boolean active)
-    {
-        active_ = active;
-        this.markSpecified();
     }
     
     /**
-     * Queries for courses in the catalog according to the specification.
+     * Sets teacher identifier. If set, all teacher's courses or course 
+     * descriptions are selected. All other specifications are ignored.
+     * @param teacherId Identifier.
+     */
+    public void setTeacherId(String teacherId)
+    {
+        teacherId_ = new TeacherId(teacherId);
+    }
+    
+    /**
+     * Sets student identifier. If set, all courses student has enrolled in are 
+     * selected. All other specifications are ignored.
+     * @param studentId Identifier.
+     */
+    public void setStudentId(String studentId)
+    {
+        studentId_ = new StudentId(studentId);
+    }
+    
+    /**
+     * Sets course description identifier. If set, all activated courses 
+     * associated with the given course description (identifier) with an
+     * end date later than today's date are selected. All other 
+     * specifications are ignored.
+     * @param courseDescriptionId Identifier.
+     */
+    public void setCourseDescriptionId(String courseDescriptionId)
+    {
+        courseDescriptionId_ = new CourseDescriptionId(courseDescriptionId);
+    }
+
+    /**
+     * Specifies to select all activated courses or all course descriptions. 
+     * @param excludePast If true, only courses with the end date later than today's
+     * date are selected. This flag only applies if querying the course registry.
+     * @see #selectAll() 
+     */
+    public void selectAll(boolean excludePast)
+    {
+        all_ = true;
+        excludePast_ = excludePast;
+    }
+    
+    /**
+     * Specifies to select all activated courses or all course descriptions. If
+     * querying the course registry, only courses with the end date later than today's
+     * date are selected.
+     * @see #selectAll(boolean) 
+     */
+    public void selectAll()
+    {
+        all_ = true;
+         excludePast_ = false;
+    }
+    
+    /**
+     * Specifies to select all ongoing courses. Only applies if querying the course
+     * registry.
+     */
+    public void selectOngoing()
+    {
+        ongoing_ = true;
+    }
+    
+    /**
+     * Specifies to select all courses that are active right now. That is, 
+     * courses are selected for which today's date is later than the 
+     * start date and earlier than the end date of a course. Only applies 
+     * if querying the course registry.
+     */
+    public void selectActive()
+    {
+        active_ = true;
+    }
+    
+    /**
+     * Queries for courses in the catalog according to a specification.
      * @param readOnlyCourseCatalog Course catalog.
      * @return Courses. May be empty.
      */
     public List<CourseDescriptionDTO> query(ReadOnlyCourseCatalog readOnlyCourseCatalog)
     {
         if ( teacherId_ != null ) {
-            TeacherId teacherId = new TeacherId(teacherId_);
-            return readOnlyCourseCatalog.getTeachersCourses(teacherId);
+            return readOnlyCourseCatalog.getTeachersCourses(teacherId_);
         }
         List<CourseDescriptionDTO> courses = new ArrayList<>();
         if ( all_ ) {
@@ -106,7 +154,7 @@ public class CourseSpecification {
     }
     
     /**
-     * Queries for active courses in the registry according to the specification.
+     * Queries for active courses in the registry according to a specification.
      * @param readOnlyCourseRegistry Course registry.
      * @param readOnlyEnrolmentRegistry
      * @return Courses. May be empty.
@@ -115,17 +163,18 @@ public class CourseSpecification {
                                  ReadOnlyEnrolmentRegistry readOnlyEnrolmentRegistry)
     {
         if ( teacherId_ != null ) {
-            TeacherId teacherId = new TeacherId(teacherId_);
-            return readOnlyCourseRegistry.getTeachersCourses(teacherId);
+            return this.findTeachersCourses(readOnlyCourseRegistry);
         }        
         if ( studentId_ != null ) {
-            StudentId studentId = new StudentId(studentId_);
             List<CourseId> courseIds = 
-                this.findEnrolments(studentId, readOnlyEnrolmentRegistry);
+                this.findEnrolments(readOnlyEnrolmentRegistry);
             return this.findStudentsCourses(courseIds, readOnlyCourseRegistry);
         }
+        if ( courseDescriptionId_ != null ) {
+            return this.findActivatedCourses(readOnlyCourseRegistry);
+        }
         if ( all_ ) {
-            return readOnlyCourseRegistry.getAll();
+            return readOnlyCourseRegistry.getAll(excludePast_);
         }
         List<CourseDTO> courses = new ArrayList<>();
         if ( active_ ) {
@@ -137,25 +186,15 @@ public class CourseSpecification {
         return courses;
     }
     
-    private void markSpecified()
+    private List<CourseDTO> findTeachersCourses(ReadOnlyCourseRegistry readOnlyCourseRegistry)
     {
-        specified_ = true;
+        return readOnlyCourseRegistry.getTeachersCourses(teacherId_);
     }
     
-    /**
-     * Any of the attributes were specified? That is, are -not- having their default
-     * values.
-     * @return Result
-     */
-    public boolean isSpecified()
+    private List<CourseId> findEnrolments(ReadOnlyEnrolmentRegistry readOnlyEnrolmentRegistry)
     {
-        return specified_;
-    }
-    
-    private List<CourseId> findEnrolments(StudentId studentId,
-                                          ReadOnlyEnrolmentRegistry readOnlyEnrolmentRegistry)
-    {
-        List<EnrolmentDTO> enrolments = readOnlyEnrolmentRegistry.getStudentEnrolments(studentId);
+        List<EnrolmentDTO> enrolments = 
+            readOnlyEnrolmentRegistry.getStudentEnrolments(studentId_);
         List<CourseId> courseIds = new ArrayList<>();
         enrolments.forEach(enrolment -> {
             courseIds.add(new CourseId(enrolment.getCourseId()));
@@ -172,6 +211,21 @@ public class CourseSpecification {
             courses.add(course);
         });
         return courses;
+    }
+    
+    private List<CourseDTO> findActivatedCourses(ReadOnlyCourseRegistry readOnlyCourseRegistry)
+    {
+        List<CourseDTO> courses = 
+            readOnlyCourseRegistry.getActivatedCourses(courseDescriptionId_);
+        List<CourseDTO> activated = new ArrayList<>();
+        Instant now = Instant.now();
+        courses.forEach(course -> {
+            Instant endDate = course.getEndDate();
+            if (endDate.isAfter(now) ) {
+                activated.add(course);
+            }
+        });
+        return activated;
     }
 
 }

@@ -27,6 +27,7 @@ package org.bco.cm.infrastructure.persistence.hibernate;
 import java.time.Instant;
 import java.util.List;
 import org.bco.cm.application.query.ReadOnlyCourseRegistry;
+import org.bco.cm.domain.course.CourseDescriptionId;
 import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.teacher.TeacherId;
 import org.bco.cm.dto.CourseDTO;
@@ -62,6 +63,21 @@ public class HibernateReadOnlyCourseRegistry
     {
         return this.forMany(FROM);
     }
+    
+    @Override
+    public List<CourseDTO> getAll(boolean includePast)
+    {
+        if ( includePast ) {
+            return this.getAll();
+        } else {
+            Instant now = Instant.now();
+            long timestamp = now.toEpochMilli();
+            String hql = 
+                FROM +
+                "where course.endDateTimestamp >= " + timestamp;
+            return this.forMany(hql);            
+        }
+    }
 
     @Override
     public List<CourseDTO> getTeachersCourses(TeacherId teacherId) 
@@ -91,6 +107,22 @@ public class HibernateReadOnlyCourseRegistry
         String hql =
             FROM + 
             "where course.ongoing = true";
+        return this.forMany(hql);
+    }
+    
+    @Override
+    public boolean exists(CourseDescriptionId courseDescriptionId)
+    {
+        return !this.getActivatedCourses(courseDescriptionId).isEmpty();
+    }
+    
+    @Override
+    public List<CourseDTO> getActivatedCourses(CourseDescriptionId courseDescriptionId)
+    {
+        String id = courseDescriptionId.stringValue();
+        String hql = 
+            FROM + 
+            "where course.courseDescriptionId = '" + id + "'";
         return this.forMany(hql);
     }
 
