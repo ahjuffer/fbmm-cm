@@ -24,20 +24,34 @@
 
 package org.bco.cm.util;
 
+import java.io.Serializable;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 /**
  * An email address
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class EmailAddress {
+@Embeddable
+public class EmailAddress implements Serializable {
     
     private InternetAddress value_;
     
-    private void setValue(InternetAddress value)
+    protected EmailAddress()
     {
-        value_ = value;
+        value_ = null;
+    }
+    
+    private void setValue(String value) throws AddressException
+    {
+        value_ = new InternetAddress(value);
+    }
+    
+    @Column( name = "email_address" )
+    protected String getValue()
+    {
+        return value_.toString();
     }
     
     /**
@@ -46,7 +60,7 @@ public class EmailAddress {
      */
     public String stringValue()
     {
-        return value_.toString();
+        return this.getValue();
     }
 
     /**
@@ -68,7 +82,7 @@ public class EmailAddress {
                 throw new AddressException("Missing @ character.");
             }
             EmailAddress emailAddress = new EmailAddress();            
-            emailAddress.setValue(new InternetAddress(value));
+            emailAddress.setValue(value);
             return emailAddress;
         } catch (AddressException exception) {
             throw new IllegalArgumentException(

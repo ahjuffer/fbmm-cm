@@ -44,6 +44,18 @@ public class StudentMonitorDTO implements Serializable {
     private int monitorId_;    
     private String studentId_;
     private int currentModuleId_;
+    private int currentModuleItemId_;
+    private boolean complete_;
+    
+    public StudentMonitorDTO()
+    {
+        id_ = null;
+        monitorId_ = -1;
+        studentId_ = null;
+        currentModuleId_ = -1;
+        currentModuleItemId_ = -1;
+        complete_ = false;
+    }
     
     private void setId(UUID id)
     {
@@ -94,6 +106,28 @@ public class StudentMonitorDTO implements Serializable {
         return currentModuleId_;
     }
     
+    private void setCurrentModuleItemId(int currentModuleItemId)
+    {
+        currentModuleItemId_ = currentModuleItemId;
+    }
+    
+    @Column( name = "current_module_item_id" )
+    public int getCurrentModuleItemId()
+    {
+        return currentModuleItemId_;
+    }        
+    
+    public void setComplete(boolean complete)    
+    {
+        complete_ = complete;
+    }
+    
+    @Column( name = "complete" )
+    public boolean getComplete()
+    {
+        return complete_;
+    }
+    
     @Override
     public String toString()
     {
@@ -102,6 +136,8 @@ public class StudentMonitorDTO implements Serializable {
         s.append("monitorId - ").append(monitorId_).append(newline);
         s.append("studentId - ").append(studentId_).append(newline);       
         s.append("currentModuleId - ").append(currentModuleId_).append(newline);
+        s.append("currentModuleItemId - ").append(currentModuleItemId_).append(newline);
+        s.append("complete - ").append(complete_).append(newline);
         s.append("}");
         return s.toString();
     }

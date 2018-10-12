@@ -26,7 +26,7 @@ package org.bco.cm;
 
 
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.dto.StudentDTO;
 
 /**

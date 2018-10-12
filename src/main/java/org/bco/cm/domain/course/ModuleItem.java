@@ -59,12 +59,14 @@ public abstract class ModuleItem implements Serializable {
     private UUID id_;
     private String title_;
     private Module parent_;
+    private int moduleItemId_;
     
     protected ModuleItem()
     {        
         id_ = null;
         title_ = null;
         parent_ = null;
+        moduleItemId_ = -1;
     }
     
     protected void setId(UUID id)
@@ -98,6 +100,17 @@ public abstract class ModuleItem implements Serializable {
     public String getTitle()
     {
         return title_;
+    }
+    
+    void setModuleItemId(int moduleItemId)
+    {
+        moduleItemId_ = moduleItemId;
+    }
+    
+    @Column( name = "module_item_id" )
+    public int getModuleItemId()
+    {
+        return moduleItemId_;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andr&#233; H. Juffer, Biocenter Oulu.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,49 +22,52 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command;
+package org.bco.cm.util;
 
-import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.util.CourseId;
-import org.bco.cm.util.TeacherId;
-import org.bco.cm.dto.CourseDTO;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import org.bco.cm.util.Id;
 
 /**
- * Command for updating active course in course registry.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Identifies enrolment.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class UpdateCourse extends AbstractCommand {
+@Embeddable
+public class EnrolmentNumber extends Id<String> {
     
-    private final TeacherId teacherId_;
-    private final CourseId courseId_;
-    private final CourseDTO spec_;
-    
-    public UpdateCourse(TeacherId teacherId,
-                        CourseId courseId,
-                        CourseDTO spec)
+    protected EnrolmentNumber()
     {
-        super(UpdateCourse.class);
-        teacherId_ = teacherId;
-        courseId_ = courseId;
-        spec_ = spec;
+        super();
     }
 
-    public TeacherId getTeacherId()
+    public EnrolmentNumber(String value)
     {
-        return teacherId_;
+        super(value);
     }
     
-    public CourseId getCourseId()
+    private void setId(String value)
     {
-        return courseId_;
+        this.setValue(value);
     }
     
     /**
-     * Return update specification.
-     * @return Specification.
+     * Returns enrolment number value.
+     * @return Value.
      */
-    public CourseDTO getSpecification()
+    @Column( name = "enrolment_number" )
+    protected String getId()
     {
-        return spec_;
+        return this.getValue();
+    }
+    
+    /**
+     * Generates new number.
+     * @return Number.
+     */
+    public static EnrolmentNumber generate()
+    {
+        UUID uuid = UUID.randomUUID();
+        return new EnrolmentNumber(uuid.toString());
     }
 }

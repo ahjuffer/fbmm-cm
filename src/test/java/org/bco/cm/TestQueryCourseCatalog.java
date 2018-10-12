@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bco.cm.api.facade.CourseCatalogFacade;
-import org.bco.cm.domain.course.CourseDescriptionId;
+import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -51,15 +51,17 @@ public class TestQueryCourseCatalog {
             
             CourseCatalogFacade ccf = context.getBean(CourseCatalogFacade.class);
             
-            /*
+            
             List<CourseDescriptionDTO> courses = ccf.getAllCourses();
             logger.info("All courses : " + courses);
-            */
             
+            
+            /*
             CourseDescriptionId courseId = 
                 new CourseDescriptionId("b71b4635-1eb5-40bf-b973-de5492b1a135");
             CourseDescriptionDTO found = ccf.getCourse(courseId);
             logger.info("Found course: " + found);
+            */  
             
         } catch (Exception exception) {
             logger.error(exception.getMessage(), exception);

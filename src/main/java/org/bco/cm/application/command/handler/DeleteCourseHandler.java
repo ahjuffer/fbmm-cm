@@ -25,12 +25,12 @@
 package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.DeleteCourse;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.course.CourseCatalogService;
+import org.bco.cm.domain.course.Course;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.domain.course.CourseRegistry;
+import org.bco.cm.domain.course.CourseService;
 import org.bco.cm.domain.teacher.Teacher;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,12 +39,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class DeleteCourseHandler extends CmCommandHandler<DeleteCourse> {
-
-    @Autowired
-    private TeacherRegistry teacherRepository_;   
     
     @Autowired
-    private CourseCatalog courseCatalog_;
+    CourseRegistry courseRegistry_;
+    
+    @Autowired
+    private TeacherRegistry teacherRepository_;       
 
     @Override
     public void handle(DeleteCourse command) 
@@ -52,12 +52,10 @@ public class DeleteCourseHandler extends CmCommandHandler<DeleteCourse> {
         TeacherId teacherId = command.getTeacherId();
         Teacher teacher = 
             CommandHandlerUtil.findTeacher(teacherId, teacherRepository_);
-        CourseDescriptionId courseId = command.getCourseId();
-        CourseDescription course = 
-            CommandHandlerUtil.findCourseDescription(courseId, courseCatalog_);
+        CourseId courseId = command.getCourseId();
+        Course course = CommandHandlerUtil.findCourse(courseId, courseRegistry_);
         
-        CourseCatalogService.remove(teacher, course, courseCatalog_);      
+        CourseService.remove(teacher, course, courseRegistry_);
     }
-    
-    
+
 }

@@ -24,6 +24,7 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.domain.teacher.Teacher;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
@@ -32,9 +33,9 @@ import org.bco.cm.dto.ModuleDTO;
  * Domain service for handling course descriptions in the course catalog.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CourseCatalogService {
+public class CourseDescriptionService {
     
-    private CourseCatalogService()
+    private CourseDescriptionService()
     {        
     }
     

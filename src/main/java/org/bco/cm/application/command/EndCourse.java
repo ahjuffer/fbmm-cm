@@ -22,53 +22,43 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.application.command;
 
-import java.io.Serializable;
-import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import org.bco.cm.util.Id;
+import com.tribc.cqrs.domain.command.AbstractCommand;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.TeacherId;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Embeddable
-public class CourseDescriptionId extends Id<String> implements Serializable {
+public class EndCourse extends AbstractCommand {
     
-    protected CourseDescriptionId()
-    {
-        super();
-    }
+    private final TeacherId teacherId_;
+    private final CourseId courseId_;
     
-    public CourseDescriptionId(String id)
+    public EndCourse(TeacherId teacherId, CourseId courseId)
     {
-        super(id);
-    }
-    
-    private void setId(String id)
-    {
-        this.setValue(id);
-    }
-    
-    /**
-     * Returns identifier value.
-     * @return Value.
-     */
-    @Column(name="course_description_id")
-    protected String getId()
-    {
-        return this.getValue();
+        super(EndCourse.class);
+        teacherId_ = teacherId;
+        courseId_ = courseId;
     }
 
     /**
-     * Returns new identifier.
-     * @return Identifier.
+     * Returns identifier course to be started.
+     * @return Course identifier.
      */
-    public static CourseDescriptionId generate()
+    public CourseId getCourseId()
     {
-        UUID uuid = UUID.randomUUID();
-        return new CourseDescriptionId(uuid.toString());
+        return courseId_;
+    }
+    
+    /**
+     * Returns identifier teacher end course.
+     * @return Teacher identifier.
+     */
+    public TeacherId getTeacherId()
+    {
+        return teacherId_;
     }
 }

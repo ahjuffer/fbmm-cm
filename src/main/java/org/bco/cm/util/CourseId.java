@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2017 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.teacher;
+package org.bco.cm.util;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -31,21 +31,21 @@ import javax.persistence.Embeddable;
 import org.bco.cm.util.Id;
 
 /**
- * Identifies teacher.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Identifies course.
+ * @author André H. Juffer, Biocenter Oulu
  */
 @Embeddable
-public class TeacherId extends Id<String> implements Serializable {
+public class CourseId extends Id<String> implements Serializable {
     
-    protected TeacherId()
+    protected CourseId()
     {
         super();
     }
     
-    public TeacherId(String value)
+    public CourseId(String id)
     {
-        super(value);
-    }
+        super(id);
+    }    
     
     private void setId(String id)
     {
@@ -56,19 +56,20 @@ public class TeacherId extends Id<String> implements Serializable {
      * Returns identifier value.
      * @return Value.
      */
-    @Column(name="teacher_id")
+    @Column(name="course_id")
     protected String getId()
     {
         return this.getValue();
     }
     
     /**
-     * Generates new teacher identifier.
+     * Returns new identifier.
      * @return Identifier.
      */
-    public static TeacherId generateId()
+    public static CourseId generate()
     {
         UUID uuid = UUID.randomUUID();
-        return new TeacherId(uuid.toString());
+        return new CourseId(uuid.toString());
     }
+        
 }

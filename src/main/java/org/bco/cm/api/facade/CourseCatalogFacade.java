@@ -27,15 +27,15 @@ package org.bco.cm.api.facade;
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
 import org.bco.cm.application.command.AddCourseModule;
-import org.bco.cm.application.command.DeleteCourse;
+import org.bco.cm.application.command.DeleteCourseDescription;
 import org.bco.cm.application.command.DeleteCourseModule;
 import org.bco.cm.application.command.PostNewCourse;
 import org.bco.cm.application.command.UpdateCourseDescription;
 import org.bco.cm.application.command.UpdateCourseModule;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.application.query.ReadOnlyCourseCatalog;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +145,7 @@ public class CourseCatalogFacade {
      */
     public void deleteCourse(CourseDescriptionId courseId, TeacherId teacherId)
     {
-        DeleteCourse command = new DeleteCourse(teacherId, courseId);
+        DeleteCourseDescription command = new DeleteCourseDescription(teacherId, courseId);
         commandBus_.handle(command);
     }
     

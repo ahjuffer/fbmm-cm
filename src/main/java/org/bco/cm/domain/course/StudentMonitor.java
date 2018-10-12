@@ -36,10 +36,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import javax.persistence.Transient;
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
 import org.bco.cm.dto.StudentMonitorDTO;
+import org.bco.cm.util.StudentId;
 
 /**
  * Observes, supervises (controls) the activities of a student while going 
@@ -53,14 +53,18 @@ public class StudentMonitor implements Serializable
     private UUID id_;
     private int monitorId_;
     private StudentId studentId_;
-    private EnrolmentNumber enrolmentNumber_;
     private int currentModuleId_;
+    private int currentModuleItemId_;
+    private boolean complete_;
     
     protected StudentMonitor()
     {
+        id_ = null;
         monitorId_ = -1;
         studentId_ = null;
         currentModuleId_ = -1;
+        currentModuleItemId_ = -1;
+        complete_ = true;
     }
     
     protected StudentMonitor(int monitorId, Student student)
@@ -68,12 +72,7 @@ public class StudentMonitor implements Serializable
         monitorId_ = monitorId;
         studentId_ = student.getStudentId();
         currentModuleId_ = -1;
-    }
-    
-    protected StudentMonitor(int monitorId, Student student, Module module)
-    {
-        this(monitorId, student);
-        currentModuleId_ = module.getModuleId();
+        currentModuleItemId_ = -1;
     }
     
     private void setId(UUID id)
@@ -135,6 +134,28 @@ public class StudentMonitor implements Serializable
         return currentModuleId_;
     }
     
+    private void setCurrentModuleItemId(int currentModuleItemId)
+    {
+        currentModuleItemId_ = currentModuleItemId;
+    }
+    
+    @Column( name = "current_module_item_id" )
+    protected int getCurrentModuleItemId()
+    {
+        return currentModuleItemId_;
+    }    
+
+    private void setComplete(boolean complete)    
+    {
+        complete_ = complete;
+    }
+    
+    @Column( name = "complete" )
+    protected boolean getComplete()
+    {
+        return complete_;
+    }
+    
     /**
      * Transfers student to the first module.
      * @param first First (or start) module. Must not be null.
@@ -151,6 +172,34 @@ public class StudentMonitor implements Serializable
     void toNextModule(Module next)
     {
         currentModuleId_ = next.getModuleId();
+        currentModuleItemId_ = next.getModuleItems().get(0).getModuleItemId();
+    }
+    
+    /**
+     * Transfers student to next module item of the current module.
+     * @param next Next module item.
+     */
+    void toNextModuleItem(ModuleItem next)
+    {
+        currentModuleItemId_ = next.getModuleItemId();
+    }
+    
+    /**
+     * Notification student completed course.
+     */
+    void completedCourse()
+    {
+        complete_ = true;
+    }
+    
+    /**
+     * Student completed the course?
+     * @return Result.
+     */
+    @Transient
+    boolean isComplete()
+    {
+        return complete_;
     }
     
     /**
@@ -182,5 +231,4 @@ public class StudentMonitor implements Serializable
         }
         return map;
     }
-
 }

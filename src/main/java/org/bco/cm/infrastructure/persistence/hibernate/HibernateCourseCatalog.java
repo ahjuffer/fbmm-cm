@@ -27,7 +27,7 @@ package org.bco.cm.infrastructure.persistence.hibernate;
 import java.util.List;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.CourseDescriptionId;
+import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.util.HibernateRepository;
 import org.springframework.stereotype.Repository;
 

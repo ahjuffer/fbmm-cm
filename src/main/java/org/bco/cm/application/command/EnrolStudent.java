@@ -25,9 +25,9 @@
 package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.EnrolmentNumber;
+import org.bco.cm.util.StudentId;
 
 /**
  * Command to enroll student in course.

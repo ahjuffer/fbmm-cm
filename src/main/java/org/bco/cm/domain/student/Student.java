@@ -24,6 +24,7 @@
 
 package org.bco.cm.domain.student;
 
+import org.bco.cm.util.StudentId;
 import com.tribc.cqrs.util.EventUtil;
 import com.tribc.ddd.domain.event.Event;
 import com.tribc.ddd.domain.event.Eventful;
@@ -39,6 +40,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.bco.cm.domain.student.event.CompletedQuiz;
+import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.student.event.NewStudentRegistered;
 import org.bco.cm.dto.StudentDTO;
 import org.bco.cm.util.Person;
@@ -154,10 +157,29 @@ public class Student extends Person<StudentId> implements Eventful, Serializable
     }
     
     /**
-     * Signals that this student is newly registered.
+     * Notifies student is newly registered.
      */
     void registered()        
     {
         events_.add(new NewStudentRegistered(this));
     }
+    
+    /**
+     * Notifies student completes a quiz.
+     * @param courseId Course identifier.
+     */
+    public void completeQuiz(CourseId courseId)
+    {
+        events_.add(new CompletedQuiz(this.getStudentId(), courseId));
+    }
+    
+    /**
+     * Notifies student completes an assignment.
+     * @param courseId Course identifier.
+     */
+    public void completeAssignment(CourseId courseId)
+    {
+        
+    }
+    
 }

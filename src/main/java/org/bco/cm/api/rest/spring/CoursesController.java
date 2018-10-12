@@ -28,12 +28,13 @@ import java.util.List;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.TeacherFacade;
 import org.bco.cm.application.query.CourseSpecification;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -109,6 +110,14 @@ public class CoursesController {
         if ( active != null ) {
             spec.selectActive();
         }
+        if (all == null && 
+            teacherId == null && 
+            studentId == null &&
+            ongoing == null &&
+            active == null && 
+            courseDescriptionId == null ) {
+            spec.selectAll();
+        }
                 
         return courseFacade_.getSpecified(spec);
     }
@@ -152,6 +161,51 @@ public class CoursesController {
         return courseFacade_.getCourse(courseId);
     }
     
+    /**
+     * Starts a course.
+     * @param cId Course identifier.
+     * @param tId Identifier of teacher starting course.
+     * @return Started course.
+     */
+    @PutMapping(
+        path = "/{courseId}/start",
+        produces = "application/json;charset=UTF-8"    
+    )
+    public CourseDTO startCourse(@PathVariable("courseId") String cId,
+                                 @RequestParam("teacherId") String tId)
+    {
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        courseFacade_.start(courseId, teacherId);
+        return courseFacade_.getCourse(courseId);
+    }
+    
+    /**
+     * Stops a course. 
+     * @param cId Course identifier.
+     * @param tId Identifier of teacher starting course.
+     * @return Stopped course.
+     */
+    @PutMapping(
+        path = "/{courseId}/stop",
+        produces = "application/json;charset=UTF-8"  
+    )
+    public CourseDTO stopCourse(@PathVariable("courseId") String cId,
+                                 @RequestParam("teacherId") String tId)
+    {
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        courseFacade_.stop(courseId, teacherId);
+        return courseFacade_.getCourse(courseId);        
+    }
+    
+    /**
+     * Updates a course. Updates start and end date plus the number of seats.
+     * @param cId Course identifier.
+     * @param tId Identifier of teacher updating course.
+     * @param spec Update specification.
+     * @return 
+     */
     @PutMapping(
         path = "/{courseId}",
         consumes = "application/json;charset=UTF-8",
@@ -165,6 +219,24 @@ public class CoursesController {
         CourseId courseId = new CourseId(cId);
         courseFacade_.update(courseId, teacherId, spec);        
         return courseFacade_.getCourse(courseId);
+    }
+    
+    /**
+     * Deletes course.
+     * @param cId Course identifier.
+     * @param tId Identifier of teacher updating course.
+     */
+    @DeleteMapping(
+        path = "/{courseId}"        
+    )
+    public void deleteCourse(@PathVariable("courseId") String cId,
+                             @RequestParam("teacherId") String tId)
+    {
+        System.out.println("Deleting course....");
+        
+        TeacherId teacherId = new TeacherId(tId);
+        CourseId courseId = new CourseId(cId);
+        courseFacade_.remove(courseId, teacherId);
     }
     
 }   

@@ -37,6 +37,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.dto.ModuleItemDTO;
@@ -144,6 +145,7 @@ public class Module implements Serializable {
         cascade = CascadeType.ALL, 
         orphanRemoval = true
     )        
+    @OrderBy("moduleItemId")
     protected List<ModuleItem> getModuleItems()
     {
         return moduleItems_;
@@ -151,20 +153,24 @@ public class Module implements Serializable {
     
     /**
      * Adds a quiz.
-     * @param quiz Quiz.
+     * @param quiz Quiz. Is placed at the end of all module items.
      */
     void addQuiz(Quiz quiz)
     {
+        int moduleItemId = this.generateModuleItemId();
+        quiz.setModuleItemId(moduleItemId);
         quiz.setParentModule(this);
         moduleItems_.add(quiz);
     }
     
     /**
      * Adds an assignment.
-     * @param assignment Assignment.
+     * @param assignment Assignment. Placed at the end of the list of module items.
      */
     void addAssignent(Assignment assignment)
     {
+        int moduleItemId = this.generateModuleItemId();
+        assignment.setModuleItemId(moduleItemId);
         assignment.setParentModule(this);
         moduleItems_.add(assignment);
     }
@@ -327,7 +333,61 @@ public class Module implements Serializable {
     private void clearModuleItems()
     {
         moduleItems_.forEach(moduleItem -> moduleItem.setParentModule(null));
-        moduleItems_.clear();        
+        moduleItems_.clear();
     }
-        
+    
+    /**
+     * Returns next module item.
+     * @param currentModuleItemId Current module item identifier.
+     * @return Next module item. or null if Current module item identifier refers 
+     * the last module item in this module.
+     * @see #hasNextModuleItem(org.bco.cm.domain.course.ModuleItem) 
+     */    
+    ModuleItem nextModuleItem(int currentModuleItemId)
+    {
+        ModuleItem current = this.findModuleItem(currentModuleItemId);
+        int index  = moduleItems_.indexOf(current) + 1;
+        return moduleItems_.get(index);
+    }
+    
+    /**
+     * Is there still another module item.
+     * @param current Current module item.
+     * @return Result.
+     */
+    boolean hasNextModuleItem(ModuleItem current)
+    {
+        return moduleItems_.indexOf(current) < (moduleItems_.size() - 1);
+    }
+    
+    /**
+     * Returns module item.
+     * @param moduleItemId Module item identifier.
+     * @return Module item.
+     */
+    ModuleItem findModuleItem(int moduleItemId)
+    {
+        for (ModuleItem item: moduleItems_) {
+            if (moduleItemId == item.getModuleItemId() ) {
+                return item;
+            }
+        }
+        throw new IllegalArgumentException(moduleItemId + ": No such module item.");
+    }
+    
+    private int generateModuleItemId()
+    {
+        return moduleItems_.size() + 1;
+    }
+    
+    private boolean containsModuleItem(int moduleItemId)
+    {
+        for (ModuleItem item: moduleItems_) {
+            if (moduleItemId == item.getModuleItemId() ) {
+                return true;
+            }
+        }
+        return false;
+    }
+            
 }

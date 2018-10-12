@@ -26,7 +26,7 @@ package org.bco.cm.infrastructure.persistence.hibernate;
 
 import java.util.List;
 import org.bco.cm.domain.teacher.Teacher;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
 import org.bco.cm.util.HibernateRepository;
 import org.springframework.stereotype.Repository;

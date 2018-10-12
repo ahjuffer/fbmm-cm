@@ -25,6 +25,7 @@
 
 package org.bco.cm.domain.enrolment;
 
+import org.bco.cm.util.EnrolmentNumber;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.student.Student;
 import org.bco.cm.util.Repository;

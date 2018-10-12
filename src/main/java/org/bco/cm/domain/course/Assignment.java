@@ -28,7 +28,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import org.bco.cm.dto.AssignmentDTO;
 
 /**
@@ -41,7 +40,7 @@ import org.bco.cm.dto.AssignmentDTO;
 public class Assignment extends ModuleItem implements Serializable {
     
     private String content_;
-    private Simulator simulator_;
+    private String simulator_;
     
     protected Assignment()
     {
@@ -67,50 +66,40 @@ public class Assignment extends ModuleItem implements Serializable {
         return content_;
     }
     
-    private void setSimulatorName(String name)
+    private void setSimulator(String simulator)
     {
-        if ( name != null ) {
-            simulator_ = Simulator.valueOf(name);
-        } 
+        simulator_ = simulator;
     }
     
     /**
      * Returns simulator name.
-     * @return Name. May be null if no simulator is required.
+     * @return Name. May be null or "none" if no simulator is required.
      */
     @Column( name = "simulator" )
-    protected String getSimulatorName()
-    {
-        if ( simulator_ != null ) {
-            return simulator_.getName();
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * Returns simulator to be used for this assignment.
-     * @return Simulator. May be null.
-     */
-    @Transient
-    public Simulator getSimulator()
+    protected String getSimulator()
     {
         return simulator_;
     }
     
     /**
-     * Assignments does require a simulator?
+     * Does this assignment require a simulator?
      * @return Result.
      */
     public boolean requiresSimulator()
     {
-        return simulator_ != null;
+        if ( simulator_ == null ) {
+            return false;
+        }
+        if ( simulator_.isEmpty() ) {
+            return false;
+        }
+        return ( !simulator_.equals("none"));
     }
     
     /**
      * Returns new assignment.
-     * @param spec New assignment specification. Must specify content and 
-     * simulator name.
+     * @param spec New assignment specification. Must specify content and may include 
+     * a simulator name.
      * @return New assignment.
      */
     public static Assignment valueOf(AssignmentDTO spec)
@@ -118,7 +107,7 @@ public class Assignment extends ModuleItem implements Serializable {
         Assignment assignment = new Assignment();
         assignment.populate(spec);
         assignment.setContent(spec.getContent());
-        assignment.setSimulatorName(spec.getSimulatorName());
+        assignment.setSimulator(spec.getSimulator());
         return assignment;
     }
     
@@ -128,7 +117,7 @@ public class Assignment extends ModuleItem implements Serializable {
         AssignmentDTO dto = new AssignmentDTO();
         super.populateDTO(dto);
         dto.setContent(content_);
-        dto.setSimulatorName(this.getSimulatorName());
+        dto.setSimulator(simulator_);
         return dto;
     }
     

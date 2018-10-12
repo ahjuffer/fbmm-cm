@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Holds a simulator
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class Simulator {

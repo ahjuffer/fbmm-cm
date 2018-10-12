@@ -27,8 +27,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bco.cm.api.facade.CourseCatalogFacade;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -59,7 +59,7 @@ public class TestCreateCourseDecription {
             ccf.postNewCourse(courseId, teacherId, spec);
             
             CourseDescriptionDTO created = ccf.getCourse(courseId);
-            logger.info("Newly creaed course : " + created);
+            logger.info("Newly creaed course : " + created);            
             
         } catch (Exception exception) {
             logger.error(exception.getMessage(), exception);

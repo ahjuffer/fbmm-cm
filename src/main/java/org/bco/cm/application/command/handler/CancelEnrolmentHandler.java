@@ -26,7 +26,7 @@ package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.CancelEnrolment;
 import org.bco.cm.domain.enrolment.Enrolment;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.util.EnrolmentNumber;
 import org.bco.cm.domain.enrolment.EnrolmentRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 

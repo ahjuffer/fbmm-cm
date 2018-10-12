@@ -35,8 +35,11 @@ import org.bco.cm.application.command.handler.ActivateCourseHandler;
 import org.bco.cm.application.command.handler.AddCourseModuleHandler;
 import org.bco.cm.application.command.handler.CancelEnrolmentHandler;
 import org.bco.cm.application.command.handler.CmCommandBus;
+import org.bco.cm.application.command.handler.CompleteQuizHandler;
+import org.bco.cm.application.command.handler.DeleteCourseDescriptionHandler;
 import org.bco.cm.application.command.handler.DeleteCourseHandler;
 import org.bco.cm.application.command.handler.DeleteCourseModuleHandler;
+import org.bco.cm.application.command.handler.EndCourseHandler;
 import org.bco.cm.application.command.handler.EnrolStudentHandler;
 import org.bco.cm.application.command.handler.PostNewCourseHandler;
 import org.bco.cm.application.command.handler.RegisterNewStudentHandler;
@@ -46,6 +49,8 @@ import org.bco.cm.application.command.handler.UpdateCourseDescriptionHandler;
 import org.bco.cm.application.command.handler.UpdateCourseHandler;
 import org.bco.cm.application.command.handler.UpdateCourseModuleHandler;
 import org.bco.cm.application.event.handler.CmEventBus;
+import org.bco.cm.application.event.handler.CompletedQuizHandler;
+import org.bco.cm.application.event.handler.CourseStartedHandler;
 import org.bco.cm.application.event.handler.EnrolmentCanceledHandler;
 import org.bco.cm.application.event.handler.EnrolmentCreatedHandler;
 import org.bco.cm.application.event.handler.NewStudentRegisteredHandler;
@@ -75,6 +80,7 @@ import org.bco.cm.infrastructure.persistence.hibernate.HibernateEnrolmentRegistr
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyCourseRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyEnrolmentRegistry;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ImportResource;
 
 /**
  * Bean configuration.
@@ -82,6 +88,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @Configuration
 @ComponentScan(basePackages = "org.bco.cm")
+@ImportResource({"spring-beans.cfg.xml"})
 public class CmConfiguration 
 {
     
@@ -234,9 +241,9 @@ public class CmConfiguration
     }
     
     @Bean
-    DeleteCourseHandler deleteCourseHandler()
+    DeleteCourseDescriptionHandler deleteCourseDescriptionHandler()
     {
-        return new DeleteCourseHandler();
+        return new DeleteCourseDescriptionHandler();
     }
     
     @Bean
@@ -297,6 +304,36 @@ public class CmConfiguration
     StartCourseHandler startCourseHandler()
     {
         return new StartCourseHandler();
+    }
+    
+    @Bean 
+    EndCourseHandler endCourseHandler()
+    {
+        return new EndCourseHandler();
+    }
+    
+    @Bean
+    DeleteCourseHandler deleteCourseHandler()
+    {
+        return new DeleteCourseHandler();
+    }
+    
+    @Bean
+    CourseStartedHandler courseStartedHandler()
+    {
+        return new CourseStartedHandler();
+    }
+    
+    @Bean
+    CompleteQuizHandler completeQuizHandler()
+    {
+        return new CompleteQuizHandler();
+    }
+    
+    @Bean
+    CompletedQuizHandler completedQuizHandler()
+    {
+        return new CompletedQuizHandler();
     }
     
     @Bean 

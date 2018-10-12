@@ -24,7 +24,7 @@
 
 package org.bco.cm.domain.course;
 
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.Teacher;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -153,9 +153,7 @@ public abstract class AbstractCourse
     protected void addModule(ModuleDTO spec)
     {
         if ( spec == null ) {
-            throw new NullPointerException(
-                "Trying to add an undefined module."
-            );
+            throw new NullPointerException("Unspecified module.");
         }
                 
         // Create new module according to specification.
@@ -298,6 +296,25 @@ public abstract class AbstractCourse
         modules_.clear();
     }
     
+    /**
+     * Returns next module.
+     * @param current Current module.
+     * @return Next module.
+     * @throw NullPointerException if there is no next module.
+     * @see #hasNextModule(org.bco.cm.domain.course.Module)
+     */
+    protected Module getNextModule(Module current)
+    {
+       if ( !this.hasNextModule(current) ) {
+            throw new NullPointerException(current.getModuleId() + ": No next module.");
+        }
+        int moduleId = current.getModuleId() + 1;
+        return this.findModule(moduleId); 
+    }
     
+    protected boolean hasNextModule(Module module)
+    {
+        return module.getModuleId() < (modules_.size() - 1);
+    }
     
 }

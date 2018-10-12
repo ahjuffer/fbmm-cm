@@ -22,41 +22,45 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.memory;
+package org.bco.cm.application.command.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import org.bco.cm.domain.student.Student;
-import org.bco.cm.util.StudentId;
-import org.bco.cm.domain.student.StudentRegistry;
+import org.bco.cm.application.command.EndCourse;
+import org.bco.cm.domain.course.Course;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.domain.course.CourseRegistry;
+import org.bco.cm.domain.course.CourseService;
+import org.bco.cm.domain.teacher.Teacher;
+import org.bco.cm.util.TeacherId;
+import org.bco.cm.domain.teacher.TeacherRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class InMemoryStudentRepository 
-//    extends InMemoryMapRepository<Student>
-//    implements StudentRegistry
-{
+public class EndCourseHandler extends CmCommandHandler<EndCourse> {
+    
+    @Autowired
+    private CourseRegistry courseRegistry_;
+    
+    @Autowired
+    private TeacherRegistry teacherRegistry_;
+    
 
-    //@Override
-    public Student forStudentId(StudentId studentId) 
+    @Override
+    public void handle(EndCourse command) 
     {
-        return null;
-        //return this.forIdentifierAsString(studentId.stringValue());
-    }
-
-    //@Override
-    public Student forEntityId(StudentId identifier) 
-    {
-        return this.forStudentId(identifier);
-    }
-
-    //@Override
-    public boolean contains(StudentId identifier) 
-    {
-        return this.forEntityId(identifier) != null;
+        CourseId courseId = command.getCourseId();
+        Course course = CommandHandlerUtil.findCourse(courseId, courseRegistry_);
+        TeacherId teacherId = command.getTeacherId();
+        Teacher teacher = CommandHandlerUtil.findTeacher(teacherId, teacherRegistry_);
+        
+        // End the course
+        CourseService.end(course, teacher);        
+        courseRegistry_.update(course);
+        
+        // Handle possible domain events.
+        this.handleEvents(teacher);        
     }
 
 }

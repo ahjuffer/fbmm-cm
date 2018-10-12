@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.application.query.CourseSpecification;
-import org.bco.cm.domain.course.CourseDescriptionId;
+import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.dto.CourseDTO;
 /**
  *

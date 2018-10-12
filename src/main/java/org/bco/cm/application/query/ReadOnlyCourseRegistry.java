@@ -26,9 +26,9 @@
 package org.bco.cm.application.query;
 
 import java.util.List;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.util.ReadOnlyRepository;
 

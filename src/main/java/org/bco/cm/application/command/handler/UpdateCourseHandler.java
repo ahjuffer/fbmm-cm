@@ -26,11 +26,11 @@ package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.UpdateCourse;
 import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
 import org.bco.cm.domain.course.CourseService;
 import org.bco.cm.domain.teacher.Teacher;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;

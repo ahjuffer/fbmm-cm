@@ -24,6 +24,7 @@
 
 package org.bco.cm.domain.teacher;
 
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.util.Repository;
 
 /**

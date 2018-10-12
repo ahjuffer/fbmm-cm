@@ -25,12 +25,12 @@
 package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.StartCourse;
-import org.bco.cm.domain.course.CourseId;
 import org.bco.cm.domain.course.Course;
+import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.course.StartCourseService;
+import org.bco.cm.domain.course.CourseService;
 import org.bco.cm.domain.teacher.Teacher;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -55,12 +55,11 @@ public class StartCourseHandler extends CmCommandHandler<StartCourse> {
         Teacher teacher = CommandHandlerUtil.findTeacher(teacherId, teacherRegistry_);
         
         // Start the course.
-        StartCourseService.start(course, teacher);
+        CourseService.start(course, teacher);
         courseRegistry_.update(course);
         
         // Handle possible domain events.
-        this.handleEvents(course);
-        
+        this.handleEvents(course);        
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andr�� H. Juffer, Biocenter Oulu
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,13 +27,17 @@ package org.bco.cm.api.facade;
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
 import org.bco.cm.application.command.ActivateCourse;
+import org.bco.cm.application.command.DeleteCourse;
+import org.bco.cm.application.command.DeleteCourseDescription;
+import org.bco.cm.application.command.EndCourse;
+import org.bco.cm.application.command.StartCourse;
 import org.bco.cm.application.command.UpdateCourse;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.application.query.ReadOnlyCourseRegistry;
 import org.bco.cm.application.query.ReadOnlyEnrolmentRegistry;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,6 +130,34 @@ public class CourseFacade {
                        CourseDTO spec)
     {
         UpdateCourse command = new UpdateCourse(teacherId, courseId, spec);
+        commandBus_.handle(command);
+    }
+    
+    /**
+     * Starts a course.
+     * @param courseId Course identifier.
+     * @param teacherId Identifier teacher starting course.
+     */
+    public void start(CourseId courseId, TeacherId teacherId)
+    {
+        StartCourse command = new StartCourse(teacherId, courseId);
+        commandBus_.handle(command);
+    }
+    
+    /**
+     * Stops a course.
+     * @param courseId Course identifier.
+     * @param teacherId Identifier teacher starting course.
+     */
+    public void stop(CourseId courseId, TeacherId teacherId)
+    {
+        EndCourse command = new EndCourse(teacherId, courseId);
+        commandBus_.handle(command);
+    }
+    
+    public void remove(CourseId courseId, TeacherId teacherId)
+    {
+        DeleteCourse command = new DeleteCourse(teacherId, courseId);
         commandBus_.handle(command);
     }
 

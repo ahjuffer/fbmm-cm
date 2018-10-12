@@ -26,14 +26,14 @@ package org.bco.cm.application.event.handler;
 
 import com.tribc.ddd.domain.event.EventHandler;
 import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
 import org.bco.cm.domain.enrolment.Enrolment;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.util.EnrolmentNumber;
 import org.bco.cm.domain.enrolment.EnrolmentRegistry;
 import org.bco.cm.domain.enrolment.event.EnrolmentCreated;
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.domain.student.StudentRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 

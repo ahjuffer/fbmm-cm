@@ -24,6 +24,7 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.util.Repository;
 
 /**

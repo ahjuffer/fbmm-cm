@@ -43,6 +43,7 @@ create table module_items (
     id                      UUID not null primary key,
     discriminator           varchar(200),
     module_id               UUID,
+    module_item_id          int,
     title                   varchar(200),
     content                 varchar(3000),
     simulator               varchar(200)
@@ -87,7 +88,9 @@ create table student_monitors
     id                      UUID not null primary key,
     monitor_id              int,
     student_id              varchar(200),
-    current_module_id       int
+    current_module_id       int,
+    current_module_item_id  int,
+    complete                boolean
 );
 
 create table rosters

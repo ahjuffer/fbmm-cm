@@ -26,12 +26,13 @@ package org.bco.cm.api.facade;
 
 import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
+import org.bco.cm.application.command.CompleteQuiz;
 import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.application.command.RegisterNewStudent;
 import org.bco.cm.application.query.ReadOnlyStudentRegistry;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.EnrolmentNumber;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,5 +105,25 @@ public class StudentFacade {
         EnrolStudent command = new EnrolStudent(eid, studentId, courseId);
         commandBus_.handle(command);
     }
-
+    
+    /**
+     * Signals that a student completed a quiz as part of a module of a course.
+     * @param studentId Student identifier.
+     * @param courseId Course identifier.
+     */
+    public void completeQuiz(StudentId studentId, CourseId courseId)
+    {
+        CompleteQuiz command = new CompleteQuiz(studentId, courseId);
+        commandBus_.handle(command);
+    }
+    
+     /**
+     * Signals that a student completed an assignment as part of a module of a course.
+     * @param studentId Student identifier.
+     * @param courseId Course identifier.
+     */
+    public void completeAssignment(StudentId studentId, CourseId courseId)
+    {        
+    }
+    
 }

@@ -24,6 +24,8 @@
 
 package org.bco.cm.domain.course;
 
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.CourseId;
 import com.tribc.cqrs.util.EventUtil;
 import com.tribc.ddd.domain.event.Event;
 import com.tribc.ddd.domain.event.Eventful;
@@ -51,10 +53,10 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.bco.cm.domain.course.event.CourseEnded;
 import org.bco.cm.domain.course.event.CourseStarted;
-import org.bco.cm.domain.enrolment.Enrolment;
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.util.Identifiable;
@@ -375,6 +377,10 @@ public class Course
         return course;
     }
     
+    /**
+     * Updates course details. Updates start amd end data as well number of seats.
+     * @param spec Update specification.
+     */
     public void update(CourseDTO spec)
     {
         this.setStartDate(spec.getStartDate());
@@ -417,6 +423,16 @@ public class Course
     }
     
     /**
+     * Returns enrolled students.
+     * @return Returns student identifiers. May be empty.
+     */
+    @Transient
+    public Collection<StudentId> getEnrolledStudents()
+    {
+        return roster_.keySet();
+    }
+    
+    /**
      * Notification of canceling of enrolment.
      * @param student Student.
      */
@@ -427,7 +443,7 @@ public class Course
     
     /**
      * Start this course. Enrolled students gain access to the first module. 
-     * Raises an CourseStarted event.
+     * Raises an CourseStarted event. Course must already be active.
      * @see org.bco.cm.domain.course.event.CourseStarted
      */
     void start()
@@ -435,9 +451,12 @@ public class Course
         if ( !this.isActive() ) {
             throw new IllegalStateException("Course is not active.");
         }
+        if ( this.isOngoing() ) {
+            throw new IllegalStateException("Course is already ongoing.");
+        }
         ongoing_ = true;
-        this.started();
         this.giveStudentsAccessToFirstModule();
+        this.started();        
     }
     
     /**
@@ -448,6 +467,11 @@ public class Course
     public void end()
     {
         ongoing_ = false;
+        if ( !this.isActive() ) {
+            throw new IllegalStateException("Course is not active.");
+        }
+        ongoing_ = false;
+        this.ended();
     }
     
     /**
@@ -470,8 +494,8 @@ public class Course
     
     /**
      * Is this course already active?
-     * @return True if the current time is after the start date but before the end date,
-     * other false.
+     * @return True if the current date is after the start date but before the 
+     * end date, otherwise false.
      */
     @Transient
     public boolean isActive()
@@ -499,7 +523,7 @@ public class Course
         
     /**
      * Notification of module completion. Student is allowed to transfer to 
-     * the next module.
+     * the next module, if there is one.
      * @param student Student.
      * @throws IllegalStateException if this course is not ongoing.
      */
@@ -509,8 +533,35 @@ public class Course
             throw new IllegalStateException("Course is currently not ongoing.");
         }
         StudentMonitor monitor = roster_.get(student.getStudentId());
-        
-        //monitor.toNextModule();
+        if ( monitor.isComplete() ) {
+            throw new IllegalStateException("Student already completed the course.");
+        }
+        int currentModuleId = monitor.getCurrentModuleId();
+        Module current = this.findModule(currentModuleId);
+        if ( this.hasNextModule(current) ) {
+            Module next = this.getNextModule(current);
+            monitor.toNextModule(next);
+        } else {
+            this.courseCompleted(student);
+        }
+    }
+    
+    /**
+     * Notification student completed a quiz.
+     * @param student Student.
+     */
+    public void quizCompleted(Student student)
+    {
+        this.moduleItemCompleted(student);
+    }
+    
+    /**
+     * Notification student completed an assignment.
+     * @param student Student.
+     */
+    public void assignmentCompleted(Student student)
+    {
+        this.moduleItemCompleted(student);
     }
     
     /**
@@ -595,7 +646,12 @@ public class Course
     
     private void started()
     {
-        events_.add(new CourseStarted(this));
+        events_.add(new CourseStarted(courseId_));
+    }
+    
+    private void ended()
+    {
+        events_.add(new CourseEnded(courseId_));
     }
     
     private boolean isEnrolled(Student student)
@@ -628,5 +684,28 @@ public class Course
     {
         return this.getEndDate().isAfter(this.getStartDate());
     }
+    
+    private void moduleItemCompleted(Student student)
+    {
+        StudentMonitor monitor = roster_.get(student.getStudentId());
+        if ( monitor.isComplete() ) {
+            throw new IllegalStateException("Student already completed the course.");
+        }
+        Module module = this.findModule(monitor.getCurrentModuleId());
+        ModuleItem current = module.findModuleItem(monitor.getCurrentModuleItemId());
+        if (!module.hasNextModuleItem(current) ) {
+            this.moduleCompleted(student);
+        } else {
+            ModuleItem next = 
+                module.nextModuleItem(monitor.getCurrentModuleItemId());
+            monitor.toNextModuleItem(next);
+        }
+    }
 
+    private void courseCompleted(Student student)
+    {
+        StudentMonitor monitor = roster_.get(student.getStudentId());
+        monitor.completedCourse();
+    }
+    
 }

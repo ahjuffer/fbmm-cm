@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import org.bco.cm.application.query.ReadOnlyStudentRegistry;
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.domain.student.StudentRegistry;
 import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;

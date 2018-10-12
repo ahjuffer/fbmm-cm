@@ -27,14 +27,14 @@ package org.bco.cm.application.command.handler;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.domain.student.StudentRegistry;
 import org.bco.cm.domain.teacher.Teacher;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
 
 /**

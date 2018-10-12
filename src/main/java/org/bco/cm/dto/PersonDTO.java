@@ -40,12 +40,14 @@ public class PersonDTO implements Serializable
     private String identifier_;
     private String firstName_;
     private String surname_;
+    private String emailAddress_;
 
     protected PersonDTO()
     {
         identifier_ = null;
         firstName_ = null;
         surname_ = null;
+        emailAddress_ = null;
     }
     
     public void setIdentifier(String identifier)
@@ -91,6 +93,17 @@ public class PersonDTO implements Serializable
         return surname_ + ", " + firstName_;
     }
     
+    public void setEmailAddress(String emailAddress)
+    {
+        emailAddress_ = emailAddress;
+    }
+    
+    @Column( name = "email_address" )
+    public String getEmailAddress()
+    {
+        return emailAddress_;
+    }
+    
     /**
      * Append properties for the <code>toString</code> implementation of 
      * derived class.
@@ -103,6 +116,7 @@ public class PersonDTO implements Serializable
         s.append("firstName - ").append(firstName_).append(newline);
         s.append("surname - ").append(surname_).append(newline);
         s.append("fullName - ").append(this.getFullName()).append(newline);
+        s.append("emailAddress - ").append(emailAddress_).append(newline);
     }
     
     @Override
@@ -127,6 +141,7 @@ public class PersonDTO implements Serializable
         hash = 53 * hash + Objects.hashCode(this.identifier_);
         hash = 53 * hash + Objects.hashCode(this.firstName_);
         hash = 53 * hash + Objects.hashCode(this.surname_);
+        hash = 53 * hash + Objects.hashCode(this.emailAddress_);
         return hash;
     }
 }

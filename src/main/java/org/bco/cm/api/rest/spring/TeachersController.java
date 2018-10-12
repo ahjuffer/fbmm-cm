@@ -26,7 +26,7 @@ package org.bco.cm.api.rest.spring;
 
 import java.util.List;
 import org.bco.cm.api.facade.TeacherFacade;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.TeacherDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -27,7 +27,7 @@ package org.bco.cm.application.command.handler;
 import org.bco.cm.application.command.RegisterNewStudent;
 import org.bco.cm.domain.student.RegisterNewStudentService;
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.domain.student.StudentRegistry;
 import org.bco.cm.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;

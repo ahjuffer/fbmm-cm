@@ -26,16 +26,15 @@ package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.enrolment.Enrolment;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.domain.enrolment.Enrolment;
+import org.bco.cm.util.EnrolmentNumber;
+import org.bco.cm.domain.enrolment.EnrolmentRegistry;
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.domain.student.StudentRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.bco.cm.domain.enrolment.EnrolmentRegistry;
 
 /**
  * Creates a record of enrolment in a course.

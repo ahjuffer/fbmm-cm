@@ -25,7 +25,7 @@
 package org.bco.cm.domain.course.event;
 
 import com.tribc.ddd.domain.event.AbstractEvent;
-import org.bco.cm.domain.course.Course;
+import org.bco.cm.util.CourseId;
 
 /**
  * A course was started by a teacher.
@@ -33,18 +33,16 @@ import org.bco.cm.domain.course.Course;
  */
 public class CourseStarted extends AbstractEvent {
     
-    private Course course_;
+    private CourseId courseId_;
     
-    public CourseStarted(Course course)
+    public CourseStarted(CourseId courseId)
     {
         super(CourseStarted.class);
-        course_ = course;
-        
+        courseId_ = courseId;        
     }
     
-    public Course getCourse()
+    public CourseId getCourseId()
     {
-        return course_;
+        return courseId_;
     }
-
 }

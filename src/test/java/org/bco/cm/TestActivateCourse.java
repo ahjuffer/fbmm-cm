@@ -27,9 +27,9 @@ import java.time.Instant;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bco.cm.api.facade.CourseFacade;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

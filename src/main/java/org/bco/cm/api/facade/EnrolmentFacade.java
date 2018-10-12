@@ -28,12 +28,12 @@ import com.tribc.cqrs.domain.command.CommandBus;
 import java.util.List;
 import org.bco.cm.application.command.CancelEnrolment;
 import org.bco.cm.application.query.ReadOnlyEnrolmentRegistry;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.util.EnrolmentNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.bco.cm.dto.EnrolmentDTO;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.application.query.EnrolmentSpecification;
 

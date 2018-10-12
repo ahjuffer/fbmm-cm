@@ -27,7 +27,7 @@ package org.bco.cm.infrastructure.persistence.hibernate;
 import java.util.List;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.enrolment.Enrolment;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.util.EnrolmentNumber;
 import org.bco.cm.domain.enrolment.EnrolmentRegistry;
 import org.bco.cm.domain.student.Student;
 import org.bco.cm.util.HibernateRepository;

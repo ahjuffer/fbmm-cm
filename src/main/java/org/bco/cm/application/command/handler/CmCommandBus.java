@@ -27,17 +27,20 @@ package org.bco.cm.application.command.handler;
 import com.tribc.cqrs.domain.command.CommandBus;
 import org.bco.cm.application.command.ActivateCourse;
 import org.bco.cm.application.command.AddCourseModule;
+import org.bco.cm.application.command.CancelEnrolment;
+import org.bco.cm.application.command.CompleteQuiz;
 import org.bco.cm.application.command.DeleteCourse;
+import org.bco.cm.application.command.DeleteCourseDescription;
 import org.bco.cm.application.command.DeleteCourseModule;
-import org.bco.cm.application.command.RegisterNewStudent;
-import org.bco.cm.application.command.RegisterNewTeacher;
+import org.bco.cm.application.command.EndCourse;
 import org.bco.cm.application.command.EnrolStudent;
 import org.bco.cm.application.command.PostNewCourse;
+import org.bco.cm.application.command.RegisterNewStudent;
+import org.bco.cm.application.command.RegisterNewTeacher;
 import org.bco.cm.application.command.StartCourse;
+import org.bco.cm.application.command.UpdateCourse;
 import org.bco.cm.application.command.UpdateCourseDescription;
 import org.bco.cm.application.command.UpdateCourseModule;
-import org.bco.cm.application.command.CancelEnrolment;
-import org.bco.cm.application.command.UpdateCourse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -84,9 +87,9 @@ public class CmCommandBus extends CommandBus {
     }
     
     @Autowired
-    public void setDeleteCourse(DeleteCourseHandler handler)
+    public void setDeleteCourse(DeleteCourseDescriptionHandler handler)
     {
-        this.setHandler(DeleteCourse.class, handler);
+        this.setHandler(DeleteCourseDescription.class, handler);
     }
     
     @Autowired
@@ -120,9 +123,27 @@ public class CmCommandBus extends CommandBus {
     }
     
     @Autowired
+    public void setEndCourseHandler(EndCourseHandler handler)
+    {
+        this.setHandler(EndCourse.class, handler);
+    }
+    
+    @Autowired
+    public void setDeleteCourseHandler(DeleteCourseHandler handler)
+    {
+        this.setHandler(DeleteCourse.class, handler);
+    }
+    
+    @Autowired
     public void setCancelEnrolmentHandler(CancelEnrolmentHandler handler)
     {
         this.setHandler(CancelEnrolment.class, handler);
+    }    
+    
+    @Autowired
+    public void setCompleteQuizHandler(CompleteQuizHandler handler)
+    {
+        this.setHandler(CompleteQuiz.class, handler);
     }
     
     private void setHandler(Class clazz, CmCommandHandler handler)

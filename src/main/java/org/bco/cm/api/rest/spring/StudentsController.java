@@ -26,15 +26,18 @@ package org.bco.cm.api.rest.spring;
 
 import java.util.List;
 import org.bco.cm.api.facade.StudentFacade;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.util.CourseId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -93,5 +96,28 @@ public class StudentsController {
     {
         return studentFacade_.getAllStudents();
     }
-
+    
+    /**
+     * Completes a task.
+     * @param sId Student identifier.
+     * @param task Task definition, either 'quiz' or 'assignment.
+     * @param cId Course identifier.
+     */
+    @PutMapping(
+        path = "/{studentId}/complete/{task}"
+    )
+    public void completeTask(@PathVariable("studentId") String sId,
+                             @PathVariable("task") String task,
+                             @RequestParam("courseId") String cId)
+    {
+        StudentId studentId = new StudentId(sId);
+        CourseId courseId = new CourseId(cId);
+        if ( task.equals("quiz") ) {
+            studentFacade_.completeQuiz(studentId, courseId);
+        } else if (task.equals("assignment") ) {
+            studentFacade_.completeAssignment(studentId, courseId);
+        } else {
+            throw new IllegalArgumentException(task + ": No such task.");
+        }
+    }
 }

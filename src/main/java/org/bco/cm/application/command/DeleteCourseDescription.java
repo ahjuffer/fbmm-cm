@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andr&#233; H. Juffer, Biocenter Oulu.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,46 +25,41 @@
 package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.util.CourseId;
+import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.util.TeacherId;
-import org.bco.cm.dto.CourseDTO;
 
 /**
- * Command for updating active course in course registry.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Command for deleting a course description in the course catalog.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class UpdateCourse extends AbstractCommand {
+public class DeleteCourseDescription extends AbstractCommand {
     
     private final TeacherId teacherId_;
-    private final CourseId courseId_;
-    private final CourseDTO spec_;
+    private final CourseDescriptionId courseId_;
     
-    public UpdateCourse(TeacherId teacherId,
-                        CourseId courseId,
-                        CourseDTO spec)
+    public DeleteCourseDescription(TeacherId teacherId, CourseDescriptionId courseId)
     {
-        super(UpdateCourse.class);
+        super(DeleteCourseDescription.class);
         teacherId_ = teacherId;
         courseId_ = courseId;
-        spec_ = spec;
     }
 
+    /**
+     * Returns Responsible teacher identifier.
+     * @return Identifier.
+     */
     public TeacherId getTeacherId()
     {
         return teacherId_;
     }
     
-    public CourseId getCourseId()
+    /**
+     * Returns course identifier.
+     * @return Identifier.
+     */
+    public CourseDescriptionId getCourseId()
     {
         return courseId_;
     }
     
-    /**
-     * Return update specification.
-     * @return Specification.
-     */
-    public CourseDTO getSpecification()
-    {
-        return spec_;
-    }
 }

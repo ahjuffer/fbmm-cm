@@ -25,9 +25,11 @@ package org.bco.cm.domain.course;
  */
 
 
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.CourseId;
 import java.time.Instant;
 import org.bco.cm.domain.teacher.Teacher;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;

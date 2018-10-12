@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andr&#233; H. Juffer, Biocenter Oulu.
+ * Copyright 2017 André H. Juffer, Biocenter Oulu.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,49 +22,54 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command;
+package org.bco.cm.util;
 
-import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.util.CourseId;
-import org.bco.cm.util.TeacherId;
-import org.bco.cm.dto.CourseDTO;
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import org.bco.cm.util.Id;
+import java.util.UUID;
 
 /**
- * Command for updating active course in course registry.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Identifies student.
+ * @author André H. Juffer, Biocenter Oulu
  */
-public class UpdateCourse extends AbstractCommand {
+@Embeddable
+public class StudentId extends Id<String> implements Serializable {
     
-    private final TeacherId teacherId_;
-    private final CourseId courseId_;
-    private final CourseDTO spec_;
-    
-    public UpdateCourse(TeacherId teacherId,
-                        CourseId courseId,
-                        CourseDTO spec)
+    protected StudentId()
     {
-        super(UpdateCourse.class);
-        teacherId_ = teacherId;
-        courseId_ = courseId;
-        spec_ = spec;
+        super();
+    }
+    
+    public StudentId(String value)
+    {
+        super(value);
     }
 
-    public TeacherId getTeacherId()
+    private void setId(String id)
     {
-        return teacherId_;
-    }
-    
-    public CourseId getCourseId()
-    {
-        return courseId_;
+        this.setValue(id);
     }
     
     /**
-     * Return update specification.
-     * @return Specification.
+     * Returns identifier value.
+     * @return Value.
      */
-    public CourseDTO getSpecification()
+    @Column( name= "student_id" )
+    protected String getId()
     {
-        return spec_;
+        return this.getValue();
     }
+    
+    /**
+     * Returns new identifier.
+     * @return Identifier.
+     */
+    public static StudentId generate()
+    {
+        UUID uuid = UUID.randomUUID();
+        return new StudentId(uuid.toString());
+    }
+    
 }

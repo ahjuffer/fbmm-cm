@@ -24,7 +24,8 @@
 
 package org.bco.cm.domain.course;
 
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.StudentId;
 
 /**
  * Domain event signaling that a student passed a course module quiz.

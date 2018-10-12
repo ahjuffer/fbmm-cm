@@ -31,6 +31,14 @@ THE SOFTWARE.
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="org.bco.cm"/>
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="mail.oulu.fi"/>
+    </bean>
+
+    <!-- this is a template message that we can pre-load with default state -->
+    <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="andre.juffer@oulu.fi"/>
+        <property name="subject" value="[Crapp]"/>
+    </bean>
 
 </beans>

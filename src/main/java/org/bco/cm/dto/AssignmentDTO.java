@@ -39,13 +39,13 @@ import javax.persistence.Transient;
 public class AssignmentDTO extends ModuleItemDTO implements Serializable {
     
     private String content_;
-    private String simulatorName_;
+    private String simulator_;
     
     public AssignmentDTO()
     {
         super();
         content_ = null;
-        simulatorName_ = null;
+        simulator_ = null;
     }
 
     public void setContent(String content)
@@ -59,15 +59,15 @@ public class AssignmentDTO extends ModuleItemDTO implements Serializable {
         return content_;
     }
     
-    public void setSimulatorName(String simulatorName)
+    public void setSimulator(String simulator)
     {
-        simulatorName_ = simulatorName;
+        simulator_ = simulator;
     }
     
     @Column( name = "simulator" )
-    public String getSimulatorName()
+    public String getSimulator()
     {
-        return simulatorName_;
+        return simulator_;
     }
     
     @Override
@@ -77,6 +77,7 @@ public class AssignmentDTO extends ModuleItemDTO implements Serializable {
         StringBuilder s = new StringBuilder("AssignmentDTO : {").append(newline);
         s.append(super.toString()).append(newline);
         s.append("content - ").append(content_).append(newline);
+        s.append("simulator - ").append(simulator_).append(newline);
         s.append("}");
         return s.toString();
     }

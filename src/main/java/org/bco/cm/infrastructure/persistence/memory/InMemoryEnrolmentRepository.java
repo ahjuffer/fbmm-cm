@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.UUID;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.enrolment.Enrolment;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.util.EnrolmentNumber;
 import org.bco.cm.domain.student.Student;
 import org.bco.cm.domain.enrolment.EnrolmentRegistry;
 

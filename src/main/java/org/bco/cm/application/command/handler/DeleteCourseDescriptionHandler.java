@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Biocenter Oulu.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,37 +24,41 @@
 
 package org.bco.cm.application.command.handler;
 
-import org.bco.cm.application.command.BeginCourse;
-import org.bco.cm.domain.course.Course;
+import org.bco.cm.application.command.DeleteCourseDescription;
 import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.domain.course.CourseDescription;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.domain.course.CourseDescriptionService;
+import org.bco.cm.domain.teacher.Teacher;
+import org.bco.cm.util.TeacherId;
+import org.bco.cm.domain.teacher.TeacherRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Handles beginning an existing course.
- * @author Andr&#233; Juffer, Biocenter Oulu
+ *
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class BeginCourseHandler extends CmCommandHandler<BeginCourse> {
-    
-    private CourseCatalog courseCatalog_;
+public class DeleteCourseDescriptionHandler 
+    extends CmCommandHandler<DeleteCourseDescription> {
+
+    @Autowired
+    private TeacherRegistry teacherRepository_;   
     
     @Autowired
-    public void setCourseCatalog(CourseCatalog courseCatalog)
+    private CourseCatalog courseCatalog_;
+
+    @Override
+    public void handle(DeleteCourseDescription command) 
     {
-        courseCatalog_ = courseCatalog;
+        TeacherId teacherId = command.getTeacherId();
+        Teacher teacher = 
+            CommandHandlerUtil.findTeacher(teacherId, teacherRepository_);
+        CourseDescriptionId courseId = command.getCourseId();
+        CourseDescription course = 
+            CommandHandlerUtil.findCourseDescription(courseId, courseCatalog_);
+        
+        CourseDescriptionService.remove(teacher, course, courseCatalog_);      
     }
     
-    @Override
-    public void handle(BeginCourse command)
-    {
-        /*
-        CourseId courseId = command.getCourseId();
-        Course course = courseCatalog_.forCourseId(courseId);
-        course.begin();
-        courseCatalog_.update(course);
-        
-        // Handle in same thread.
-        this.handleEvents(course);
-        */  
-    }
+    
 }

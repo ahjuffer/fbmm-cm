@@ -22,52 +22,34 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.enrolment;
+package org.bco.cm.application.command.handler;
 
-import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import org.bco.cm.util.Id;
+import org.bco.cm.application.command.CompleteQuiz;
+import org.bco.cm.domain.student.Student;
+import org.bco.cm.domain.student.StudentRegistry;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.StudentId;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Identifies enrolment.
+ * Handles completion of a quiz by a student.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Embeddable
-public class EnrolmentNumber extends Id<String> {
-    
-    protected EnrolmentNumber()
+public class CompleteQuizHandler extends CmCommandHandler<CompleteQuiz> {
+
+    @Autowired
+    private StudentRegistry studentRegistry_;
+
+    @Override
+    public void handle(CompleteQuiz command) 
     {
-        super();
+        StudentId studentId = command.getStudentId();
+        CourseId courseId = command.getCourseId();        
+        Student student = CommandHandlerUtil.findStudent(studentId, studentRegistry_);        
+        
+        student.completeQuiz(courseId);
+        
+        this.handleEvents(student);
     }
 
-    public EnrolmentNumber(String value)
-    {
-        super(value);
-    }
-    
-    private void setId(String value)
-    {
-        this.setValue(value);
-    }
-    
-    /**
-     * Returns enrolment number value.
-     * @return Value.
-     */
-    @Column( name = "enrolment_number" )
-    protected String getId()
-    {
-        return this.getValue();
-    }
-    
-    /**
-     * Generates new number.
-     * @return Number.
-     */
-    public static EnrolmentNumber generate()
-    {
-        UUID uuid = UUID.randomUUID();
-        return new EnrolmentNumber(uuid.toString());
-    }
 }

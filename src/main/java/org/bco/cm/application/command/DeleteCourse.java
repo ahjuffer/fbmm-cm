@@ -25,41 +25,41 @@
 package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.domain.course.CourseDescriptionId;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.TeacherId;
 
 /**
- * Command for deleting a course description.
+ * Command for deleting a course in the course registry.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class DeleteCourse extends AbstractCommand {
     
     private final TeacherId teacherId_;
-    private final CourseDescriptionId courseId_;
+    private final CourseId courseId_;
     
-    public DeleteCourse(TeacherId teacherId, CourseDescriptionId courseId)
+    public DeleteCourse(TeacherId teacherId, CourseId courseId)
     {
         super(DeleteCourse.class);
         teacherId_ = teacherId;
         courseId_ = courseId;
-    }
-
-    /**
-     * Return teacher identifier.
-     * @return Identifier.
-     */
-    public TeacherId getTeacherId()
-    {
-        return teacherId_;
     }
     
     /**
      * Returns course identifier.
      * @return Identifier.
      */
-    public CourseDescriptionId getCourseId()
+    public CourseId getCourseId()
     {
         return courseId_;
     }
     
+    /**
+     * Returns Responsible teacher identifier.
+     * @return Identifier.
+     */
+    public TeacherId getTeacherId()
+    {
+        return teacherId_;
+    }
+
 }

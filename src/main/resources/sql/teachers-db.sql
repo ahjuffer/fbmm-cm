@@ -31,7 +31,8 @@ create table teachers
     id              UUID not null primary key,
     teacher_id      varchar(200),
     first_name      varchar(200),
-    surname         varchar(200)
+    surname         varchar(200),
+    email_address   varchar(200)
 );
 
 

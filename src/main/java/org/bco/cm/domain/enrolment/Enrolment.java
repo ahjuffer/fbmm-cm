@@ -24,6 +24,7 @@
 
 package org.bco.cm.domain.enrolment;
 
+import org.bco.cm.util.EnrolmentNumber;
 import com.tribc.ddd.domain.event.Event;
 import com.tribc.ddd.domain.event.Eventful;
 import java.io.Serializable;
@@ -40,11 +41,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.bco.cm.domain.course.Course;
-import org.bco.cm.domain.course.CourseId;
+import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.enrolment.event.EnrolmentCanceled;
 import org.bco.cm.domain.enrolment.event.EnrolmentCreated;
 import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.dto.EnrolmentDTO;
 import org.bco.cm.util.Identifiable;
 import org.hibernate.annotations.NaturalId;

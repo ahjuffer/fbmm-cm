@@ -25,11 +25,11 @@
 package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.teacher.TeacherId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.TeacherId;
 
 /**
- *
+ * Command for starting a course.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public class StartCourse extends AbstractCommand {

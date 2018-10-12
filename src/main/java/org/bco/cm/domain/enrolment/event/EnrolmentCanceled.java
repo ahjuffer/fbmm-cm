@@ -25,8 +25,8 @@
 package org.bco.cm.domain.enrolment.event;
 
 import com.tribc.ddd.domain.event.AbstractEvent;
-import org.bco.cm.domain.course.CourseId;
-import org.bco.cm.domain.student.StudentId;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.StudentId;
 
 /**
  *

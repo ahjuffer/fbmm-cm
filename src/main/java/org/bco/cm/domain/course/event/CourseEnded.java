@@ -22,36 +22,27 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.domain.course.event;
 
-import org.bco.cm.domain.teacher.Teacher;
+import com.tribc.ddd.domain.event.AbstractEvent;
+import org.bco.cm.util.CourseId;
 
 /**
- * Domain service for starting a course.
+ * A course was ended by a teacher.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StartCourseService {
+public class CourseEnded extends AbstractEvent {
     
-    private StartCourseService()
-    {        
-    }
+    private final CourseId courseId_;
     
-    /**
-     * Starts course.
-     * @param course Course.
-     * @param teacher Teacher. Must be the responsible teacher.
-     */
-    public static void start(Course course, Teacher teacher)
+    public CourseEnded(CourseId courseId)
     {
-        if ( !StartCourseService.isTeacher(course, teacher) ) {
-            throw new IllegalStateException("Teacher is not responsible for course.");
-        }
-        course.start();
+        super(CourseEnded.class);
+        courseId_ = courseId;
     }
     
-    private static boolean isTeacher(Course course, Teacher teacher)
+    public CourseId getCourseId()
     {
-        return course.getTeacherId().equals(teacher.getTeacherId());
+        return courseId_;
     }
-
 }

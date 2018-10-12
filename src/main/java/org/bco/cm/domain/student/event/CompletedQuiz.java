@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 André H. Juffer, Biocenter Oulu
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,54 +22,42 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.domain.course;
+package org.bco.cm.domain.student.event;
 
-import java.io.Serializable;
-import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import org.bco.cm.util.Id;
+import com.tribc.ddd.domain.event.AbstractEvent;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.StudentId;
 
 /**
- * Identifies course.
- * @author André H. Juffer, Biocenter Oulu
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Embeddable
-public class CourseId extends Id<String> implements Serializable {
+public class CompletedQuiz extends AbstractEvent {
     
-    protected CourseId()
+    private final StudentId studentId_;
+    private final CourseId courseId_;
+    
+    public CompletedQuiz(StudentId studentId, CourseId courseId)
     {
-        super();
+        super(CompletedQuiz.class);
+        studentId_ = studentId;
+        courseId_ = courseId;
     }
-    
-    public CourseId(String id)
-    {
-        super(id);
-    }    
-    
-    private void setId(String id)
-    {
-        this.setValue(id);
-    }
-    
+
     /**
-     * Returns identifier value.
-     * @return Value.
-     */
-    @Column(name="course_id")
-    protected String getId()
-    {
-        return this.getValue();
-    }
-    
-    /**
-     * Returns new identifier.
+     * Returns student identifier.
      * @return Identifier.
      */
-    public static CourseId generate()
+    public StudentId getStudentId()
     {
-        UUID uuid = UUID.randomUUID();
-        return new CourseId(uuid.toString());
+        return studentId_;
     }
-        
+    
+    /**
+     * Returns course identifier.
+     * @return Identifier.
+     */
+    public CourseId getCourseId()
+    {
+        return courseId_;
+    }
 }

@@ -25,7 +25,7 @@
 package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
-import org.bco.cm.domain.enrolment.EnrolmentNumber;
+import org.bco.cm.util.EnrolmentNumber;
 
 /**
  * Command to cancel an enrolment in a course.

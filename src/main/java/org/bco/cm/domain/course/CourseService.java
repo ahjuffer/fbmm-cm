@@ -24,10 +24,11 @@
 
 package org.bco.cm.domain.course;
 
-import org.bco.cm.domain.teacher.Teacher;
-import java.time.Instant;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.CourseId;
 import java.util.List;
+import org.bco.cm.domain.teacher.Teacher;
+import org.bco.cm.dto.CourseDTO;
 
 /**
  * Domain service for managing courses.
@@ -41,7 +42,7 @@ public class CourseService {
     
     /**
      * Activates a course. Activated course is added to course registry.
-     * @param teacher Teacher activating course.
+     * @param teacher Responsible teacher.
      * @param courseDescription Course description.
      * @param courseId Identifier of newly activated course.
      * @param spec Activation specification. Must hold start and end date plus
@@ -76,18 +77,18 @@ public class CourseService {
     
     /**
      * Updates course in the course registry.
-     * @param teacher teacher updating course.
+     * @param teacher Responsible teacher.
      * @param course Course being updated.
      * @param spec Update specification.
-     * @param courseRegistry
-     * @return 
+     * @param courseRegistry Course registry.
+     * @return Updated course.
      */
     public static Course update(Teacher teacher, 
                                 Course course,
                                 CourseDTO spec,
                                 CourseRegistry courseRegistry)
     {
-        if ( !course.isResponsibleTeacher(teacher) ) {
+        if ( !CourseService.isTeacher(course, teacher) ) {
             throw new IllegalArgumentException(
                 "Teacher is not responsible for course '" + 
                 course.getTitle() + "'."
@@ -96,6 +97,59 @@ public class CourseService {
         course.update(spec);
         courseRegistry.update(course);
         return course;
+    }
+    
+    /**
+     * Removes/delete course. Course must not be ongoing.
+     * @param teacher Responsible teacher.
+     * @param course Course.
+     * @param courseRegistry Course registry. 
+     */
+    public static void remove(Teacher teacher, 
+                              Course course, 
+                              CourseRegistry courseRegistry)
+    {
+        if ( !CourseService.isTeacher(course, teacher) ) {
+            throw new IllegalArgumentException(
+                "Teacher is not responsible for course '" + 
+                course.getTitle() + "'."
+            );
+        }
+        if ( course.isOngoing() ) {
+            throw new IllegalStateException("Course is currently ongoing.");
+        }
+        courseRegistry.remove(course);
+    }
+    
+    /**
+     * Starts course.
+     * @param course Course.
+     * @param teacher Responsible teacher.
+     */
+    public static void start(Course course, Teacher teacher)
+    {
+        if ( !CourseService.isTeacher(course, teacher) ) {
+            throw new IllegalStateException("Teacher is not responsible for course.");
+        }
+        course.start();
+    }
+    
+    /**
+     * Ends course.
+     * @param course Course.
+     * @param teacher Responsible teacher.
+     */
+    public static void end(Course course, Teacher teacher)
+    {
+        if ( !CourseService.isTeacher(course, teacher) ) {
+            throw new IllegalStateException("Teacher is not responsible for course.");
+        }
+        course.end();
+    }
+    
+    private static boolean isTeacher(Course course, Teacher teacher)
+    {
+        return course.isResponsibleTeacher(teacher);
     }
     
     private static boolean isStillActive(List<Course> courses)

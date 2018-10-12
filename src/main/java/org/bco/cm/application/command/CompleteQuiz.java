@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andr&#233; H. Juffer, Biocenter Oulu.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,45 +26,39 @@ package org.bco.cm.application.command;
 
 import com.tribc.cqrs.domain.command.AbstractCommand;
 import org.bco.cm.util.CourseId;
-import org.bco.cm.util.TeacherId;
-import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.util.StudentId;
 
 /**
- * Command for updating active course in course registry.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Complete a quiz.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class UpdateCourse extends AbstractCommand {
-    
-    private final TeacherId teacherId_;
+public class CompleteQuiz extends AbstractCommand {
+
+    private final StudentId studentId_;
     private final CourseId courseId_;
-    private final CourseDTO spec_;
     
-    public UpdateCourse(TeacherId teacherId,
-                        CourseId courseId,
-                        CourseDTO spec)
+    public CompleteQuiz(StudentId studentId, CourseId courseId)
     {
-        super(UpdateCourse.class);
-        teacherId_ = teacherId;
-        courseId_ = courseId;
-        spec_ = spec;
+        super(CompleteQuiz.class);
+        studentId_ = studentId;
+        courseId_ = courseId;        
     }
 
-    public TeacherId getTeacherId()
+    /**
+     * Returns student identifier.
+     * @return Identifier.
+     */
+    public StudentId getStudentId()
     {
-        return teacherId_;
-    }
-    
-    public CourseId getCourseId()
-    {
-        return courseId_;
+        return studentId_;
     }
     
     /**
-     * Return update specification.
-     * @return Specification.
+     * Returns course identifier.
+     * @return Identifier.
      */
-    public CourseDTO getSpecification()
+    public CourseId getCourseId()
     {
-        return spec_;
+        return courseId_;
     }
 }

@@ -26,6 +26,7 @@ package org.bco.cm.util;
 
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import org.bco.cm.dto.PersonDTO;
@@ -41,12 +42,14 @@ public class Person<ID extends Id<String>> implements Identifiable {
     private ID identifier_;
     private String firstName_;
     private String surname_;
+    private EmailAddress emailAddress_;
     
     protected Person()
     {
         identifier_ = null;
         firstName_ = null;
         surname_ = null;
+        emailAddress_ = null;
     }
     
     /**
@@ -130,6 +133,20 @@ public class Person<ID extends Id<String>> implements Identifiable {
         return surname_;
     }
     
+    private void setEmailAddress(EmailAddress emailAddress)
+    {
+        if ( emailAddress == null ) {
+            throw new NullPointerException("Missing email address.");
+        }
+        emailAddress_ = emailAddress;
+    }
+    
+    @Embedded
+    public EmailAddress getEmailAddress()
+    {
+        return emailAddress_;
+    }
+
     @Override
     public boolean equals(Object other)
     {
@@ -145,13 +162,14 @@ public class Person<ID extends Id<String>> implements Identifiable {
         Person person = (Person)other;
         return identifier_.equals(person.getIdentifier());
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 11 * hash + Objects.hashCode(this.identifier_);
         hash = 11 * hash + Objects.hashCode(this.firstName_);
         hash = 11 * hash + Objects.hashCode(this.surname_);
+        hash = 11 * hash + Objects.hashCode(this.emailAddress_);
         return hash;
     }
 
@@ -165,6 +183,7 @@ public class Person<ID extends Id<String>> implements Identifiable {
         dto.setIdentifier(identifier_.toString());
         dto.setFirstName(firstName_);
         dto.setSurname(surname_);
+        dto.setEmailAddress(emailAddress_.stringValue());
     }
 
 }
