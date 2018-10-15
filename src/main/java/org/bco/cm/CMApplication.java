@@ -33,14 +33,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Andr&#233; Juffer, Triacle Biocomputing
  */
 @SpringBootApplication
-public class Application {
+public class CMApplication {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) 
     {
-        SpringApplication app = new SpringApplication(Application.class);
+        SpringApplication app = new SpringApplication(CMApplication.class);
 	app.setBannerMode(Banner.Mode.OFF);
 	app.run(args);        
     }
