@@ -24,6 +24,7 @@
 
 package org.bco.cm.domain.student;
 
+import org.bco.cm.util.EmailAddress;
 import org.bco.cm.util.StudentId;
 import org.bco.cm.util.Repository;
 
@@ -32,5 +33,12 @@ import org.bco.cm.util.Repository;
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 public interface StudentRegistry extends Repository<Student, StudentId> {
+    
+    /**
+     * Is there already a student with the given email address?
+     * @param emailAddress Email address.
+     * @return Result.
+     */
+    boolean contains(EmailAddress emailAddress);
     
 }

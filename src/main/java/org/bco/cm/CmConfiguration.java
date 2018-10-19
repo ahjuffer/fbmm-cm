@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andr�� H. Juffer, Biocenter Oulu
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,13 @@ package org.bco.cm;
 
 import com.tribc.cqrs.domain.command.CommandBus;
 import com.tribc.ddd.domain.event.EventBus;
+import org.bco.cm.api.facade.AccountFacade;
 import org.bco.cm.api.facade.CourseCatalogFacade;
 import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.EnrolmentFacade;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
+import org.bco.cm.application.SigninService;
 import org.bco.cm.application.command.handler.ActivateCourseHandler;
 import org.bco.cm.application.command.handler.AddCourseModuleHandler;
 import org.bco.cm.application.command.handler.CancelEnrolmentHandler;
@@ -91,6 +93,9 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource({"spring-beans.cfg.xml"})
 public class CmConfiguration 
 {
+    // Parameters.
+    private final static String APP_ID = "98d3a11e-77d4-4aed-8d9c-ce785af8ceff";
+    private final static String UMS_URL = "http://localhost:8013";
     
     // Repositories.
     
@@ -163,6 +168,16 @@ public class CmConfiguration
     }
     
     
+    // Application services
+    @Bean
+    SigninService signinService()
+    {
+        SigninService signinService = new SigninService();
+        signinService.setUmsUrl(UMS_URL + "/users/signin");
+        return signinService;
+    }
+    
+    
     // Facades
     
     @Bean
@@ -193,6 +208,12 @@ public class CmConfiguration
     EnrolmentFacade enrolmentFacade()
     {
         return new EnrolmentFacade();
+    }
+    
+    @Bean
+    AccountFacade accountFacade()
+    {
+        return new AccountFacade();
     }
     
     
@@ -267,7 +288,11 @@ public class CmConfiguration
     @Bean
     NewStudentRegisteredHandler newStudentRegisteredHandler()
     {
-        return new NewStudentRegisteredHandler();
+        NewStudentRegisteredHandler handler = new NewStudentRegisteredHandler();
+        handler.setApplicationId(APP_ID);
+        handler.setStudentRole("student");
+        handler.setUmsUrl(UMS_URL + "/users");
+        return handler;
     }
     
     @Bean

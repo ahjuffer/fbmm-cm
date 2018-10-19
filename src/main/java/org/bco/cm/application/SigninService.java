@@ -22,47 +22,36 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.event.handler;
+package org.bco.cm.application;
 
-import com.tribc.ddd.domain.event.EventHandler;
-import java.net.URI;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bco.cm.application.UserSpecification;
-import org.bco.cm.domain.student.Student;
-import org.bco.cm.domain.student.event.NewStudentRegistered;
 import org.bco.cm.util.UmsRestHelper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Creates new account for student. Email address serves as username.
+ * Application service for signing in users.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class NewStudentRegisteredHandler 
-    extends EventHandler<NewStudentRegistered>
-{
-    private String appId_;
+public class SigninService  {
+    
     private String umsUrl_;
-    private String userRole_;
     
     @Autowired
     private RestTemplateBuilder restTemplateBuilder_;
-    
-     /**
-     * Sets the unique identifier for this application.
-     * @param appId 
-     */
-    public void setApplicationId(String appId)
-    {
-        appId_ = appId;
-    }
     
     /**
      * Sets the URL of UMS.
@@ -71,41 +60,34 @@ public class NewStudentRegisteredHandler
     public void setUmsUrl(String url)
     {
         umsUrl_ = url;
-    }
-    
+    }    
+
     /**
-     * Sets the student role.
-     * @param studentRole Student role value.
+     * Signs in user.
+     * @param username Username.
+     * @param password Password.
+     * @return Signed in user. Holds userId and userRole.
      */
-    public void setStudentRole(String studentRole)
+    public UserSpecification signin(String username, String password) 
     {
-        userRole_ = studentRole;
-    }
-    
-    @Override
-    public void handle(NewStudentRegistered event) 
-    {        
         try {
-            Student student = event.getStudent();
-            
-            // New user.
             UserSpecification spec = new UserSpecification();
-            spec.setEmailAddress(student.getEmailAddress().stringValue());
-            spec.setUsername(student.getEmailAddress().stringValue());
-            spec.setUserId(student.getStudentId().stringValue());
-            spec.setUserRole(userRole_);
-            spec.setPassword(appId_);
-                        
-            String url = umsUrl_ + "?appId=" + appId_;            
-            URI uri = UmsRestHelper.makeEncodedUri(url);
-            
-            HttpHeaders headers = UmsRestHelper.makeHeaders();
+            spec.setUsername(username);
+            spec.setPassword(password);
+            UriComponents uriComponents = UriComponentsBuilder.fromUriString(umsUrl_)
+                                                              .build()
+                                                              .encode();
+            URI uri = uriComponents.toUri();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             MappingJacksonValue json = new MappingJacksonValue(spec);
             HttpEntity<MappingJacksonValue> entity = new HttpEntity<>(json, headers);            
             RestTemplate restTemplate = restTemplateBuilder_.build();
-            restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+            ResponseEntity<UserSpecification> resource = 
+                restTemplate.exchange(uri, HttpMethod.POST, entity, UserSpecification.class);
+            return resource.getBody();
         } catch (RestClientResponseException exception) {
-            String message = UmsRestHelper.getDetailMessage(exception);
+            String message = UmsRestHelper.getDetailMessage(exception);            
             throw new IllegalStateException(message, exception);
         }
     }

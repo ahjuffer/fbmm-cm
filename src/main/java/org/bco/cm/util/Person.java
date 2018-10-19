@@ -133,7 +133,7 @@ public class Person<ID extends Id<String>> implements Identifiable {
         return surname_;
     }
     
-    private void setEmailAddress(EmailAddress emailAddress)
+    protected void setEmailAddress(EmailAddress emailAddress)
     {
         if ( emailAddress == null ) {
             throw new NullPointerException("Missing email address.");

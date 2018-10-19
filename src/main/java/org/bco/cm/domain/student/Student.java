@@ -44,6 +44,7 @@ import org.bco.cm.domain.student.event.CompletedQuiz;
 import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.student.event.NewStudentRegistered;
 import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.util.EmailAddress;
 import org.bco.cm.util.Person;
 import org.hibernate.annotations.NaturalId;
 
@@ -103,7 +104,7 @@ public class Student extends Person<StudentId> implements Eventful, Serializable
      * Creates new student.
      * @param studentId New student identifier. Must not be null.
      * @param spec New student specification. Must not be null. Must hold 
-     * first name and surname.
+     * first name, surname, and emailAddress.
      * @return Newly created student.
      */
     public static Student valueOf(StudentId studentId, StudentDTO spec)
@@ -115,6 +116,7 @@ public class Student extends Person<StudentId> implements Eventful, Serializable
         student.setIdentifier(studentId);
         student.setFirstName(spec.getFirstName());
         student.setSurname(spec.getSurname());
+        student.setEmailAddress(EmailAddress.valueOf(spec.getEmailAddress()));
         return student;
     }
     

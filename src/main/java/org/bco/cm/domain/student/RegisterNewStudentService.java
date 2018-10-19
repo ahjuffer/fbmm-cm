@@ -26,6 +26,7 @@ package org.bco.cm.domain.student;
 
 import org.bco.cm.util.StudentId;
 import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.util.EmailAddress;
 
 /**
  * Domain service for registering a new student.
@@ -49,11 +50,23 @@ public class RegisterNewStudentService {
                                    StudentDTO spec,
                                    StudentRegistry studentRegistry)
     {
+        // Validate.
+        if (studentId == null || spec == null || studentRegistry == null ) {
+            throw new NullPointerException("Missing arguments.");
+        }
         if ( studentRegistry.contains(studentId) ) {
             throw new IllegalArgumentException(
-                studentId.stringValue() + ": Identifier already in use."
+                studentId.stringValue() + ": Student identifier already in use."
             );
         }
+        if ( studentRegistry.contains(EmailAddress.valueOf(spec.getEmailAddress()))) {
+            throw new IllegalArgumentException(
+                spec.getEmailAddress() + 
+                ": Email address already in use. Please provide another email address."
+            );
+        }
+        
+        // Create and save new student.
         Student student = Student.valueOf(studentId, spec);
         studentRegistry.add(student);
         student.registered();

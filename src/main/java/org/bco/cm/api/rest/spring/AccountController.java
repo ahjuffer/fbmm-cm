@@ -22,52 +22,42 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.hibernate;
+package org.bco.cm.api.rest.spring;
 
-import java.util.List;
-import org.bco.cm.domain.student.Student;
-import org.bco.cm.util.StudentId;
-import org.bco.cm.domain.student.StudentRegistry;
-import org.bco.cm.util.EmailAddress;
-import org.bco.cm.util.HibernateRepository;
-import org.springframework.stereotype.Repository;
+import org.bco.cm.api.facade.AccountFacade;
+import org.bco.cm.application.UserSpecification;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
+ * REST API implementation using Spring to signing in and out.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Repository
-public class HibernateStudentRegistry 
-    extends HibernateRepository<Student,StudentId>
-    implements StudentRegistry 
-{    
-    private static final String FROM = 
-        "select student from " + Student.class.getName() + " student ";
-
-    @Override
-    public Student forOne(StudentId studentId) 
+@RestController
+@RequestMapping(value="/accounts")
+public class AccountController {
+    
+    @Autowired
+    AccountFacade accountFacade_;
+    
+    /**
+     * Signs in an user.
+     * @param spec User specification holding username and password.
+     * @return User with userId and userRole.
+     */
+    @PostMapping(
+        consumes = "application/json;charset=UTF-8",
+        produces = "application/json;charset=UTF-8"
+    )
+    ResponseEntity<UserSpecification> signin(@RequestBody UserSpecification spec)
     {
-        String id = studentId.stringValue();
-        String hql = 
-            FROM + 
-            "where student.studentId.id = '" + id + "'";
-        return this.forSingle(hql);
-    }
-
-    @Override
-    public List<Student> forAll() 
-    {
-        return this.forMany(FROM);
-    }
-
-    @Override
-    public boolean contains(EmailAddress emailAddress) 
-    {
-        String hql = 
-            FROM +
-            "where student.emailAddress.value = '" + emailAddress.stringValue() + "'";
-        Student student = this.forSingle(hql);
-        return student != null;
+        UserSpecification specification = 
+            accountFacade_.signin(spec.getUsername(), spec.getPassword());
+        return ResponseEntity.ok().body(specification);
     }
     
 }

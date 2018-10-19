@@ -22,52 +22,42 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.infrastructure.persistence.hibernate;
+package org.bco.cm.api.facade;
 
-import java.util.List;
-import org.bco.cm.domain.student.Student;
-import org.bco.cm.util.StudentId;
-import org.bco.cm.domain.student.StudentRegistry;
-import org.bco.cm.util.EmailAddress;
-import org.bco.cm.util.HibernateRepository;
-import org.springframework.stereotype.Repository;
+import org.bco.cm.application.SigninService;
+import org.bco.cm.application.UserSpecification;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
+ * Simplified interface for signing in and out.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Repository
-public class HibernateStudentRegistry 
-    extends HibernateRepository<Student,StudentId>
-    implements StudentRegistry 
-{    
-    private static final String FROM = 
-        "select student from " + Student.class.getName() + " student ";
+@Transactional( rollbackFor = { Throwable.class } )
+public class AccountFacade {
 
-    @Override
-    public Student forOne(StudentId studentId) 
+    @Autowired
+    private SigninService signinService_;
+        
+    /**
+     * Signs user in.
+     * @param username Username.
+     * @param password Password.
+     * @return Signed in user. Holds userId and userRole.
+     */
+    public UserSpecification signin(String username, String password)
     {
-        String id = studentId.stringValue();
-        String hql = 
-            FROM + 
-            "where student.studentId.id = '" + id + "'";
-        return this.forSingle(hql);
-    }
-
-    @Override
-    public List<Student> forAll() 
-    {
-        return this.forMany(FROM);
-    }
-
-    @Override
-    public boolean contains(EmailAddress emailAddress) 
-    {
-        String hql = 
-            FROM +
-            "where student.emailAddress.value = '" + emailAddress.stringValue() + "'";
-        Student student = this.forSingle(hql);
-        return student != null;
+        return signinService_.signin(username, password);
+        
     }
     
+    /**
+     * Signs out user.
+     * @param userId User identifier.
+     */
+    public void signout(String userId)
+    {
+        
+    }
+
 }
