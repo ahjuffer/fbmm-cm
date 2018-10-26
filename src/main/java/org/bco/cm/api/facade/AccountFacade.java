@@ -24,7 +24,7 @@
 
 package org.bco.cm.api.facade;
 
-import org.bco.cm.application.SigninService;
+import org.bco.cm.application.AccountService;
 import org.bco.cm.application.UserSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountFacade {
 
     @Autowired
-    private SigninService signinService_;
+    private AccountService accountService_;
         
     /**
      * Signs user in.
@@ -47,7 +47,7 @@ public class AccountFacade {
      */
     public UserSpecification signin(String username, String password)
     {
-        return signinService_.signin(username, password);
+        return accountService_.signin(username, password);
         
     }
     
@@ -57,7 +57,7 @@ public class AccountFacade {
      */
     public void signout(String userId)
     {
-        
+        accountService_.signout(userId);
     }
 
 }

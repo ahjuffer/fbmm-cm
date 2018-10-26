@@ -24,17 +24,35 @@
 
 package org.bco.cm.application;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Specifies a new user with an application.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
+@JsonInclude(Include.NON_NULL)
 public class UserSpecification {
     
     private String userId_;
     private String username_;
     private String password_;
+    private String newPassword_;
     private String emailAddress_;
-    private String userRole_;
+    private final Set<String> userRoles_;
+    
+    public UserSpecification()
+    {
+        userId_ = null;
+        username_ = null;
+        password_ = null;
+        newPassword_ = null;
+        emailAddress_ = null;
+        userRoles_ = new HashSet<>();
+    }
     
     public void setUserId(String userId)
     {
@@ -66,6 +84,16 @@ public class UserSpecification {
         return password_;
     }
     
+    public void setNewPassword(String password)
+    {
+        newPassword_ = password;
+    }
+    
+    public String getNewPassword()
+    {
+        return newPassword_;
+    }
+    
     public void setEmailAddress(String emailAddress)
     {
         emailAddress_ = emailAddress;
@@ -76,14 +104,15 @@ public class UserSpecification {
         return emailAddress_;                
     }
     
-    public void setUserRole(String userRole)
+    public void setUserRoles(Collection<String> userRoles)
     {
-        userRole_ = userRole;
+        userRoles_.clear();
+        userRoles_.addAll(userRoles);
     }
     
-    public String getUserRole()
+    public Collection<String> getUserRoles()
     {
-        return userRole_;
+        return userRoles_;
     }
     
 }

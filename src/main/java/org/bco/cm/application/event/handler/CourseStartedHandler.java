@@ -33,6 +33,7 @@ import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.course.event.CourseStarted;
 import org.bco.cm.util.StudentId;
 import org.bco.cm.dto.CourseDTO;
+import org.bco.cm.dto.PersonalNameDTO;
 import org.bco.cm.dto.StudentDTO;
 import org.bco.cm.dto.StudentMonitorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +105,8 @@ public class CourseStartedHandler
                 SimpleMailMessage msg = new SimpleMailMessage(templateMessage_);
                 msg.setTo(student.getEmailAddress());
                 StringBuilder text = new StringBuilder();
-                text.append("Dear ").append(student.getFirstName()).append(",").append(newline);
+                PersonalNameDTO names = student.getNames();
+                text.append("Dear ").append(names.getFirstName()).append(",").append(newline);
                 text.append("The course '").append(title).append("'").append(" has started.").append(newline);
                 text.append("You now can begin with the first course module at crapp.oulu.fi.").append(newline);
                 msg.setText(text.toString());

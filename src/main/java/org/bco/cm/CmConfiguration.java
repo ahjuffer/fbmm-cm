@@ -32,7 +32,7 @@ import org.bco.cm.api.facade.CourseFacade;
 import org.bco.cm.api.facade.EnrolmentFacade;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.api.facade.TeacherFacade;
-import org.bco.cm.application.SigninService;
+import org.bco.cm.application.AccountService;
 import org.bco.cm.application.command.handler.ActivateCourseHandler;
 import org.bco.cm.application.command.handler.AddCourseModuleHandler;
 import org.bco.cm.application.command.handler.CancelEnrolmentHandler;
@@ -169,12 +169,13 @@ public class CmConfiguration
     
     
     // Application services
+    
     @Bean
-    SigninService signinService()
+    AccountService accountService()
     {
-        SigninService signinService = new SigninService();
-        signinService.setUmsUrl(UMS_URL + "/users/signin");
-        return signinService;
+        AccountService accountService = new AccountService();
+        accountService.setUmsUrl(UMS_URL + "/users");
+        return accountService;
     }
     
     

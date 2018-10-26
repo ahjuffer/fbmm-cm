@@ -27,6 +27,7 @@ package org.bco.cm.dto;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
@@ -38,15 +39,13 @@ import javax.persistence.Transient;
 public class PersonDTO implements Serializable
 {
     private String identifier_;
-    private String firstName_;
-    private String surname_;
+    private PersonalNameDTO names_;
     private String emailAddress_;
 
     protected PersonDTO()
     {
         identifier_ = null;
-        firstName_ = null;
-        surname_ = null;
+        names_ = null;
         emailAddress_ = null;
     }
     
@@ -61,36 +60,15 @@ public class PersonDTO implements Serializable
         return identifier_;
     }
     
-    public void setFirstName(String firstName)
+    public void setNames(PersonalNameDTO names)
     {
-        firstName_ = firstName;
+        names_ = names;
     }
     
-    @Column(name = "first_name")
-    public String getFirstName()
+    @Embedded
+    public PersonalNameDTO getNames()
     {
-        return firstName_;
-    }
-    
-    public void setSurname(String surname)
-    {
-        surname_ = surname;       
-    }
-
-    @Column(name = "surname")
-    public String getSurname()
-    {
-        return surname_;
-    }
-    
-    /**
-     * Returns full name, as "surname, firstName".
-     * @return Full name.
-     */
-    @Transient
-    public String getFullName()
-    {
-        return surname_ + ", " + firstName_;
+        return names_;
     }
     
     public void setEmailAddress(String emailAddress)
@@ -113,9 +91,9 @@ public class PersonDTO implements Serializable
     {
         String newline = System.getProperty("line.separator");
         s.append("identifier - ").append(identifier_).append(newline);
-        s.append("firstName - ").append(firstName_).append(newline);
-        s.append("surname - ").append(surname_).append(newline);
-        s.append("fullName - ").append(this.getFullName()).append(newline);
+        if ( names_ != null ) {
+            s.append("names - ").append(names_).append(newline);
+        }
         s.append("emailAddress - ").append(emailAddress_).append(newline);
     }
     
@@ -137,11 +115,11 @@ public class PersonDTO implements Serializable
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.identifier_);
-        hash = 53 * hash + Objects.hashCode(this.firstName_);
-        hash = 53 * hash + Objects.hashCode(this.surname_);
-        hash = 53 * hash + Objects.hashCode(this.emailAddress_);
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.identifier_);
+        hash = 29 * hash + Objects.hashCode(this.names_);
+        hash = 29 * hash + Objects.hashCode(this.emailAddress_);
         return hash;
     }
+
 }

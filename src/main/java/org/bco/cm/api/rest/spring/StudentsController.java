@@ -55,7 +55,7 @@ public class StudentsController {
     /**
      * Registers new student.
      * @param spec New student specification. Must hold first name, surname,
-     * student identifier, and email address.
+     * student identifier, and email address. May hold middle names.
      * @return New student.
      */
     @PostMapping(

@@ -40,15 +40,13 @@ import org.bco.cm.dto.PersonDTO;
 public class Person<ID extends Id<String>> implements Identifiable {
     
     private ID identifier_;
-    private String firstName_;
-    private String surname_;
+    private PersonalName names_;
     private EmailAddress emailAddress_;
     
     protected Person()
     {
         identifier_ = null;
-        firstName_ = null;
-        surname_ = null;
+        names_ = null;
         emailAddress_ = null;
     }
     
@@ -83,54 +81,22 @@ public class Person<ID extends Id<String>> implements Identifiable {
         return identifier_.stringValue();
     }
     
-    /**
-     * Sets first name.
-     * @param firstName First name. Must neither be null nor empty. 
-     */
-    protected void setFirstName(String firstName)
+    protected void setNames(PersonalName names)
     {
-        if ( firstName == null ) {
-            throw new NullPointerException("Missing first name.");
+        if ( names == null ) {
+            throw new NullPointerException("Missing names.");
         }
-        if ( firstName.isEmpty() ) {
-            throw new IllegalArgumentException("Missing first name.");
-        }
-        firstName_ = firstName;
+        names_ = names;
     }
     
     /**
-     * Returns first name.
-     * @return First name. Never null or empty.
+     * Returns names. 
+     * @return Names. Never null.
      */
-    @Column(name = "first_name")
-    public String getFirstName()
+    @Embedded
+    public PersonalName getNames()
     {
-        return firstName_;
-    }
-    
-    /**
-     * Sets surname.
-     * @param surname Surname. Must neither be null nor empty. 
-     */
-    protected void setSurname(String surname)
-    {
-        if ( surname == null ) {
-            throw new NullPointerException("Missing surname.");
-        }
-        if ( surname.isEmpty() ) {
-            throw new IllegalArgumentException("Missing surname.");
-        }
-        surname_ = surname;        
-    }
-    
-    /**
-     * Returns surname.
-     * @return Surname. Never null or empty.
-     */
-    @Column(name = "surname")    
-    public String getSurname()
-    {
-        return surname_;
+        return names_;
     }
     
     protected void setEmailAddress(EmailAddress emailAddress)
@@ -162,27 +128,25 @@ public class Person<ID extends Id<String>> implements Identifiable {
         Person person = (Person)other;
         return identifier_.equals(person.getIdentifier());
     }
-    
+
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 11 * hash + Objects.hashCode(this.identifier_);
-        hash = 11 * hash + Objects.hashCode(this.firstName_);
-        hash = 11 * hash + Objects.hashCode(this.surname_);
-        hash = 11 * hash + Objects.hashCode(this.emailAddress_);
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.identifier_);
+        hash = 71 * hash + Objects.hashCode(this.names_);
+        hash = 71 * hash + Objects.hashCode(this.emailAddress_);
         return hash;
     }
-
+    
     /**
      * Populate DTO.
      * @param <T> DTO type.
      * @param dto DTO
      */
     protected final <T extends PersonDTO> void populateDTO(T dto)
-    {
+    {        
         dto.setIdentifier(identifier_.toString());
-        dto.setFirstName(firstName_);
-        dto.setSurname(surname_);
+        dto.setNames(names_.toDTO());
         dto.setEmailAddress(emailAddress_.stringValue());
     }
 

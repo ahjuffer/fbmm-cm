@@ -33,6 +33,7 @@ import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDTO;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
+import org.bco.cm.dto.PersonalNameDTO;
 import org.bco.cm.dto.TeacherDTO;
 import org.jboss.logging.Logger;
 
@@ -49,8 +50,10 @@ public class TestCourseDescription {
         
         TeacherId teacherId = new TeacherId("1");
         TeacherDTO tspec = new TeacherDTO();
-        tspec.setFirstName("André");
-        tspec.setSurname("Juffer");
+        PersonalNameDTO names = new PersonalNameDTO();
+        names.setFirstName("André");
+        names.setSurname("Juffer");
+        tspec.setNames(names);
         Teacher teacher = Teacher.valueOf(teacherId, tspec);
         
         // Create a course.

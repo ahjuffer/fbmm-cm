@@ -26,6 +26,7 @@ package org.bco.cm;
 import java.net.URI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bco.cm.dto.PersonalNameDTO;
 import org.bco.cm.dto.StudentDTO;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpEntity;
@@ -76,9 +77,11 @@ public class TestRestTemplate {
         */
         
         StudentDTO spec = new StudentDTO();
-        spec.setFirstName("André");
-        spec.setSurname("Juffer");
+        PersonalNameDTO names = new PersonalNameDTO();
+        names.setFirstName("André");
+        names.setSurname("Juffer");
         spec.setStudentId("17364648");
+        spec.setNames(names);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);        
         MappingJacksonValue value = new MappingJacksonValue(spec);

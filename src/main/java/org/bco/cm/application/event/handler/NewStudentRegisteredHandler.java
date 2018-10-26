@@ -26,6 +26,8 @@ package org.bco.cm.application.event.handler;
 
 import com.tribc.ddd.domain.event.EventHandler;
 import java.net.URI;
+import java.util.Collection;
+import java.util.HashSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bco.cm.application.UserSpecification;
@@ -50,10 +52,18 @@ public class NewStudentRegisteredHandler
 {
     private String appId_;
     private String umsUrl_;
-    private String userRole_;
+    private final Collection<String> userRoles_;
     
     @Autowired
     private RestTemplateBuilder restTemplateBuilder_;
+    
+    public NewStudentRegisteredHandler()
+    {
+        super();
+        appId_ = null;
+        umsUrl_ = null;
+        userRoles_ = new HashSet<>();
+    }
     
      /**
      * Sets the unique identifier for this application.
@@ -79,7 +89,8 @@ public class NewStudentRegisteredHandler
      */
     public void setStudentRole(String studentRole)
     {
-        userRole_ = studentRole;
+        userRoles_.clear();
+        userRoles_.add(appId_);
     }
     
     @Override
@@ -93,7 +104,7 @@ public class NewStudentRegisteredHandler
             spec.setEmailAddress(student.getEmailAddress().stringValue());
             spec.setUsername(student.getEmailAddress().stringValue());
             spec.setUserId(student.getStudentId().stringValue());
-            spec.setUserRole(userRole_);
+            spec.setUserRoles(userRoles_);
             spec.setPassword(appId_);
                         
             String url = umsUrl_ + "?appId=" + appId_;            

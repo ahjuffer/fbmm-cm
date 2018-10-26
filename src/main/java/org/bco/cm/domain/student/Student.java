@@ -46,6 +46,7 @@ import org.bco.cm.domain.student.event.NewStudentRegistered;
 import org.bco.cm.dto.StudentDTO;
 import org.bco.cm.util.EmailAddress;
 import org.bco.cm.util.Person;
+import org.bco.cm.util.PersonalName;
 import org.hibernate.annotations.NaturalId;
 
 /**
@@ -114,8 +115,9 @@ public class Student extends Person<StudentId> implements Eventful, Serializable
         }
         Student student = new Student();
         student.setIdentifier(studentId);
-        student.setFirstName(spec.getFirstName());
-        student.setSurname(spec.getSurname());
+        
+        PersonalName names = PersonalName.valueOf(spec.getNames());
+        student.setNames(names);
         student.setEmailAddress(EmailAddress.valueOf(spec.getEmailAddress()));
         return student;
     }

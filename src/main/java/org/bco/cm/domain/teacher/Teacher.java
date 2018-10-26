@@ -42,6 +42,7 @@ import org.bco.cm.domain.course.Course;
 import org.bco.cm.domain.teacher.event.NewTeacherRegistered;
 import org.bco.cm.dto.TeacherDTO;
 import org.bco.cm.util.Person;
+import org.bco.cm.util.PersonalName;
 import org.hibernate.annotations.NaturalId;
 
 /**
@@ -106,8 +107,8 @@ public class Teacher extends Person<TeacherId> implements Eventful, Serializable
     {
         Teacher teacher = new Teacher();
         teacher.setIdentifier(teacherId);
-        teacher.setFirstName(spec.getFirstName());
-        teacher.setSurname(spec.getSurname());
+        PersonalName names = PersonalName.valueOf(spec.getNames());
+        teacher.setNames(names);
         return teacher;
     }
     

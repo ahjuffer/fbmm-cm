@@ -26,6 +26,7 @@ package org.bco.cm;
 
 
 import org.bco.cm.domain.student.Student;
+import org.bco.cm.dto.PersonalNameDTO;
 import org.bco.cm.util.StudentId;
 import org.bco.cm.dto.StudentDTO;
 
@@ -42,8 +43,10 @@ public class TestPerson {
     {
         StudentId studentId = new StudentId("12345");
         StudentDTO spec = new StudentDTO();
-        spec.setFirstName("Foo");
-        spec.setSurname("Bar");
+        PersonalNameDTO names = new PersonalNameDTO();
+        names.setFirstName("Foo");
+        names.setSurname("Bar");
+        spec.setNames(names);
         Student student = Student.valueOf(studentId, spec);
         System.out.println("Student - " + student.toDTO());
     }

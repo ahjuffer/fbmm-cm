@@ -24,6 +24,8 @@
 
 package org.bco.cm.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.io.Serializable;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -40,6 +42,7 @@ import org.hibernate.annotations.NaturalId;
  */
 @Entity( name = "TeacherDTO" )
 @Table(name = "teachers")
+@JsonInclude(Include.NON_NULL)
 public class TeacherDTO extends PersonDTO implements Serializable {
     
     private UUID id_;

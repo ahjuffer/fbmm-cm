@@ -28,6 +28,7 @@ import org.bco.cm.api.facade.AccountFacade;
 import org.bco.cm.application.UserSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,10 +47,11 @@ public class AccountController {
     
     /**
      * Signs in an user.
-     * @param spec User specification holding username and password.
-     * @return User with userId and userRole.
+     * @param spec User specification. Must hold username and password.
+     * @return User with userId and userRole(s).
      */
     @PostMapping(
+        path = "/signin",
         consumes = "application/json;charset=UTF-8",
         produces = "application/json;charset=UTF-8"
     )
@@ -58,6 +60,20 @@ public class AccountController {
         UserSpecification specification = 
             accountFacade_.signin(spec.getUsername(), spec.getPassword());
         return ResponseEntity.ok().body(specification);
+    }
+    
+    /**
+     * Signs out an user.
+     * @param userId User identifier. Either studentId or teacherId.
+     * @return Success message.
+     */
+    @PostMapping(
+        path = "/signout/{userId}"
+    )
+    ResponseEntity<String> signout(@PathVariable("userId") String userId)
+    {
+        accountFacade_.signout(userId);
+        return ResponseEntity.ok().body("User signed out");
     }
     
 }

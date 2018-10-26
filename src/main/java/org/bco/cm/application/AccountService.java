@@ -24,11 +24,8 @@
 
 package org.bco.cm.application;
 
-import org.bco.cm.util.UmsRestHelper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.net.URI;
+import org.bco.cm.util.UmsRestHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -46,7 +43,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * Application service for signing in users.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class SigninService  {
+public class AccountService  {
     
     private String umsUrl_;
     
@@ -74,10 +71,12 @@ public class SigninService  {
             UserSpecification spec = new UserSpecification();
             spec.setUsername(username);
             spec.setPassword(password);
-            UriComponents uriComponents = UriComponentsBuilder.fromUriString(umsUrl_)
-                                                              .build()
-                                                              .encode();
+            
+            String url = umsUrl_ + "/signin";
+            UriComponents uriComponents = 
+                UriComponentsBuilder.fromUriString(url).build().encode();
             URI uri = uriComponents.toUri();
+            
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             MappingJacksonValue json = new MappingJacksonValue(spec);
@@ -92,4 +91,30 @@ public class SigninService  {
         }
     }
 
+    /**
+     * Signs out an user.
+     * @param userId User identifier.
+     */
+    public void signout(String userId)
+    {
+        try {
+            UserSpecification spec = new UserSpecification();
+            spec.setUserId(userId);
+            
+            String url = umsUrl_ + "/signout";
+            UriComponents uriComponents = 
+                UriComponentsBuilder.fromUriString(url).build().encode();
+            URI uri = uriComponents.toUri();
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            MappingJacksonValue json = new MappingJacksonValue(spec);
+            HttpEntity<MappingJacksonValue> entity = new HttpEntity<>(json, headers);            
+            RestTemplate restTemplate = restTemplateBuilder_.build();
+            restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+        } catch (RestClientResponseException exception) {
+            String message = UmsRestHelper.getDetailMessage(exception);            
+            throw new IllegalStateException(message, exception);
+        }
+    }
 }

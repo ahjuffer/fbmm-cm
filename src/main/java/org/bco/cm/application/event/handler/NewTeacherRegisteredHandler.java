@@ -29,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.bco.cm.domain.teacher.event.NewTeacherRegistered;
 import org.apache.logging.log4j.Logger;
 import org.bco.cm.domain.teacher.Teacher;
+import org.bco.cm.util.PersonalName;
 
 /**
  *
@@ -44,6 +45,7 @@ public class NewTeacherRegisteredHandler
     {        
         Teacher teacher = event.getTeacher();
         
-        LOGGER.info("Creating an account for teacher: " + teacher.getSurname());
+        PersonalName names = teacher.getNames();
+        LOGGER.info("Creating an account for teacher: " + names.getSurname());
     }
 }
