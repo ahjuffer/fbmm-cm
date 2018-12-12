@@ -22,44 +22,33 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
+package org.bco.cm.api.access;
 
-import org.bco.cm.application.command.StartCourse;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.util.CourseId;
-import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.course.CourseRegistryService;
-import org.bco.cm.domain.teacher.Teacher;
-import org.bco.cm.util.TeacherId;
-import org.bco.cm.domain.teacher.TeacherRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 
 /**
- *
+ * Pointcuts.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StartCourseHandler extends CmCommandHandler<StartCourse> {
+@Aspect
+public class Access {
     
-    @Autowired
-    private CourseRegistry courseRegistry_;
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.*.*(..))")
+    void all() {}
     
-    @Autowired
-    private TeacherRegistry teacherRegistry_;
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.TeachersController.*(..))")
+    void teacher() {}
     
-    @Override
-    public void handle(StartCourse command) 
-    {
-        CourseId courseId = command.getCourseId();
-        Course course = CommandHandlerUtil.findCourse(courseId, courseRegistry_);
-        TeacherId teacherId = command.getTeacherId();
-        Teacher teacher = CommandHandlerUtil.findTeacher(teacherId, teacherRegistry_);
-        
-        // Start the course.
-        CourseRegistryService.start(course, teacher);
-        courseRegistry_.update(course);
-        
-        // Handle possible domain events.
-        this.handleEvents(course);        
-    }
-
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.StudentsController.*(..))")
+    void student() {}
+    
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.StudentsController.getStudents(..))")
+    void getStudents() {}
+    
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.CourseCatalogController.*(..))")
+    void courseCatalog() {}
+    
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.CoursesController.*(..))")
+    void courseRegistry() {}
 }

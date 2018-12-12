@@ -22,8 +22,9 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application;
+package org.bco.cm.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.Collection;
@@ -59,6 +60,7 @@ public class UserSpecification {
         userId_ = userId;
     }
     
+    @JsonIgnore
     public String getUserId()
     {
         return userId_;
@@ -99,20 +101,61 @@ public class UserSpecification {
         emailAddress_ = emailAddress;
     }
     
+    @JsonIgnore
     public String getEmailAddress()
     {
         return emailAddress_;                
     }
     
+    /**
+     * Adds new user role (name) to existing user roles.
+     * @param role Role (role name).
+     */
+    public void addUserRole(String role)
+    {
+        userRoles_.add(role);
+    }
+    
+    /**
+     * Replaces existing user roles with new user roles.
+     * @param userRoles New user roles.
+     */
     public void setUserRoles(Collection<String> userRoles)
     {
         userRoles_.clear();
         userRoles_.addAll(userRoles);
     }
     
+    /**
+     * Returns all user roles.
+     * @return User roles.
+     */
     public Collection<String> getUserRoles()
     {
         return userRoles_;
+    }
+    
+    @JsonIgnore
+    public boolean isStudent()
+    {
+        return this.hasRole("student");
+    }
+    
+    @JsonIgnore
+    public boolean isTeacher()
+    {
+        return this.hasRole("teacher");
+    }
+    
+    /**
+     * Has user given role?
+     * @param roleName Role name.
+     * @return Result.
+     */
+    @JsonIgnore
+    public boolean hasRole(String roleName)
+    {
+        return userRoles_.contains(roleName);
     }
     
 }

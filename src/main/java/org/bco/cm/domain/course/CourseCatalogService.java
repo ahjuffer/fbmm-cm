@@ -30,23 +30,22 @@ import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
 
 /**
- * Domain service for handling course descriptions in the course catalog.
+ * Domain service for managing course descriptions in the course catalog.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CourseDescriptionService {
+public class CourseCatalogService {
     
-    private CourseDescriptionService()
+    private CourseCatalogService()
     {        
     }
     
     /**
      * Adds new course description.
      * @param teacher Responsible teacher.
-     * @param courseId New course identifier.
+     * @param courseId New course identifier. Must not already be in use.
      * @param spec New course specification.
      * @param courseCatalog Course catalog.
      * @return Newly added course.
-     * @throws IllegalArgumentException if courseId is already in use.
      */
     public static CourseDescription add(Teacher teacher,
                                         CourseDescriptionId courseId, 
@@ -77,7 +76,6 @@ public class CourseDescriptionService {
      * @param spec Update specification.
      * @param courseCatalog Course catalog.
      * @return Updated course description.
-     * @throws IllegalArgumentException if teacher is not responsible for course.
      */
     public static CourseDescription update(Teacher teacher, 
                                            CourseDescription course,
@@ -85,9 +83,7 @@ public class CourseDescriptionService {
                                            CourseCatalog courseCatalog)
     {
         if ( !course.isResponsibleTeacher(teacher) ) {
-            throw new IllegalArgumentException(
-                "Teacher is not responsible for course '" + course.getTitle() + "'."
-            );
+            throw CourseCatalogService.makeNotResponsibleForCourseException(course);
         }
         course.update(spec);
         courseCatalog.update(course);
@@ -99,16 +95,13 @@ public class CourseDescriptionService {
      * @param teacher Responsible teacher.
      * @param course Course description.
      * @param courseCatalog Course catalog.
-     * @throws IllegalArgumentException if teacher is not responsible for course.
      */
     public static void remove(Teacher teacher, 
                               CourseDescription course, 
                               CourseCatalog courseCatalog)
     {
         if ( !course.isResponsibleTeacher(teacher) ) {
-            throw new IllegalArgumentException(
-                "Teacher is not responsible for course '" + course.getTitle() + "'."
-            );
+            throw CourseCatalogService.makeNotResponsibleForCourseException(course);
         }
         courseCatalog.remove(course);
     }
@@ -120,7 +113,6 @@ public class CourseDescriptionService {
      * @param spec New module specification.
      * @param courseCatalog Course catalog.
      * @return Updated course description.
-     * @throws IllegalArgumentException if teacher is not responsible for course.
      */
     public static CourseDescription addModule(Teacher teacher, 
                                               CourseDescription course,
@@ -128,9 +120,7 @@ public class CourseDescriptionService {
                                               CourseCatalog courseCatalog)
     {
         if ( !course.isResponsibleTeacher(teacher) ) {
-            throw new IllegalArgumentException(
-                "Teacher is not responsible for course '" + course.getTitle() + "'."
-            );
+            throw CourseCatalogService.makeNotResponsibleForCourseException(course);
         }
         course.addModule(spec);
         courseCatalog.update(course);
@@ -145,7 +135,6 @@ public class CourseDescriptionService {
      * @param spec Module update specification.
      * @param courseCatalog Course catalog.
      * @return Updated course description.
-     * @throws IllegalArgumentException if teacher is not responsible for course.
      */
     public static CourseDescription updateModule(Teacher teacher, 
                                                  CourseDescription course,
@@ -154,10 +143,8 @@ public class CourseDescriptionService {
                                                  CourseCatalog courseCatalog)
     {
         if ( !course.isResponsibleTeacher(teacher) ) {
-            throw new IllegalArgumentException(
-                "Teacher is not responsible for course '" + course.getTitle() + "'."
-            );
-        }
+            throw CourseCatalogService.makeNotResponsibleForCourseException(course);
+       }
         course.updateModule(moduleId, spec);
         courseCatalog.update(course);
         return course;
@@ -170,7 +157,6 @@ public class CourseDescriptionService {
      * @param moduleId Module identifier.
      * @param courseCatalog 
      * @return Updated course description.
-     * @throws IllegalArgumentException if teacher is not responsible for course.
      */
     public static CourseDescription deleteModule(Teacher teacher, 
                                                  CourseDescription course,
@@ -178,13 +164,18 @@ public class CourseDescriptionService {
                                                  CourseCatalog courseCatalog)
     {
         if ( !course.isResponsibleTeacher(teacher) ) {
-            throw new IllegalArgumentException(
-                "Teacher is not responsible for course '" + course.getTitle() + "'."
-            );
+            throw CourseCatalogService.makeNotResponsibleForCourseException(course);
         }
         course.removeModule(moduleId);
         courseCatalog.update(course);
         return course;
+    }
+    
+    private static IllegalArgumentException makeNotResponsibleForCourseException(CourseDescription course)
+    {
+        return new IllegalArgumentException(
+            "Teacher is not responsible for course '" + course.getTitle() + "'."
+        );
     }
 
 }

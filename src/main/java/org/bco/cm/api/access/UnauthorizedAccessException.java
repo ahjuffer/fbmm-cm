@@ -22,44 +22,32 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.application.command.handler;
-
-import org.bco.cm.application.command.StartCourse;
-import org.bco.cm.domain.course.Course;
-import org.bco.cm.util.CourseId;
-import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.course.CourseRegistryService;
-import org.bco.cm.domain.teacher.Teacher;
-import org.bco.cm.util.TeacherId;
-import org.bco.cm.domain.teacher.TeacherRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
+package org.bco.cm.api.access;
 
 /**
- *
+ * Thrown if an illegal/unauthorized attempt is made to accessing and/or modifying a resource.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class StartCourseHandler extends CmCommandHandler<StartCourse> {
+public class UnauthorizedAccessException extends RuntimeException {
     
-    @Autowired
-    private CourseRegistry courseRegistry_;
-    
-    @Autowired
-    private TeacherRegistry teacherRegistry_;
-    
-    @Override
-    public void handle(StartCourse command) 
+    public UnauthorizedAccessException()
     {
-        CourseId courseId = command.getCourseId();
-        Course course = CommandHandlerUtil.findCourse(courseId, courseRegistry_);
-        TeacherId teacherId = command.getTeacherId();
-        Teacher teacher = CommandHandlerUtil.findTeacher(teacherId, teacherRegistry_);
-        
-        // Start the course.
-        CourseRegistryService.start(course, teacher);
-        courseRegistry_.update(course);
-        
-        // Handle possible domain events.
-        this.handleEvents(course);        
+        super("Illegal access.");
+    }
+    
+    public UnauthorizedAccessException(String message)
+    {
+        super(message);
+    }
+    
+    public UnauthorizedAccessException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
+    
+    public UnauthorizedAccessException(Throwable cause)
+    {
+        super(cause);
     }
 
 }

@@ -25,14 +25,18 @@
 package org.bco.cm.api.rest.spring;
 
 import java.util.List;
+import java.util.Map;
 import org.bco.cm.api.facade.CourseCatalogFacade;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
+import org.bco.cm.security.Authorizable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,12 +47,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
- * REST API implementation using Spring.
+ * REST API implementation using Spring for managing course descriptions in the 
+ * course catalog.
  * @author Andr&#233; Juffer, Biocenter Oulu
- * @see org.bco.cm.api.rest.spring.TeachersController for adding new courses to
- * the course catalog.
+ * @see org.bco.cm.api.rest.spring.TeachersController for adding new course 
+ * descriptions to the course catalog.
  */
 @RestController
 @RequestMapping(value="/course/catalog")
@@ -59,39 +65,42 @@ public class CourseCatalogController {
     
     /**
      * Returns a single course description.
-     * @param id Course identifier.
+     * @param cId Course identifier.
      * @return Course description.
      */
     @GetMapping( 
         path = "/{courseId}",
         produces = "application/json;charset=UTF-8" 
     )
-    public CourseDescriptionDTO getCourse(@PathVariable("courseId") String id)
+    public CourseDescriptionDTO getCourse(@PathVariable("courseId") String cId)
     {
-        CourseDescriptionId courseId = new CourseDescriptionId(id);
+        CourseDescriptionId courseId = new CourseDescriptionId(cId);
         return courseCatalogFacade_.getCourse(courseId);
     }
     
    /**
      * Queries for course description according to specification. If no argument
      * is provided, all courses are returned.
+//     * @param httpHeaders All request headers.
      * @param all If provided, include all courses.
-     * @param teacherId If provided, include all teacher's courses.
+     * @param tId If provided, include all teacher's courses.
      * @return Courses. May be empty.
      */
+    //@Authorizable
     @GetMapping( 
         produces = "application/json;charset=UTF-8" 
     )
     public List<CourseDescriptionDTO> getCourses(
+        //@RequestHeader HttpHeaders httpHeaders,
         @RequestParam(name = "all", required = false) String all,
-        @RequestParam(name = "teacherId", required = false) String teacherId
+        @RequestParam(name = "teacherId", required = false) String tId
     )
     {   
         CourseSpecification spec = new CourseSpecification();
         if ( all != null ) {
             spec.selectAll();
-        } else if ( teacherId != null ) {
-            spec.setTeacherId(teacherId);
+        } else if ( tId != null ) {
+            spec.setTeacherId(tId);
         } else {
             spec.selectAll();
         }
@@ -101,18 +110,23 @@ public class CourseCatalogController {
     
     /**
      * Posts new course description.
+     * @param authorization Bearer type token. Must be provided.
      * @param tId Identifier of responsible teacher.
      * @param spec New course specification. Must hold at least title and summary,
      * and may hold modules.
      * @return New course.
      */
+    @Authorizable
     @PostMapping(
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseDescriptionDTO postNewCourse(@RequestParam("teacherId") String tId, 
-                                              @RequestBody CourseDescriptionDTO spec)
+    public CourseDescriptionDTO postNewCourse(
+        @RequestHeader("Authorization") String authorization,
+        @RequestParam("teacherId") String tId, 
+        @RequestBody CourseDescriptionDTO spec
+    )
     {
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = courseCatalogFacade_.generate();
@@ -122,6 +136,7 @@ public class CourseCatalogController {
     
     /**
      * Updates course description in course catalog.
+     * @param authorization Bearer type token. Must be provided.
      * @param tId Identifier teacher updating course description.
      * @param cId Course identifier.
      * @param spec Course update specification. Must hold title and summary, 
@@ -133,9 +148,12 @@ public class CourseCatalogController {
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
-    public CourseDescriptionDTO updateCourse(@RequestParam("teacherId") String tId,
-                                             @PathVariable("courseId") String cId,
-                                             @RequestBody CourseDescriptionDTO spec)
+    public CourseDescriptionDTO updateCourse(
+        @RequestHeader("Authorization") String authorization,
+        @RequestParam("teacherId") String tId,
+        @PathVariable("courseId") String cId,
+        @RequestBody CourseDescriptionDTO spec
+    )
     {
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
@@ -145,11 +163,12 @@ public class CourseCatalogController {
     
     /**
      * Adds new module to course description.
+     * @param authorization Bearer type token. Must be provided.
      * @param tId Teacher identifier.
      * @param cId Course identifier.
      * @param spec New module specification. Must include name, may include quizzes,
      * assignments, etc.
-     * @return Update course.
+     * @return Updated course.
      */
     @PostMapping(
         path ="/{courseId}/modules",
@@ -157,9 +176,12 @@ public class CourseCatalogController {
         produces = "application/json;charset=UTF-8"
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseDescriptionDTO addCourseModule(@RequestParam("teacherId") String tId,
-                                                @PathVariable("courseId") String cId,
-                                                @RequestBody ModuleDTO spec)
+    public CourseDescriptionDTO addCourseModule(
+        @RequestHeader("Authorization") String authorization,
+        @RequestParam("teacherId") String tId,
+        @PathVariable("courseId") String cId,
+        @RequestBody ModuleDTO spec
+    )
     {
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
@@ -169,6 +191,7 @@ public class CourseCatalogController {
     
     /**
      * Updates module in course description.
+     * @param authorization Bearer type token. Must be provided.
      * @param tId Teacher identifier.
      * @param cId Course identifier.
      * @param mId Module identifier.
@@ -181,10 +204,13 @@ public class CourseCatalogController {
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
-    public CourseDescriptionDTO updateCourseModule(@RequestParam("teacherId") String tId,
-                                                   @PathVariable("courseId") String cId,
-                                                   @PathVariable("moduleId") String mId,
-                                                   @RequestBody ModuleDTO spec)
+    public CourseDescriptionDTO updateCourseModule(
+        @RequestHeader("Authorization") String authorization,
+        @RequestParam("teacherId") String tId,
+        @PathVariable("courseId") String cId,
+        @PathVariable("moduleId") String mId,
+        @RequestBody ModuleDTO spec
+    )
     {
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
@@ -195,6 +221,7 @@ public class CourseCatalogController {
     
     /**
      * Removes a module from course description.
+     * @param authorization Bearer type token. Must be provided.
      * @param tId Teacher identifier.
      * @param cId Course identifier.
      * @param mId Module identifier.
@@ -205,9 +232,12 @@ public class CourseCatalogController {
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
-    public CourseDescriptionDTO deleteCourseModule(@RequestParam("teacherId") String tId,
-                                                   @PathVariable("courseId") String cId,
-                                                   @PathVariable("moduleId") String mId)
+    public CourseDescriptionDTO deleteCourseModule(
+        @RequestHeader("Authorization") String authorization,
+        @RequestParam("teacherId") String tId,
+        @PathVariable("courseId") String cId,
+        @PathVariable("moduleId") String mId
+    )
     {
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
@@ -218,12 +248,16 @@ public class CourseCatalogController {
     
     /**
      * Removes course description from course catalog.
+     * @param authorization Bearer type token. Must be provided.
      * @param tId Identifier teacher removing course.
      * @param cId Course identifier.
      */
     @DeleteMapping( path = "/{courseId}" )
-    public void deleteCourse(@RequestParam("teacherId") String tId,
-                             @PathVariable("courseId") String cId)
+    public void deleteCourse(
+        @RequestHeader("Authorization") String authorization,
+        @RequestParam("teacherId") String tId,
+        @PathVariable("courseId") String cId
+    )
     {
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);

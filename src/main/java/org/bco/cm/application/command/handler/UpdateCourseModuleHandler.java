@@ -26,7 +26,7 @@ package org.bco.cm.application.command.handler;
 
 import org.bco.cm.application.command.UpdateCourseModule;
 import org.bco.cm.domain.course.CourseCatalog;
-import org.bco.cm.domain.course.CourseDescriptionService;
+import org.bco.cm.domain.course.CourseCatalogService;
 import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.domain.teacher.Teacher;
@@ -61,7 +61,7 @@ public class UpdateCourseModuleHandler extends CmCommandHandler<UpdateCourseModu
         
         // Update course.
         CourseDescription updated = 
-            CourseDescriptionService.updateModule(teacher, 
+            CourseCatalogService.updateModule(teacher, 
                                               course, 
                                               moduleId, 
                                               spec, 

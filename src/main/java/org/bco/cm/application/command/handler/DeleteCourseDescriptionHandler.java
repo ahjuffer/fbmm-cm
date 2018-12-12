@@ -28,7 +28,7 @@ import org.bco.cm.application.command.DeleteCourseDescription;
 import org.bco.cm.domain.course.CourseCatalog;
 import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.util.CourseDescriptionId;
-import org.bco.cm.domain.course.CourseDescriptionService;
+import org.bco.cm.domain.course.CourseCatalogService;
 import org.bco.cm.domain.teacher.Teacher;
 import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
@@ -57,7 +57,7 @@ public class DeleteCourseDescriptionHandler
         CourseDescription course = 
             CommandHandlerUtil.findCourseDescription(courseId, courseCatalog_);
         
-        CourseDescriptionService.remove(teacher, course, courseCatalog_);      
+        CourseCatalogService.remove(teacher, course, courseCatalog_);      
     }
     
     

@@ -24,6 +24,7 @@
 
 package org.bco.cm.application;
 
+import org.bco.cm.util.UserSpecification;
 import java.net.URI;
 import org.bco.cm.util.UmsRestHelper;
 import org.springframework.beans.factory.annotation.Autowired;

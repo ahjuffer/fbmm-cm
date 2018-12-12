@@ -31,7 +31,7 @@ import org.bco.cm.domain.course.CourseDescription;
 import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.course.CourseService;
+import org.bco.cm.domain.course.CourseRegistryService;
 import org.bco.cm.domain.teacher.Teacher;
 import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
@@ -67,7 +67,7 @@ public class ActivateCourseHandler extends CmCommandHandler<ActivateCourse> {
         
         // Activate course.
         Course course = 
-            CourseService.activate(teacher, 
+            CourseRegistryService.activate(teacher, 
                                    courseDescription, 
                                    courseId, 
                                    spec, 

@@ -25,7 +25,7 @@
 package org.bco.cm.api.facade;
 
 import org.bco.cm.application.AccountService;
-import org.bco.cm.application.UserSpecification;
+import org.bco.cm.util.UserSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 

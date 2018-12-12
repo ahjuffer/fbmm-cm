@@ -28,7 +28,7 @@ import org.bco.cm.application.command.EndCourse;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.course.CourseService;
+import org.bco.cm.domain.course.CourseRegistryService;
 import org.bco.cm.domain.teacher.Teacher;
 import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
@@ -56,7 +56,7 @@ public class EndCourseHandler extends CmCommandHandler<EndCourse> {
         Teacher teacher = CommandHandlerUtil.findTeacher(teacherId, teacherRegistry_);
         
         // End the course
-        CourseService.end(course, teacher);        
+        CourseRegistryService.end(course, teacher);        
         courseRegistry_.update(course);
         
         // Handle possible domain events.

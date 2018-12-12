@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,52 +22,19 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.util;
+package org.bco.cm.security;
 
-import java.io.Serializable;
-import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 
 /**
- * Identifies teacher.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ * Marker annotation to identify class methods requiring authorization.
+ * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Embeddable
-public class TeacherId extends Id<String> implements Serializable {
-    
-    protected TeacherId()
-    {
-        super();
-    }
-    
-    public TeacherId(String value)
-    {
-        super(value);
-    }
-    
-    private void setId(String id)
-    {
-        this.setValue(id);
-    }
-    
-    /**
-     * Returns identifier value.
-     * @return Value.
-     */
-    @Column(name="teacher_id")
-    protected String getId()
-    {
-        return this.getValue();
-    }
-    
-    /**
-     * Generates new teacher identifier.
-     * @return Identifier.
-     */
-    public static TeacherId generateId()
-    {
-        UUID uuid = UUID.randomUUID();
-        return new TeacherId(uuid.toString());
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Authorizable {
 }

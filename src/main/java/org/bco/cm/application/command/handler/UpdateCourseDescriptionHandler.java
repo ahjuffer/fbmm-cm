@@ -31,7 +31,7 @@ import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.domain.teacher.Teacher;
 import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
-import org.bco.cm.domain.course.CourseDescriptionService;
+import org.bco.cm.domain.course.CourseCatalogService;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -61,7 +61,7 @@ public class UpdateCourseDescriptionHandler
         
         // Update course.
         CourseDescription updated = 
-            CourseDescriptionService.update(teacher, course, spec, courseCatalog_);
+            CourseCatalogService.update(teacher, course, spec, courseCatalog_);
         
         // Handle possible domain events.
         this.handleEvents(updated);

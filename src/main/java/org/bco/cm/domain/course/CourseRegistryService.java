@@ -34,16 +34,16 @@ import org.bco.cm.dto.CourseDTO;
  * Domain service for managing courses.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-public class CourseService {
+public class CourseRegistryService {
 
-    private CourseService()
+    private CourseRegistryService()
     {        
     }
     
     /**
      * Activates a course. Activated course is added to course registry.
      * @param teacher Responsible teacher.
-     * @param courseDescription Course description.
+     * @param courseDescription Course description. Course to be activated.
      * @param courseId Identifier of newly activated course.
      * @param spec Activation specification. Must hold start and end date plus
      * the number of seats.
@@ -65,7 +65,7 @@ public class CourseService {
         CourseDescriptionId courseDescriptionId = 
             courseDescription.getCourseDescriptionId();
         List<Course> courses = courseRegistry.getCourses(courseDescriptionId);
-        if ( CourseService.isStillActive(courses) ) {
+        if ( CourseRegistryService.isStillActive(courses) ) {
             throw new IllegalStateException(
                 "An activated course is still available."
             );            
@@ -88,7 +88,7 @@ public class CourseService {
                                 CourseDTO spec,
                                 CourseRegistry courseRegistry)
     {
-        if ( !CourseService.isTeacher(course, teacher) ) {
+        if ( !CourseRegistryService.isTeacher(course, teacher) ) {
             throw new IllegalArgumentException(
                 "Teacher is not responsible for course '" + 
                 course.getTitle() + "'."
@@ -109,7 +109,7 @@ public class CourseService {
                               Course course, 
                               CourseRegistry courseRegistry)
     {
-        if ( !CourseService.isTeacher(course, teacher) ) {
+        if ( !CourseRegistryService.isTeacher(course, teacher) ) {
             throw new IllegalArgumentException(
                 "Teacher is not responsible for course '" + 
                 course.getTitle() + "'."
@@ -128,7 +128,7 @@ public class CourseService {
      */
     public static void start(Course course, Teacher teacher)
     {
-        if ( !CourseService.isTeacher(course, teacher) ) {
+        if ( !CourseRegistryService.isTeacher(course, teacher) ) {
             throw new IllegalStateException("Teacher is not responsible for course.");
         }
         course.start();
@@ -141,7 +141,7 @@ public class CourseService {
      */
     public static void end(Course course, Teacher teacher)
     {
-        if ( !CourseService.isTeacher(course, teacher) ) {
+        if ( !CourseRegistryService.isTeacher(course, teacher) ) {
             throw new IllegalStateException("Teacher is not responsible for course.");
         }
         course.end();

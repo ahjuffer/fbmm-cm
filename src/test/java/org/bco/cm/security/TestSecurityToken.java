@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 Andr&#233; Juffer, Triacle Biocomputing.
+ * Copyright 2018 André H. Juffer, Biocenter Oulu
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,53 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package org.bco.cm.util;
-
-import java.io.Serializable;
-import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+package org.bco.cm.security;
 
 /**
- * Identifies teacher.
- * @author Andr&#233; Juffer, Triacle Biocomputing
+ *
+ * @author ajuffer
  */
-@Embeddable
-public class TeacherId extends Id<String> implements Serializable {
-    
-    protected TeacherId()
-    {
-        super();
-    }
-    
-    public TeacherId(String value)
-    {
-        super(value);
-    }
-    
-    private void setId(String id)
-    {
-        this.setValue(id);
-    }
-    
+public class TestSecurityToken {
+
     /**
-     * Returns identifier value.
-     * @return Value.
+     * @param args the command line arguments
      */
-    @Column(name="teacher_id")
-    protected String getId()
-    {
-        return this.getValue();
+    public static void main(String[] args) {
+        String token = SecurityTokenUtil.generate();
+        System.out.println("Security token - " + token);
     }
     
-    /**
-     * Generates new teacher identifier.
-     * @return Identifier.
-     */
-    public static TeacherId generateId()
-    {
-        UUID uuid = UUID.randomUUID();
-        return new TeacherId(uuid.toString());
-    }
 }

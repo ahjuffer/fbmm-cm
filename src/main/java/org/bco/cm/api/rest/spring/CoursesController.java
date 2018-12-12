@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST API implementation using Spring.
+ * REST API implementation using Spring for managing courses in the course registry.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
 @RestController

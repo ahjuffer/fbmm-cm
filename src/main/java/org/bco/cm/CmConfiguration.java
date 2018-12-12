@@ -81,6 +81,8 @@ import org.bco.cm.infrastructure.persistence.hibernate.HibernateCourseRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateEnrolmentRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyCourseRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyEnrolmentRegistry;
+import org.bco.cm.api.access.AccessAuthorizer;
+import org.bco.cm.security.SecurityTokenManager;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 
@@ -372,6 +374,18 @@ public class CmConfiguration
     CommandBus commandBus()
     {
         return new CmCommandBus();
+    }
+    
+    @Bean
+    AccessAuthorizer accessAuthorizer()
+    {
+        return new AccessAuthorizer();
+    }
+    
+    @Bean
+    SecurityTokenManager SecurityTokenManager()
+    {
+        return new SecurityTokenManager();
     }
     
 }

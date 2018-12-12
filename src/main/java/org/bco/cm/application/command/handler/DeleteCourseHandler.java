@@ -28,7 +28,7 @@ import org.bco.cm.application.command.DeleteCourse;
 import org.bco.cm.domain.course.Course;
 import org.bco.cm.util.CourseId;
 import org.bco.cm.domain.course.CourseRegistry;
-import org.bco.cm.domain.course.CourseService;
+import org.bco.cm.domain.course.CourseRegistryService;
 import org.bco.cm.domain.teacher.Teacher;
 import org.bco.cm.util.TeacherId;
 import org.bco.cm.domain.teacher.TeacherRegistry;
@@ -55,7 +55,7 @@ public class DeleteCourseHandler extends CmCommandHandler<DeleteCourse> {
         CourseId courseId = command.getCourseId();
         Course course = CommandHandlerUtil.findCourse(courseId, courseRegistry_);
         
-        CourseService.remove(teacher, course, courseRegistry_);
+        CourseRegistryService.remove(teacher, course, courseRegistry_);
     }
 
 }

@@ -28,6 +28,7 @@ import java.util.List;
 import org.bco.cm.api.facade.StudentFacade;
 import org.bco.cm.util.StudentId;
 import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.security.Authorizable;
 import org.bco.cm.util.CourseId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -72,14 +74,19 @@ public class StudentsController {
     
     /**
      * Returns student.
+     * @param authorization Bearer type token. Must be provided.
      * @param sId Student identifier.
      * @return Student.
      */
+    @Authorizable
     @GetMapping(
         path = "/{studentId}",
         produces = "application/json;charset=UTF-8"
     )
-    public StudentDTO getStudent(@PathVariable("studentId") String sId)
+    public StudentDTO getStudent(
+        @RequestHeader("Authorization") String authorization,
+        @PathVariable("studentId") String sId
+    )
     {
         StudentId studentId = new StudentId(sId);
         return studentFacade_.getStudent(studentId);
@@ -87,37 +94,49 @@ public class StudentsController {
     
     /**
      * Returns all students.
+     * @param authorization Bearer type token. Must be provided.
      * @return Students.
      */
+    @Authorizable
     @GetMapping(
         produces = "application/json;charset=UTF-8"
     )
-    public List<StudentDTO> getStudents()
+    public List<StudentDTO> getStudents(
+        @RequestHeader("Authorization") String authorization
+    )
     {
         return studentFacade_.getAllStudents();
     }
     
     /**
-     * Completes a task.
+     * Student completes a task in a course.
+     * @param authorization Bearer type token. Must be provided.
      * @param sId Student identifier.
      * @param task Task definition, either 'quiz' or 'assignment.
      * @param cId Course identifier.
      */
+    @Authorizable
     @PutMapping(
         path = "/{studentId}/complete/{task}"
     )
-    public void completeTask(@PathVariable("studentId") String sId,
-                             @PathVariable("task") String task,
-                             @RequestParam("courseId") String cId)
+    public void completeTask(
+        @RequestHeader("Authorization") String authorization,
+        @PathVariable("studentId") String sId,
+        @PathVariable("task") String task,
+        @RequestParam("courseId") String cId
+    )
     {
         StudentId studentId = new StudentId(sId);
         CourseId courseId = new CourseId(cId);
-        if ( task.equals("quiz") ) {
-            studentFacade_.completeQuiz(studentId, courseId);
-        } else if (task.equals("assignment") ) {
-            studentFacade_.completeAssignment(studentId, courseId);
-        } else {
-            throw new IllegalArgumentException(task + ": No such task.");
+        switch (task) {
+            case "quiz":
+                studentFacade_.completeQuiz(studentId, courseId);
+                break;
+            case "assignment":
+                studentFacade_.completeAssignment(studentId, courseId);
+                break;
+            default:
+                throw new IllegalArgumentException(task + ": No such task.");
         }
     }
 }
