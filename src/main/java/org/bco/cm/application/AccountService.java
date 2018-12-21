@@ -89,14 +89,17 @@ public class AccountService  {
         } catch (RestClientResponseException exception) {
             String message = UmsRestHelper.getDetailMessage(exception);            
             throw new IllegalStateException(message, exception);
+        } catch (Exception exception) {
+            throw new IllegalStateException(exception.getMessage(), exception);
         }
     }
 
     /**
      * Signs out an user.
      * @param userId User identifier.
+     * @return Success message.
      */
-    public void signout(String userId)
+    public String signout(String userId)
     {
         try {
             UserSpecification spec = new UserSpecification();
@@ -112,10 +115,14 @@ public class AccountService  {
             MappingJacksonValue json = new MappingJacksonValue(spec);
             HttpEntity<MappingJacksonValue> entity = new HttpEntity<>(json, headers);            
             RestTemplate restTemplate = restTemplateBuilder_.build();
-            restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+            ResponseEntity<String> resource = 
+                restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+            return resource.getBody();
         } catch (RestClientResponseException exception) {
             String message = UmsRestHelper.getDetailMessage(exception);            
             throw new IllegalStateException(message, exception);
+        } catch (Exception exception) {
+            throw new IllegalStateException(exception.getMessage(), exception);
         }
     }
 }

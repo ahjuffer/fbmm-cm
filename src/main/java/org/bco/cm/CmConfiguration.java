@@ -82,6 +82,10 @@ import org.bco.cm.infrastructure.persistence.hibernate.HibernateEnrolmentRegistr
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyCourseRegistry;
 import org.bco.cm.infrastructure.persistence.hibernate.HibernateReadOnlyEnrolmentRegistry;
 import org.bco.cm.api.access.AccessAuthorizer;
+import org.bco.cm.api.rest.spring.AccountResource;
+import org.bco.cm.api.rest.spring.StudentTasksResource;
+import org.bco.cm.api.rest.spring.StudentsResource;
+import org.bco.cm.api.rest.spring.TeachersResource;
 import org.bco.cm.security.SecurityTokenManager;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
@@ -388,4 +392,27 @@ public class CmConfiguration
         return new SecurityTokenManager();
     }
     
+    @Bean
+    StudentsResource studentsResource()
+    {
+        return new StudentsResource();
+    }
+    
+    @Bean
+    StudentTasksResource studentTasksResource()
+    {
+        return new StudentTasksResource();
+    }
+    
+    @Bean 
+    AccountResource accountResource()
+    {
+        return new AccountResource();
+    }
+    
+    @Bean
+    TeachersResource teachersResource()
+    {
+        return new TeachersResource();
+    }
 }

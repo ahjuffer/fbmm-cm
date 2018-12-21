@@ -24,12 +24,14 @@
 
 package org.bco.cm.api.rest.spring;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.bco.cm.api.facade.StudentFacade;
-import org.bco.cm.util.StudentId;
+import javax.servlet.http.HttpServletRequest;
 import org.bco.cm.dto.StudentDTO;
-import org.bco.cm.security.Authorizable;
+import org.bco.cm.security.SecurityToken;
+import org.bco.cm.security.SecurityTokenUtil;
 import org.bco.cm.util.CourseId;
+import org.bco.cm.util.StudentId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +39,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,7 +53,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudentsController {
     
     @Autowired
-    private StudentFacade studentFacade_;
+    private StudentsResource studentsResource_;
+    
+    @Autowired
+    private StudentTasksResource studentTasksResource_;
     
     /**
      * Registers new student.
@@ -68,75 +72,67 @@ public class StudentsController {
     public StudentDTO register(@RequestBody StudentDTO spec)
     {
         StudentId studentId = new StudentId(spec.getStudentId());
-        studentFacade_.register(studentId, spec);
-        return studentFacade_.getStudent(studentId);
-    }
+        return studentsResource_.register(studentId, spec);
+   }
     
     /**
      * Returns student.
-     * @param authorization Bearer type token. Must be provided.
+     * @param request Request. Must be provided.
      * @param sId Student identifier.
      * @return Student.
      */
-    @Authorizable
     @GetMapping(
         path = "/{studentId}",
         produces = "application/json;charset=UTF-8"
     )
-    public StudentDTO getStudent(
-        @RequestHeader("Authorization") String authorization,
-        @PathVariable("studentId") String sId
-    )
+    public StudentDTO getStudent(HttpServletRequest request,
+                                 @PathVariable("studentId") String sId)
     {
+        SecurityToken token = SecurityTokenUtil.extractFromRequest(request);
         StudentId studentId = new StudentId(sId);
-        return studentFacade_.getStudent(studentId);
+        return studentsResource_.getStudent(token, studentId);
     }
     
     /**
      * Returns all students.
-     * @param authorization Bearer type token. Must be provided.
-     * @return Students.
+     * @param request Request.
+     * @param all If provided, all students are returned.
+     * @return Students. May be empty.
      */
-    @Authorizable
     @GetMapping(
         produces = "application/json;charset=UTF-8"
     )
     public List<StudentDTO> getStudents(
-        @RequestHeader("Authorization") String authorization
-    )
+        HttpServletRequest request,
+        @RequestParam(name = "all",required = true) String all)
     {
-        return studentFacade_.getAllStudents();
+        SecurityToken token = SecurityTokenUtil.extractFromRequest(request);
+        if ( all != null ) {
+            return studentsResource_.getStudents(token);
+        }
+        return new ArrayList<>();
     }
     
     /**
      * Student completes a task in a course.
-     * @param authorization Bearer type token. Must be provided.
+     * @param request Request. Must be provided.
      * @param sId Student identifier.
      * @param task Task definition, either 'quiz' or 'assignment.
      * @param cId Course identifier.
      */
-    @Authorizable
     @PutMapping(
         path = "/{studentId}/complete/{task}"
     )
     public void completeTask(
-        @RequestHeader("Authorization") String authorization,
+        HttpServletRequest request,
         @PathVariable("studentId") String sId,
         @PathVariable("task") String task,
         @RequestParam("courseId") String cId
     )
     {
+        SecurityToken token = SecurityTokenUtil.extractFromRequest(request);
         StudentId studentId = new StudentId(sId);
         CourseId courseId = new CourseId(cId);
-        switch (task) {
-            case "quiz":
-                studentFacade_.completeQuiz(studentId, courseId);
-                break;
-            case "assignment":
-                studentFacade_.completeAssignment(studentId, courseId);
-                break;
-            default:
-                throw new IllegalArgumentException(task + ": No such task.");
-        }
+        studentTasksResource_.completeTask(token, studentId, task, courseId);        
     }
 }

@@ -26,12 +26,15 @@ package org.bco.cm.security;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.UUID;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Utilities for security tokens.
@@ -44,14 +47,42 @@ public class SecurityTokenUtil {
     private static final int BEARER_LENGTH = BEARER.length();
     private static final String KEY = "crapp_security";
     
-    public static final String COOKIE_NAME = "crapp_security_token";
+    public static final String SECURITY_TOKEN_COOKIE_NAME = "crapp_security_token";
+    
+    
+    /**
+     * Extracts security token from Cookie value.
+     * @param request Request.
+     * @return Value
+     */
+    public static SecurityToken extractFromRequest(HttpServletRequest request)
+    {
+        if ( request == null ) {
+            throw new NullPointerException("Missing HTTP request.");
+        }
+        Cookie[] cks = request.getCookies();
+        if ( cks == null ) {
+            throw new NullPointerException("Missing security token.");
+        }
+        Collection<Cookie> cookies = Arrays.asList(cks);
+        for (Cookie cookie : cookies) {
+            if ( cookie.getName().equals(SECURITY_TOKEN_COOKIE_NAME) ) {
+                String value = cookie.getValue();
+                if ( value.isEmpty() || value.length() < 10 ) {
+                    throw new IllegalArgumentException("Illegal security token value.");
+                }
+                return new SecurityToken(value);
+            }
+        }
+        throw new NullPointerException("Missing security token.");
+    }
     
     /**
      * Extracts security token from Authorization header.
      * @param authorization Value of Authorization header.
      * @return Security token.
      */
-    public static String extractFrom(String authorization)
+    public static SecurityToken extractFromAuthorizationHeader(String authorization)
     {
         if ( authorization == null ) {
             throw new NullPointerException("Missing authorization header.");
@@ -63,14 +94,14 @@ public class SecurityTokenUtil {
         if ( !bearer.equals(BEARER) ) {            
             throw new IllegalArgumentException("Illegal authorization header.");
         }
-        return authorization.substring(BEARER_LENGTH).trim();
+        return new SecurityToken(authorization.substring(BEARER_LENGTH).trim());
     }
     
     /**
      * Returns a security token.
      * @return Token.
      */
-    static String generate()
+    static SecurityToken generate()
     {
         try {
             SecretKey secretKey = new SecretKeySpec(KEY.getBytes(), ALGORITHM);
@@ -78,7 +109,7 @@ public class SecurityTokenUtil {
             mac.init(secretKey);
             String s = UUID.randomUUID().toString();
             byte[] hash = mac.doFinal(s.getBytes());
-            return Base64.getEncoder().encodeToString(hash);
+            return new SecurityToken(Base64.getEncoder().encodeToString(hash));
         } catch (InvalidKeyException | NoSuchAlgorithmException exception) {
             throw new IllegalStateException(
                 "Cannot generate new security token. " + exception.getMessage(), exception
@@ -87,16 +118,32 @@ public class SecurityTokenUtil {
     }    
     
     /**
-     * Create cookie.
+     * Creates cookie.
      * @param securityToken
-     * @return 
+     * @return Cookie.
      */
-    public static Cookie makeCookie(String securityToken)
+    public static Cookie makeCookie(SecurityToken securityToken)
     {
-        Cookie cookie = new Cookie(COOKIE_NAME, securityToken);
+        Cookie cookie = 
+            new Cookie(SECURITY_TOKEN_COOKIE_NAME, securityToken.stringValue());
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        int expiry = 30 * 24 * 60 * 60;  // Month.
+        cookie.setMaxAge(expiry);
         return cookie;
         
+    }
+    
+    /**
+     * Creates a cookie that will be deleted.
+     * @param securityToken Security token.
+     * @return Cookie.
+     */
+    public static Cookie removeCookie(SecurityToken securityToken)
+    {
+        Cookie cookie = SecurityTokenUtil.makeCookie(securityToken);
+        cookie.setMaxAge(0);
+        return cookie;
     }
     
 }

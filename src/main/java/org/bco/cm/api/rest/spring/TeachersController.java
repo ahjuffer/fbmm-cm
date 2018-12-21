@@ -24,19 +24,22 @@
 
 package org.bco.cm.api.rest.spring;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.bco.cm.api.facade.TeacherFacade;
-import org.bco.cm.util.TeacherId;
+import javax.servlet.http.HttpServletRequest;
 import org.bco.cm.dto.TeacherDTO;
-import org.bco.cm.security.Authorizable;
+import org.bco.cm.security.SecurityToken;
+import org.bco.cm.security.SecurityTokenUtil;
+import org.bco.cm.util.TeacherId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,7 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeachersController {
     
     @Autowired
-    private TeacherFacade teacherFacade_;
+    private TeachersResource teachersResource_;
     
     /**
      * Registers new teacher.
@@ -61,47 +64,51 @@ public class TeachersController {
         produces = "application/json;charset=UTF-8"
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public TeacherDTO register(@RequestBody TeacherDTO spec)
+    public ResponseEntity<TeacherDTO> register(@RequestBody TeacherDTO spec)
     {
-        TeacherId teacherId = teacherFacade_.generateTeacherId();
-        teacherFacade_.register(teacherId, spec);
-        return teacherFacade_.getTeacher(teacherId);
+        TeacherDTO teacher = teachersResource_.register(spec);
+        return ResponseEntity.ok().body(teacher);
     }
     
     /**
      * Returns a single teacher.
-     * @param authorization Bearer type token. Must be provided.
+     * @param request Request.
      * @param id Teacher identifier.
      * @return Teacher.
      */
-    @Authorizable
     @GetMapping(
         path = "/{teacherId}",
         produces = "application/json;charset=UTF-8"
     )
-    public TeacherDTO getTeacher(
-        @RequestHeader("Authorization") String authorization,
-        @PathVariable("teacherId") String id
-    )
+    public ResponseEntity<TeacherDTO> getTeacher(HttpServletRequest request, 
+                                                 @PathVariable("teacherId") String id)
     {
+        SecurityToken securityToken = SecurityTokenUtil.extractFromRequest(request);
         TeacherId teacherId = new TeacherId(id);
-        return teacherFacade_.getTeacher(teacherId);
+        TeacherDTO teacher = teachersResource_.getTeacher(securityToken, teacherId);
+        return ResponseEntity.ok().body(teacher);
     }
     
     /**
      * Returns all teachers.
-     * @param authorization Bearer type token. Must be provided.
-     * @return Teachers.
+     * @param request Request.
+     * @param all If provided, all teachers are returned.
+     * @return Teachers. May be empty.
      */
-    @Authorizable
     @GetMapping( 
         produces = "application/json;charset=UTF-8" 
     )
-    public List<TeacherDTO> getTeachers(
-        @RequestHeader("Authorization") String authorization
+    public ResponseEntity<List<TeacherDTO>> getTeachers(
+        HttpServletRequest request,
+        @RequestParam(name = "all",required = true) String all
     )
     {
-        return teacherFacade_.getAllTeachers();
+        SecurityToken securityToken = SecurityTokenUtil.extractFromRequest(request);
+        List<TeacherDTO> teachers = new ArrayList<>();
+        if ( all != null ) {
+            teachers = teachersResource_.getTeachers(securityToken);
+        }
+        return ResponseEntity.ok().body(teachers);
     }
     
 }

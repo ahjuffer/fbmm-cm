@@ -22,43 +22,24 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.api.facade;
-
-import org.bco.cm.application.AccountService;
-import org.bco.cm.util.UserSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+package org.bco.cm.api.rest.spring;
 
 /**
- * Simplified interface for signing in and out.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Transactional( rollbackFor = { Throwable.class } )
-public class AccountFacade {
-
-    @Autowired
-    private AccountService accountService_;
-        
-    /**
-     * Signs user in.
-     * @param username Username.
-     * @param password Password.
-     * @return Signed in user. Holds userId and userRole.
-     */
-    public UserSpecification signin(String username, String password)
+public class Message {
+    
+    private String body_;
+    
+    public Message(String body)
     {
-        return accountService_.signin(username, password);
-        
+        body_ = body;
     }
     
-    /**
-     * Signs out user.
-     * @param userId User identifier.
-     * @return Success message.
-     */
-    public String signout(String userId)
+   public String getBody()
     {
-        return accountService_.signout(userId);
+        return body_;
     }
 
 }

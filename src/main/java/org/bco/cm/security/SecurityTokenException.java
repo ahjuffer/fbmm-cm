@@ -22,43 +22,32 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.api.facade;
-
-import org.bco.cm.application.AccountService;
-import org.bco.cm.util.UserSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+package org.bco.cm.security;
 
 /**
- * Simplified interface for signing in and out.
+ * Throws if an error occurred related to the security token.
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Transactional( rollbackFor = { Throwable.class } )
-public class AccountFacade {
-
-    @Autowired
-    private AccountService accountService_;
-        
-    /**
-     * Signs user in.
-     * @param username Username.
-     * @param password Password.
-     * @return Signed in user. Holds userId and userRole.
-     */
-    public UserSpecification signin(String username, String password)
+public class SecurityTokenException extends RuntimeException {
+    
+    public SecurityTokenException()
     {
-        return accountService_.signin(username, password);
-        
+        super();
     }
     
-    /**
-     * Signs out user.
-     * @param userId User identifier.
-     * @return Success message.
-     */
-    public String signout(String userId)
+    public SecurityTokenException(String message)
     {
-        return accountService_.signout(userId);
+        super(message);
+    }
+    
+    public SecurityTokenException(Throwable cause)
+    {
+        super(cause);
+    }
+    
+    public SecurityTokenException(String message, Throwable cause)
+    {
+        super(message, cause);
     }
 
 }

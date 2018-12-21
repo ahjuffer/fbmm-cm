@@ -33,8 +33,8 @@ public class TestSecurityToken {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String token = SecurityTokenUtil.generate();
-        System.out.println("Security token - " + token);
+        SecurityToken token = SecurityTokenUtil.generate();
+        System.out.println("Security token - " + token.stringValue());
     }
     
 }

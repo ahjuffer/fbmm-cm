@@ -34,16 +34,16 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 public class Access {
     
-    @Pointcut("execution(* org.bco.cm.api.rest.spring.*.*(..))")
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.*Resource.*(..))")
     void all() {}
     
-    @Pointcut("execution(* org.bco.cm.api.rest.spring.TeachersController.*(..))")
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.Teacher*Resource.*(..))")
     void teacher() {}
     
-    @Pointcut("execution(* org.bco.cm.api.rest.spring.StudentsController.*(..))")
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.Student*Resource.*(..))")
     void student() {}
     
-    @Pointcut("execution(* org.bco.cm.api.rest.spring.StudentsController.getStudents(..))")
+    @Pointcut("execution(* org.bco.cm.api.rest.spring.StudentsResource.getStudents(..))")
     void getStudents() {}
     
     @Pointcut("execution(* org.bco.cm.api.rest.spring.CourseCatalogController.*(..))")

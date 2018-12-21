@@ -22,43 +22,40 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.api.facade;
+package org.bco.cm.api.rest.spring;
 
-import org.bco.cm.application.AccountService;
-import org.bco.cm.util.UserSpecification;
+import org.bco.cm.api.facade.StudentFacade;
+import org.bco.cm.security.Authorizable;
+import org.bco.cm.security.SecurityToken;
+import org.bco.cm.util.CourseId;
+import org.bco.cm.util.StudentId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Simplified interface for signing in and out.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Transactional( rollbackFor = { Throwable.class } )
-public class AccountFacade {
-
-    @Autowired
-    private AccountService accountService_;
-        
-    /**
-     * Signs user in.
-     * @param username Username.
-     * @param password Password.
-     * @return Signed in user. Holds userId and userRole.
-     */
-    public UserSpecification signin(String username, String password)
-    {
-        return accountService_.signin(username, password);
-        
-    }
+public class StudentTasksResource {
     
-    /**
-     * Signs out user.
-     * @param userId User identifier.
-     * @return Success message.
-     */
-    public String signout(String userId)
+    @Autowired
+    private StudentFacade studentFacade_;
+
+    @Authorizable
+    void completeTask(SecurityToken securityToken, 
+                      StudentId studentId, 
+                      String task, 
+                      CourseId courseId)
     {
-        return accountService_.signout(userId);
+        switch (task) {
+            case "quiz":
+                studentFacade_.completeQuiz(studentId, courseId);
+                break;
+            case "assignment":
+                studentFacade_.completeAssignment(studentId, courseId);
+                break;
+            default:
+                throw new IllegalArgumentException(task + ": No such task.");
+        }
     }
 
 }

@@ -24,6 +24,7 @@
 
 package org.bco.cm.api.rest.spring;
 
+import java.util.Arrays;
 import org.bco.cm.api.access.UnauthorizedAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,9 +54,10 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
             ErrorResponse.Builder.errorResponse()
                                  .withStatus(HttpStatus.NOT_FOUND)
                                  .withErrorCode(errorCode)
-                                 .withMessage("Requested resource could not be found.")
+                                 .withMessage("Requested resource or value could not be found.")
                                  .withDetail(exception.getMessage())
                                  .build();
+        System.out.println(Arrays.toString(exception.getStackTrace()));
         return ResponseEntity.badRequest().body(errorResponse);
     }
     
@@ -68,9 +70,10 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
             ErrorResponse.Builder.errorResponse()
                                  .withStatus(HttpStatus.BAD_REQUEST)
                                  .withErrorCode(errorCode)
-                                 .withMessage("A required value is missing or is provided with an illegal value.")
+                                 .withMessage("A required value is provided with an illegal value.")
                                  .withDetail(exception.getMessage())
                                  .build();
+        System.out.println(Arrays.toString(exception.getStackTrace()));
         return ResponseEntity.badRequest().body(errorResponse);
     }
     
@@ -86,6 +89,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
                                  .withMessage("Unauthorized access.")
                                  .withDetail(exception.getMessage())
                                  .build();
+         System.out.println(Arrays.toString(exception.getStackTrace()));
         return ResponseEntity.badRequest().body(errorResponse);
     }
     
@@ -101,6 +105,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
                                  .withMessage("An illegal state or situation has occurred.")
                                  .withDetail(exception.getMessage())
                                  .build();
+        System.out.println(Arrays.toString(exception.getStackTrace()));
         return ResponseEntity.badRequest().body(errorResponse);
     }
     

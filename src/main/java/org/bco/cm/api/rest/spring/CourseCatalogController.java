@@ -25,29 +25,26 @@
 package org.bco.cm.api.rest.spring;
 
 import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.bco.cm.api.facade.CourseCatalogFacade;
 import org.bco.cm.application.query.CourseSpecification;
-import org.bco.cm.util.CourseDescriptionId;
-import org.bco.cm.util.TeacherId;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
 import org.bco.cm.security.Authorizable;
+import org.bco.cm.util.CourseDescriptionId;
+import org.bco.cm.util.TeacherId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
  * REST API implementation using Spring for managing course descriptions in the 
@@ -79,19 +76,18 @@ public class CourseCatalogController {
     }
     
    /**
-     * Queries for course description according to specification. If no argument
+     * Queries for course description according to specification. If no argument 
      * is provided, all courses are returned.
-//     * @param httpHeaders All request headers.
+     * @param request Request. Must be provided.
      * @param all If provided, include all courses.
      * @param tId If provided, include all teacher's courses.
      * @return Courses. May be empty.
      */
-    //@Authorizable
     @GetMapping( 
         produces = "application/json;charset=UTF-8" 
     )
     public List<CourseDescriptionDTO> getCourses(
-        //@RequestHeader HttpHeaders httpHeaders,
+        HttpServletRequest request,
         @RequestParam(name = "all", required = false) String all,
         @RequestParam(name = "teacherId", required = false) String tId
     )
@@ -110,7 +106,7 @@ public class CourseCatalogController {
     
     /**
      * Posts new course description.
-     * @param authorization Bearer type token. Must be provided.
+     * @param request Request. Must be provided.
      * @param tId Identifier of responsible teacher.
      * @param spec New course specification. Must hold at least title and summary,
      * and may hold modules.
@@ -123,7 +119,7 @@ public class CourseCatalogController {
     )
     @ResponseStatus(HttpStatus.CREATED)
     public CourseDescriptionDTO postNewCourse(
-        @RequestHeader("Authorization") String authorization,
+        HttpServletRequest request,
         @RequestParam("teacherId") String tId, 
         @RequestBody CourseDescriptionDTO spec
     )
@@ -136,20 +132,21 @@ public class CourseCatalogController {
     
     /**
      * Updates course description in course catalog.
-     * @param authorization Bearer type token. Must be provided.
+     * @param request HTTP Request. Must be provided.
      * @param tId Identifier teacher updating course description.
      * @param cId Course identifier.
      * @param spec Course update specification. Must hold title and summary, 
      * and may hold modules.
      * @return Updated course.
      */
+    @Authorizable
     @PutMapping(
         path = "/{courseId}",
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
     public CourseDescriptionDTO updateCourse(
-        @RequestHeader("Authorization") String authorization,
+        HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId,
         @RequestBody CourseDescriptionDTO spec
@@ -163,13 +160,14 @@ public class CourseCatalogController {
     
     /**
      * Adds new module to course description.
-     * @param authorization Bearer type token. Must be provided.
+     * @param request HTTP Request. Must be provided.
      * @param tId Teacher identifier.
      * @param cId Course identifier.
      * @param spec New module specification. Must include name, may include quizzes,
      * assignments, etc.
      * @return Updated course.
      */
+    @Authorizable
     @PostMapping(
         path ="/{courseId}/modules",
         consumes = "application/json;charset=UTF-8", 
@@ -177,7 +175,7 @@ public class CourseCatalogController {
     )
     @ResponseStatus(HttpStatus.CREATED)
     public CourseDescriptionDTO addCourseModule(
-        @RequestHeader("Authorization") String authorization,
+        HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId,
         @RequestBody ModuleDTO spec
@@ -191,7 +189,7 @@ public class CourseCatalogController {
     
     /**
      * Updates module in course description.
-     * @param authorization Bearer type token. Must be provided.
+     * @param request HTTP Request. Must be provided.
      * @param tId Teacher identifier.
      * @param cId Course identifier.
      * @param mId Module identifier.
@@ -199,13 +197,14 @@ public class CourseCatalogController {
      * include learning path, assignment and/or quiz.
      * @return Updated course description.
      */
+    @Authorizable
     @PutMapping(
         path ="/{courseId}/modules/{moduleId}",
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
     public CourseDescriptionDTO updateCourseModule(
-        @RequestHeader("Authorization") String authorization,
+        HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId,
         @PathVariable("moduleId") String mId,
@@ -221,19 +220,20 @@ public class CourseCatalogController {
     
     /**
      * Removes a module from course description.
-     * @param authorization Bearer type token. Must be provided.
+     * @param request HTTP Request. Must be provided.
      * @param tId Teacher identifier.
      * @param cId Course identifier.
      * @param mId Module identifier.
      * @return Updated course description.
      */
+    @Authorizable
     @DeleteMapping(
         path ="/{courseId}/modules/{moduleId}",
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
     public CourseDescriptionDTO deleteCourseModule(
-        @RequestHeader("Authorization") String authorization,
+        HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId,
         @PathVariable("moduleId") String mId
@@ -248,13 +248,14 @@ public class CourseCatalogController {
     
     /**
      * Removes course description from course catalog.
-     * @param authorization Bearer type token. Must be provided.
+     * @param request HTTP Request. Must be provided.
      * @param tId Identifier teacher removing course.
      * @param cId Course identifier.
      */
+    @Authorizable
     @DeleteMapping( path = "/{courseId}" )
     public void deleteCourse(
-        @RequestHeader("Authorization") String authorization,
+        HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId
     )

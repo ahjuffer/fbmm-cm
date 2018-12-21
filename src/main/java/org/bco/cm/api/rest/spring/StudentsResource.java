@@ -22,43 +22,41 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.api.facade;
+package org.bco.cm.api.rest.spring;
 
-import org.bco.cm.application.AccountService;
-import org.bco.cm.util.UserSpecification;
+import java.util.List;
+import org.bco.cm.api.facade.StudentFacade;
+import org.bco.cm.dto.StudentDTO;
+import org.bco.cm.security.Authorizable;
+import org.bco.cm.security.SecurityToken;
+import org.bco.cm.util.StudentId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Simplified interface for signing in and out.
+ * 
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Transactional( rollbackFor = { Throwable.class } )
-public class AccountFacade {
-
+public class StudentsResource {
+    
     @Autowired
-    private AccountService accountService_;
-        
-    /**
-     * Signs user in.
-     * @param username Username.
-     * @param password Password.
-     * @return Signed in user. Holds userId and userRole.
-     */
-    public UserSpecification signin(String username, String password)
+    private StudentFacade studentFacade_;
+    
+    StudentDTO register(StudentId studentId, StudentDTO spec)
     {
-        return accountService_.signin(username, password);
-        
+        studentFacade_.register(studentId, spec);
+        return studentFacade_.getStudent(studentId);
     }
     
-    /**
-     * Signs out user.
-     * @param userId User identifier.
-     * @return Success message.
-     */
-    public String signout(String userId)
-    {
-        return accountService_.signout(userId);
+    @Authorizable
+    StudentDTO getStudent(SecurityToken securityToken, StudentId studentId)
+    {        
+        return studentFacade_.getStudent(studentId);
     }
-
+    
+    @Authorizable
+    List<StudentDTO> getStudents(SecurityToken securityToken)
+    {
+        return studentFacade_.getAllStudents();
+    }
+    
 }

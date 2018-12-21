@@ -24,15 +24,17 @@
 
 package org.bco.cm.api.access;
 
-import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.bco.cm.security.SecurityToken;
+import org.bco.cm.security.SecurityTokenException;
 import org.bco.cm.security.SecurityTokenManager;
 import org.bco.cm.security.SecurityTokenUtil;
+import org.bco.cm.util.StudentId;
 import org.bco.cm.util.UserSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 
 /**
  * Authorizes access to resources. All authorizations requires an security token,
@@ -45,74 +47,54 @@ public class AccessAuthorizer {
     @Autowired
     private SecurityTokenManager securityTokenManager_;
     
-    @Around("org.bco.cm.api.access.Access.all() && args(httpHeaders,..) && " + 
-            "@annotation(org.bco.cm.security.Authorizable)")
-    void authorizeAll(HttpHeaders httpHeaders)
-    {
-        Set<String> keys = httpHeaders.keySet();
-        System.out.println("Number of headers: " + keys.size());
-        System.out.println("All headers: " + httpHeaders);
-        if ( !httpHeaders.containsKey(HttpHeaders.AUTHORIZATION)) {
-            throw new UnauthorizedAccessException();
-        }
-        
-        // Security token provided.
-        String authorization = httpHeaders.getFirst(HttpHeaders.AUTHORIZATION);
-        String securityToken = SecurityTokenUtil.extractFrom(authorization);
-        if ( !securityTokenManager_.securityTokenExists(securityToken) ) {
-            throw new UnauthorizedAccessException();
-        }       
-    }
-    
     /**
      * All authorizable methods. User must be signed in already.
-     * @param authorization Value of Authorization request header.
+     * @param request HTTP request.
      */
-    @Before(
-        "org.bco.cm.api.access.Access.all() && args(authorization,..) && " + 
-        "@annotation(org.bco.cm.security.Authorizable)"
-    )
-    void authorizeAll(String authorization) 
+    @Before("org.bco.cm.api.access.Access.all() && args(securityToken,..) && " + 
+            "@annotation(org.bco.cm.security.Authorizable)")
+    void authorizeAll(SecurityToken securityToken)
     {
-        String securityToken = SecurityTokenUtil.extractFrom(authorization);
-        
-        // Security token?
-        if ( !securityTokenManager_.securityTokenExists(securityToken) ) {
-            throw new UnauthorizedAccessException();
-        }       
+        try {            
+            if ( !securityTokenManager_.exists(securityToken) ) {
+                throw new SecurityTokenException("Illegal security token.");
+            }
+        } catch (SecurityTokenException exception) {
+            throw new UnauthorizedAccessException(exception.getMessage(), exception);
+        }
     }
     
     /**
      * All authorizable teacher methods. User must be a teacher.
-     * @param authorization Value of Authorization request header.
+     * @param request HTTP Request.
      */
     @Before(
-        "Access.teacher() && args(authorization,..) && " +
+        "org.bco.cm.api.access.Access.teacher() && args(securityToken,..) && " +
         "@annotation(org.bco.cm.security.Authorizable)"
     )
-    void authorizeTeacher(String authorization)
+    void authorizeTeacher(SecurityToken securityToken)
     {
-        UserSpecification user = this.getUser(authorization);
+        UserSpecification user = this.getUser(securityToken);
         
         // Teacher? Student?
-        if ( !user.isTeacher() || !user.isStudent()) {
+        if ( !user.isTeacher() && !user.isStudent()) {
             throw new UnauthorizedAccessException("Neither a teacher nor a student.");
         }
     }
     
     /**
-     * All authorizable student methods with a student identifier. User
-     * must be a student.
-     * @param authorization Value of Authorization request header.
+     * All authorizable student methods with a student identifier. User must be a 
+     * student.
+     * @param request HTTP Request.
      * @param sId Student identifier.
      */
     @Before(
-        "Access.student() && args(authorization,sId,..) && " +
+        "org.bco.cm.api.access.Access.student() && args(securityToken,studentId,..) && " +
         "@annotation(org.bco.cm.security.Authorizable)"
     )
-    void authorizeStudent(String authorization, String sId)
+    void authorizeStudent(SecurityToken securityToken, StudentId studentId)
     {
-        UserSpecification user = this.getUser(authorization);
+        UserSpecification user = this.getUser(securityToken);
         
         // Student?
         if ( !user.isStudent() ) {
@@ -120,7 +102,7 @@ public class AccessAuthorizer {
         }
         
         // Student can only access/modify his/her own information.
-        if ( !user.getUserId().equals(sId) ) {
+        if ( !user.getUserId().equals(studentId.stringValue()) ) {
             throw new UnauthorizedAccessException(
                 "Illegal attempt to view/modify another student's information."
             );
@@ -128,16 +110,16 @@ public class AccessAuthorizer {
     }
     
     /**
-     * Authorizable getStudents(...) method. User must be a teacher.
-     * @param authorization Value of Authorization request header.
+     * Authorizable students method. User must be a teacher.
+     * @param request HTTP Request.
      */
     @Before(
-        "Access.getStudents() && args(authorization) && " +
+        "org.bco.cm.api.access.Access.getStudents() && args(securityToken) && " +
         "@annotation(org.bco.cm.security.Authorizable)"
     )
-    void authorizeGetStudents(String authorization)
+    void authorizeStudents(SecurityToken securityToken)
     {
-        UserSpecification user = this.getUser(authorization);
+        UserSpecification user = this.getUser(securityToken);
         
         // Teacher?
         if ( !user.isTeacher() ) {
@@ -148,16 +130,16 @@ public class AccessAuthorizer {
     /**
      * All authorizable course catalog methods with a teacher identifier. User 
      * must be teacher.
-     * @param authorization Value of Authorization request header.
+     * @param request HTTP Request.
      * @param tId Teacher identifier.
      */
     @Before(
-        "Access.courseCatalog() && args(authorization,tId,..) && " +
+        "org.bco.cm.api.access.Access.courseCatalog() && args(request,tId,..) && " +
         "@annotation(org.bco.cm.security.Authorizable)"
     )
-    void authorizeCourseCatalog(String authorization, String tId)
+    void authorizeCourseCatalog(HttpServletRequest request, String tId)
     {
-        UserSpecification user = this.getUser(authorization);
+        UserSpecification user = this.getUserFromRequest(request);
         
         // Teacher?
         if ( !user.isTeacher() ) {
@@ -165,9 +147,21 @@ public class AccessAuthorizer {
         }
     }
     
-    private UserSpecification getUser(String authorization)
+    private UserSpecification getUserFromAuthorization(String authorization)
     {
-        String securityToken = SecurityTokenUtil.extractFrom(authorization);
+        SecurityToken securityToken = 
+            SecurityTokenUtil.extractFromAuthorizationHeader(authorization);
+        return this.getUser(securityToken);
+    }
+    
+    private UserSpecification getUserFromRequest(HttpServletRequest request)
+    {
+        SecurityToken securityToken = SecurityTokenUtil.extractFromRequest(request);
+        return this.getUser(securityToken);        
+    }
+    
+    private UserSpecification getUser(SecurityToken securityToken)
+    {
         UserSpecification spec = securityTokenManager_.getUser(securityToken);
         if ( !spec.isStudent() && !spec.isTeacher() ) {
             throw new UnauthorizedAccessException("Not a legitimate user.");

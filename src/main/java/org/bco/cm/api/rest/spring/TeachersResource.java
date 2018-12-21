@@ -22,43 +22,41 @@
  * THE SOFTWARE.
  */
 
-package org.bco.cm.api.facade;
+package org.bco.cm.api.rest.spring;
 
-import org.bco.cm.application.AccountService;
-import org.bco.cm.util.UserSpecification;
+import java.util.List;
+import org.bco.cm.api.facade.TeacherFacade;
+import org.bco.cm.dto.TeacherDTO;
+import org.bco.cm.security.Authorizable;
+import org.bco.cm.security.SecurityToken;
+import org.bco.cm.util.TeacherId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Simplified interface for signing in and out.
+ *
  * @author Andr&#233; H. Juffer, Biocenter Oulu
  */
-@Transactional( rollbackFor = { Throwable.class } )
-public class AccountFacade {
-
+public class TeachersResource {
+    
     @Autowired
-    private AccountService accountService_;
+    private TeacherFacade teacherFacade_;
         
-    /**
-     * Signs user in.
-     * @param username Username.
-     * @param password Password.
-     * @return Signed in user. Holds userId and userRole.
-     */
-    public UserSpecification signin(String username, String password)
+    TeacherDTO register(TeacherDTO spec)
     {
-        return accountService_.signin(username, password);
-        
+        TeacherId teacherId = teacherFacade_.generateTeacherId();
+        teacherFacade_.register(teacherId, spec);
+        return teacherFacade_.getTeacher(teacherId);
     }
     
-    /**
-     * Signs out user.
-     * @param userId User identifier.
-     * @return Success message.
-     */
-    public String signout(String userId)
+    @Authorizable
+    TeacherDTO getTeacher(SecurityToken securityToken, TeacherId teacherId)
     {
-        return accountService_.signout(userId);
+        return teacherFacade_.getTeacher(teacherId);
     }
-
+    
+    @Authorizable
+    List<TeacherDTO> getTeachers(SecurityToken securityToken)
+    {
+        return teacherFacade_.getAllTeachers();
+    }
 }

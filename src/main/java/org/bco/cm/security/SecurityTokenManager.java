@@ -35,7 +35,7 @@ import org.bco.cm.util.UserSpecification;
  */
 public class SecurityTokenManager {
     
-    private final Map<String, UserSpecification> tokens_;
+    private final Map<SecurityToken, UserSpecification> tokens_;
     
     public SecurityTokenManager()
     {
@@ -47,33 +47,32 @@ public class SecurityTokenManager {
      * @param spec User specification.
      * @return Session identifier.
      */
-    public String createNewSecurityToken(UserSpecification spec)
+    public SecurityToken createNew(UserSpecification spec)
     {
-        //String sessionId = SecurityToken.generate();
-        String securityToken = "123";
+        //SecurityToken securityToken = SecurityToken.generate();
+        SecurityToken securityToken = new SecurityToken("123456789qwerty-test");
         tokens_.put(securityToken, spec);
         return securityToken;
     }
     
     /**
-     * Ends session. Usually called after signing out.
-     * @param authorization Value of Authorization header. Must hold security token.
+     * Ends session.Usually called after signing out.
+     * @param securityToken Security token.
      */
-    public void removeSecurityToken(String authorization)
+    public void removeSecurityToken(SecurityToken securityToken)
     {
-        String sessionId = SecurityTokenUtil.extractFrom(authorization);
-        tokens_.remove(sessionId);
+        tokens_.remove(securityToken);
     }
     
     /**
      * Returns user.
-     * @param securityToken Value of Authorization header.
+     * @param securityToken Security token.
      * @return User.
      */
-    public UserSpecification getUser(String securityToken)
+    public UserSpecification getUser(SecurityToken securityToken)
     {
-        if ( !this.securityTokenExists(securityToken) ) {
-            throw new NullPointerException(securityToken + ": No such user.");
+        if ( !this.exists(securityToken) ) {
+            throw new NullPointerException(securityToken.stringValue() + ": No such user.");
         }
         return tokens_.get(securityToken);
     }
@@ -83,7 +82,7 @@ public class SecurityTokenManager {
      * @param securityToken Security token.
      * @return Result.
      */
-    public boolean securityTokenExists(String securityToken)
+    public boolean exists(SecurityToken securityToken)
     {
         return tokens_.containsKey(securityToken);
     }

@@ -60,7 +60,6 @@ public class UserSpecification {
         userId_ = userId;
     }
     
-    @JsonIgnore
     public String getUserId()
     {
         return userId_;
