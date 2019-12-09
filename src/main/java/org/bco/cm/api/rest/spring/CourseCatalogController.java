@@ -30,11 +30,14 @@ import org.bco.cm.api.facade.CourseCatalogFacade;
 import org.bco.cm.application.query.CourseSpecification;
 import org.bco.cm.dto.CourseDescriptionDTO;
 import org.bco.cm.dto.ModuleDTO;
-import org.bco.cm.security.Authorizable;
 import org.bco.cm.util.CourseDescriptionId;
 import org.bco.cm.util.TeacherId;
+import org.bco.security.SecurityToken;
+import org.bco.security.SecurityTokenUtil;
+import org.bco.security.annotation.Authorizable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,7 +61,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseCatalogController {
     
     @Autowired
-    private CourseCatalogFacade courseCatalogFacade_;
+    private CourseCatalogResource courseCatalogResource_;
     
     /**
      * Returns a single course description.
@@ -69,10 +72,13 @@ public class CourseCatalogController {
         path = "/{courseId}",
         produces = "application/json;charset=UTF-8" 
     )
-    public CourseDescriptionDTO getCourse(@PathVariable("courseId") String cId)
+    public ResponseEntity<CourseDescriptionDTO> getCourse(
+        @PathVariable("courseId") String cId
+    )
     {
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
-        return courseCatalogFacade_.getCourse(courseId);
+        CourseDescriptionDTO course = courseCatalogResource_.getCourse(courseId);
+        return ResponseEntity.ok().body(course);
     }
     
    /**
@@ -86,7 +92,7 @@ public class CourseCatalogController {
     @GetMapping( 
         produces = "application/json;charset=UTF-8" 
     )
-    public List<CourseDescriptionDTO> getCourses(
+    public ResponseEntity<List<CourseDescriptionDTO>> getCourses(
         HttpServletRequest request,
         @RequestParam(name = "all", required = false) String all,
         @RequestParam(name = "teacherId", required = false) String tId
@@ -99,9 +105,9 @@ public class CourseCatalogController {
             spec.setTeacherId(tId);
         } else {
             spec.selectAll();
-        }
-        
-        return courseCatalogFacade_.getSpecified(spec);
+        }        
+        List<CourseDescriptionDTO> courses = courseCatalogResource_.getSpecified(spec);
+        return ResponseEntity.ok().body(courses);
     }
     
     /**
@@ -112,22 +118,22 @@ public class CourseCatalogController {
      * and may hold modules.
      * @return New course.
      */
-    @Authorizable
     @PostMapping(
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseDescriptionDTO postNewCourse(
+    public ResponseEntity<CourseDescriptionDTO> postNewCourse(
         HttpServletRequest request,
         @RequestParam("teacherId") String tId, 
         @RequestBody CourseDescriptionDTO spec
     )
     {
+        SecurityToken securityToken = SecurityTokenUtil.extractFromRequest(request);
         TeacherId teacherId = new TeacherId(tId);
-        CourseDescriptionId courseId = courseCatalogFacade_.generate();
-        courseCatalogFacade_.postNewCourse(courseId, teacherId, spec);
-        return courseCatalogFacade_.getCourse(courseId);
+        CourseDescriptionDTO course = 
+            courseCatalogResource_.postNewCourse(securityToken, teacherId, spec);
+        return ResponseEntity.ok().body(course);
     }
     
     /**
@@ -139,23 +145,24 @@ public class CourseCatalogController {
      * and may hold modules.
      * @return Updated course.
      */
-    @Authorizable
     @PutMapping(
         path = "/{courseId}",
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
-    public CourseDescriptionDTO updateCourse(
+    public ResponseEntity<CourseDescriptionDTO> updateCourse(
         HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId,
         @RequestBody CourseDescriptionDTO spec
     )
     {
+        SecurityToken securityToken = SecurityTokenUtil.extractFromRequest(request);
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
-        courseCatalogFacade_.updateCourse(courseId, teacherId, spec);
-        return courseCatalogFacade_.getCourse(courseId);
+        CourseDescriptionDTO course = 
+            courseCatalogResource_.updateCourse(securityToken, courseId, teacherId, spec);
+        return ResponseEntity.ok().body(course);
     }
     
     /**
@@ -167,24 +174,25 @@ public class CourseCatalogController {
      * assignments, etc.
      * @return Updated course.
      */
-    @Authorizable
     @PostMapping(
         path ="/{courseId}/modules",
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseDescriptionDTO addCourseModule(
+    public ResponseEntity<CourseDescriptionDTO> addCourseModule(
         HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId,
         @RequestBody ModuleDTO spec
     )
     {
+        SecurityToken securityToken = SecurityTokenUtil.extractFromRequest(request);
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
-        courseCatalogFacade_.addCourseModule(courseId, teacherId, spec);
-        return courseCatalogFacade_.getCourse(courseId);
+        CourseDescriptionDTO course = 
+            courseCatalogResource_.addCourseModule(securityToken, courseId, teacherId, spec);
+        return ResponseEntity.ok().body(course);
     }
     
     /**
@@ -197,13 +205,12 @@ public class CourseCatalogController {
      * include learning path, assignment and/or quiz.
      * @return Updated course description.
      */
-    @Authorizable
     @PutMapping(
         path ="/{courseId}/modules/{moduleId}",
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
-    public CourseDescriptionDTO updateCourseModule(
+    public ResponseEntity<CourseDescriptionDTO> updateCourseModule(
         HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId,
@@ -211,11 +218,13 @@ public class CourseCatalogController {
         @RequestBody ModuleDTO spec
     )
     {
+        SecurityToken securityToken = SecurityTokenUtil.extractFromRequest(request);
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
         int moduleId = Integer.valueOf(mId);
-        courseCatalogFacade_.updateCourseModule(courseId, teacherId, moduleId, spec);
-        return courseCatalogFacade_.getCourse(courseId);
+        CourseDescriptionDTO course = 
+            courseCatalogResource_.updateCourseModule(securityToken, courseId, teacherId, moduleId, spec);
+        return ResponseEntity.ok().body(course);
     }
     
     /**
@@ -226,24 +235,25 @@ public class CourseCatalogController {
      * @param mId Module identifier.
      * @return Updated course description.
      */
-    @Authorizable
     @DeleteMapping(
         path ="/{courseId}/modules/{moduleId}",
         consumes = "application/json;charset=UTF-8", 
         produces = "application/json;charset=UTF-8"
     )
-    public CourseDescriptionDTO deleteCourseModule(
+    public ResponseEntity<CourseDescriptionDTO> deleteCourseModule(
         HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId,
         @PathVariable("moduleId") String mId
     )
     {
+        SecurityToken securityToken = SecurityTokenUtil.extractFromRequest(request);
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
         int moduleId = Integer.valueOf(mId);
-        courseCatalogFacade_.deleteCourseModule(courseId, teacherId, moduleId);
-        return courseCatalogFacade_.getCourse(courseId);        
+        CourseDescriptionDTO course = 
+            courseCatalogResource_.deleteCourseModule(securityToken, courseId, teacherId, moduleId);
+        return ResponseEntity.ok().body(course);
     }
     
     /**
@@ -254,15 +264,17 @@ public class CourseCatalogController {
      */
     @Authorizable
     @DeleteMapping( path = "/{courseId}" )
-    public void deleteCourse(
+    public ResponseEntity<String> deleteCourse(
         HttpServletRequest request,
         @RequestParam("teacherId") String tId,
         @PathVariable("courseId") String cId
     )
     {
+        SecurityToken securityToken = SecurityTokenUtil.extractFromRequest(request);
         TeacherId teacherId = new TeacherId(tId);
         CourseDescriptionId courseId = new CourseDescriptionId(cId);
-        courseCatalogFacade_.deleteCourse(courseId, teacherId);
+        courseCatalogResource_.deleteCourse(securityToken, courseId, teacherId);
+        return ResponseEntity.ok().body("Course deleted.");
     }
     
 }

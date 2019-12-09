@@ -25,15 +25,14 @@
 package org.bco.cm.api.access;
 
 import javax.servlet.http.HttpServletRequest;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.bco.cm.security.SecurityToken;
-import org.bco.cm.security.SecurityTokenException;
-import org.bco.cm.security.SecurityTokenManager;
-import org.bco.cm.security.SecurityTokenUtil;
 import org.bco.cm.util.StudentId;
 import org.bco.cm.util.UserSpecification;
+import org.bco.security.SecurityToken;
+import org.bco.security.SecurityTokenException;
+import org.bco.security.SecurityTokenManager;
+import org.bco.security.SecurityTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -45,7 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class AccessAuthorizer {
     
     @Autowired
-    private SecurityTokenManager securityTokenManager_;
+    private SecurityTokenManager<UserSpecification> securityTokenManager_;
     
     /**
      * All authorizable methods. User must be signed in already.
@@ -147,10 +146,10 @@ public class AccessAuthorizer {
         }
     }
     
-    private UserSpecification getUserFromAuthorization(String authorization)
+    private UserSpecification getUserFromAuthorization(HttpServletRequest request)
     {
         SecurityToken securityToken = 
-            SecurityTokenUtil.extractFromAuthorizationHeader(authorization);
+            SecurityTokenUtil.extractFromAuthorizationHeader(request);
         return this.getUser(securityToken);
     }
     

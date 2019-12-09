@@ -25,10 +25,10 @@
 package org.bco.cm.api.rest.spring;
 
 import org.bco.cm.api.facade.StudentFacade;
-import org.bco.cm.security.Authorizable;
-import org.bco.cm.security.SecurityToken;
 import org.bco.cm.util.CourseId;
 import org.bco.cm.util.StudentId;
+import org.bco.security.annotation.Authorizable;
+import org.bco.security.SecurityToken;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

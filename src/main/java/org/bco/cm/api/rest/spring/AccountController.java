@@ -27,10 +27,10 @@ package org.bco.cm.api.rest.spring;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.bco.cm.security.SecurityToken;
-import org.bco.cm.security.SecurityTokenManager;
-import org.bco.cm.security.SecurityTokenUtil;
 import org.bco.cm.util.UserSpecification;
+import org.bco.security.SecurityToken;
+import org.bco.security.SecurityTokenManager;
+import org.bco.security.SecurityTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
     
     @Autowired
-    private SecurityTokenManager securityTokenManager_;
+    private SecurityTokenManager<UserSpecification> securityTokenManager_;
     
     @Autowired
     private AccountResource accountResource_;

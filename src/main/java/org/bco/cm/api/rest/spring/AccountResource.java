@@ -25,8 +25,8 @@
 package org.bco.cm.api.rest.spring;
 
 import org.bco.cm.api.facade.AccountFacade;
-import org.bco.cm.security.SecurityToken;
 import org.bco.cm.util.UserSpecification;
+import org.bco.security.SecurityToken;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

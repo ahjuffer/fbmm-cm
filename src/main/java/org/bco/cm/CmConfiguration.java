@@ -86,7 +86,8 @@ import org.bco.cm.api.rest.spring.AccountResource;
 import org.bco.cm.api.rest.spring.StudentTasksResource;
 import org.bco.cm.api.rest.spring.StudentsResource;
 import org.bco.cm.api.rest.spring.TeachersResource;
-import org.bco.cm.security.SecurityTokenManager;
+import org.bco.cm.util.UserSpecification;
+import org.bco.security.SecurityTokenManager;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 
@@ -387,9 +388,9 @@ public class CmConfiguration
     }
     
     @Bean
-    SecurityTokenManager SecurityTokenManager()
+    SecurityTokenManager<UserSpecification> SecurityTokenManager()
     {
-        return new SecurityTokenManager();
+        return new SecurityTokenManager<>();
     }
     
     @Bean
